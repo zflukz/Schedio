@@ -1,0 +1,26 @@
+name: Build Frontend
+
+on:
+  push:
+    branches:
+      - '**'  # all branches
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Set backend URL based on branch
+        run: |
+          echo "Using branch $GITHUB_REF"
+          if [[ $GITHUB_REF == "refs/heads/main" ]]; then
+            echo "REACT_APP_BACKEND_URL=https://api.myapp.com" >> $GITHUB_ENV
+          else
+            echo "REACT_APP_BACKEND_URL=http://localhost:8080" >> $GITHUB_ENV
+          fi

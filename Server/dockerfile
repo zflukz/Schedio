@@ -1,0 +1,20 @@
+FROM eclipse-temurin:21-jdk-noble
+
+RUN apt-get update \
+  && apt-get install -y ca-certificates curl git openssh-client --no-install-recommends \
+  && rm -rf /var/lib/apt/lists/*
+# Install Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy your project files
+COPY . .
+
+# Build your project
+RUN mvn clean package -DskipTests
+
+# Default command
+CMD ["mvn", "spring-boot:run"]

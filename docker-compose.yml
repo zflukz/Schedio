@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./client
+    ports:
+      - "3000:3000"
+    restart: always
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true     # Forces polling every few seconds
+      - WATCHPACK_POLLING=true       # Webpack polling
+      - WDS_SOCKET_PORT=0           # WebSocket fix
+      - WDS_SOCKET_HOST=localhost 
+    command: npm start
+# for local dev
+
+  backend:
+    build: ./server
+    volumes:
+      - ./server:/app
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: DB_API  # Render DB
