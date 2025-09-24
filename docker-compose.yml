@@ -19,9 +19,9 @@ services:
 # for local dev
 
   backend:
-    build: ./server
+    build: ./Server
     volumes:
-      - ./server:/app
+      - ./Server:/app
     ports:
       - "8080:8080"
     environment:
