@@ -31,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
 
         {/* Right: User section */}
         {!user ? (
-          <button className="text-[18px] bg-[#3EBAD0]/10 hover:bg-primary text-black font-bold px-4 py-2 rounded-full transition">
+          <button className="text-[18px] bg-primary hover:bg-primaryhover text-white font-bold px-4 py-2 rounded-full transition">
             Sign In
           </button>
         ) : (
@@ -59,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             )}
 
             {/* User info */}
-            <div className="flex items-center space-x-2 bg-[#3EBAD0]/10 hover:bg-primary px-4 py-2 rounded-full">
+            <div className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full">
               {user.image && (
                 <img
                   src={user.image}

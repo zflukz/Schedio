@@ -1,13 +1,14 @@
 import React from "react";
-import SignIn from "../component/Sign In";
+import AuthForm from "../component/Sign In";
 
 const SigninPage: React.FC = () => {
-  const handleSignIn = (email: string, password: string) => {
-    console.log("Email:", email, "Password:", password);
-    // Add your authentication logic here
+  const handleAuthSubmit = (data: { email: string; password: string; name?: string }) => {
+    console.log("Auth data:", data);
+    // TODO: เรียก API login / register ตาม mode
   };
 
-  return <SignIn onSignIn={handleSignIn} />;
+
+  return <AuthForm mode="signin" onSubmit={handleAuthSubmit} />;
 };
 
 export default SigninPage;
