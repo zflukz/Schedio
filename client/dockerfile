@@ -1,13 +1,20 @@
+# Use Node 20 (fine)
 FROM node:20
 
+# Set working directory inside container
 WORKDIR /app
 
+# Copy dependency files first for better caching
 COPY package*.json ./
-RUN npm install
 
+# Install all dependencies, including new Tailwind PostCSS plugin
+RUN npm install && npm install -D @tailwindcss/postcss
 
+# Copy all source files
 COPY . .
 
+# Expose frontend port
 EXPOSE 3000
 
+# Default command
 CMD ["npm", "start"]

@@ -23,17 +23,21 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="font-sans flex items-center justify-center min-h-screen bg-background">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+        className="bg-white px-[45px] py-[35px] rounded-[20px] shadow-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
+        {/* Logo + Heading */}
+        <div className="text-center mb-[30px]">
+          <img src="/Logo-25.svg" alt="Logo" className="mx-auto mb-[10px] max-h-[50px]" />
+          <h2 className="text-2xl font-bold">Sign In</h2>
+        </div>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Email</label>
+          <label className="block mb-[5px] font-semibold">Email</label>
           <input
             type="email"
             value={email}
@@ -65,6 +69,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
       </form>
     </div>
   );
+
 };
 
 export default SignIn;

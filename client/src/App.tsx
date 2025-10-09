@@ -20,15 +20,12 @@ function App() {
 
   return (
     <div className="font-sans bg-background min-h-screen">
-      <div className="pt-[50px]">
-        <Navbar user={user} />
-
+      <Navbar user={user} />
         <Routes>
           <Route path="/" element={<div>Home Page</div>} />
           {/* ส่ง onSignIn prop ให้ SignIn */}
           <Route path="/signin" element={<SignIn onSignIn={handleSignIn} />} />
         </Routes>
-      </div>
     </div>
   );
 }
