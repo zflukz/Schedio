@@ -22,7 +22,10 @@ services:
     build: ./Server
     volumes:
       - ./Server:/app
+      - ~/.m2:/root/.m2
     ports:
       - "8080:8080"
     environment:
       DATABASE_URL: DB_API  # Render DB
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    command: ["mvn", "spring-boot:run"]
