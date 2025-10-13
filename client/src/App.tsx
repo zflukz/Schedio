@@ -1,81 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage, { User } from './pages/LoginPage';
-import Landing from './pages/Landing';
+import React from 'react';
+import './App.css';
+import Navbar from './component/Navbar';
+import { Routes, Route } from "react-router-dom";
+import AuthForm from './component/Sign In';
+import Upcomingcard from './component/Comingcard';
 
-const App: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+interface User {
+  name: string;
+  role: 'admin' | 'organizer' | 'user';
+}
 
-  // Check for existing session
-  useEffect(() => {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error('Error parsing saved user data:', error);
-        localStorage.removeItem('currentUser');
-      }
-    }
-  }, []);
 
-  // Handle login
-  const handleLogin = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem('currentUser', JSON.stringify(userData));
+function App() {
+  const user: User | null = null; // สมมติยังไม่ได้ login
+
+ const handleAuthSubmit = (data: { email: string; password: string; name?: string }) => {
+    console.log("Auth data:", data);
+    // TODO: เรียก API login / register ตาม mode
   };
 
-  // Handle logout
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('currentUser');
-  };
 
   return (
-    <Router>
-      <Routes>
-        {/* Public route */}
-        <Route
-          path="/login"
-          element={
-            user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />
-          }
-        />
-
-        {/* Protected route */}
-        <Route
-          path="/dashboard"
-          element={
-            user ? (
-              <Landing user={user} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        {/* Catch-all 404 */}
-        <Route
-          path="*"
-          element={
-            <div className="min-h-screen flex items-center justify-center bg-red-50">
-              <div className="text-center">
-                <h1 className="text-4xl font-bold text-red-600 mb-4">404</h1>
-                <p className="text-gray-600 mb-4">Page not found</p>
-                <a
-                  href="/login"
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                >
-                  Go to Login
-                </a>
-              </div>
-            </div>
-          }
-        />
-      </Routes>
-    </Router>
+    <div className="font-sans bg-background min-h-screen">
+      <Navbar user={user} />
+       <Upcomingcard
+        title="Workshop React & TypeScript"
+        date="2025-10-20"
+        time="10:00 AM - 4:00 PM"
+        place="Online Zoom Meeting"
+        objective="Learn how to build a React app with TypeScript"
+        description="In this workshop, we will cover the basics of React with TypeScript, including components, props, state, and more."
+        organizer="Tech Community"
+        participants={25}
+        maxParticipants={50}
+      />
+        <Routes>
+          <Route path="/" element={<div>Home Page</div>} />
+          {/* Sign In */}
+          <Route
+            path="/signin"
+            element={<AuthForm mode="signin" onSubmit={handleAuthSubmit} />}
+          />
+          {/* Register */}
+          <Route
+            path="/register"
+            element={<AuthForm mode="register" onSubmit={handleAuthSubmit} />}
+          />
+        </Routes>
+    </div>
   );
-};
+}
 
 export default App;
