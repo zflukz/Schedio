@@ -53,13 +53,14 @@ jobs:
           if [[ "${{ github.event_name }}" == "push" ]]; then
             TITLE="Branch Pushed 🚀"
             # Extract and format commit messages using jq
-            COMMITS=$(jq -r '.commits[] | "- **" + .message + "** by " + .author.name' <<< '${{ toJson(github.event.commits) }}')
+            COMMITS=$(jq -r '.[] | "- **" + .message + "** by " + .author.name' <<< "${{ toJson(github.event.commits) }}")
             DESCRIPTION="[${repo}] branch pushed: **$branch**\n\n$COMMITS"
           else # delete event
             TITLE="Branch Deleted 🗑️"
             DESCRIPTION="[${repo}] branch deleted: **$branch**"
             COLOR=15158332 # Red/Pink
           fi
+
           
           # Export variables for the next step
           echo "::set-output name=thread_id::$THREAD_ID"
