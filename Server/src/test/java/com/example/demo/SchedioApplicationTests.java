@@ -8,7 +8,6 @@ class SchedioApplicationTests {
 
 	@Test
 	void contextLoads() {
-		
 	}
 
 }
