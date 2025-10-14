@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 interface AuthFormProps {
   mode: "signin" | "register";
   onSubmit: (data: { email: string; password: string; name?: string }) => void;
+  backendError?: string;
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit }) => {
+const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +24,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit }) => {
 
     setError("");
     onSubmit({ email, password, name: mode === "register" ? name : undefined });
-    navigate("/"); 
+    // navigate("/"); 
   };
 
   return (
@@ -40,7 +41,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit }) => {
           </h2>
         </div>
 
+        {/* Frontend validation error */}
         {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        {/* Backend error from API */}
+        {backendError && <p className="text-red-500 mb-4">{backendError}</p>}
 
         {/* Name (เฉพาะ Register) */}
         {mode === "register" && (
