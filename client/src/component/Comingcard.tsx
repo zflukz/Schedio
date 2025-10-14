@@ -26,9 +26,9 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
   const percentage = Math.round((participants / maxParticipants) * 100);
 
   return (
-    <div className="font-sans p-[30px] bg-white rounded-[20px] shadow-md w-full max-w-sm md:max-w-sm mx-auto">
-      <div className="inline-block bg-primary text-white font-bold text-[18px] px-[15px] py-[3px] mb-[15px] rounded-full">
-        Happening Soon!
+    <div className="font-sans p-[30px] bg-white rounded-[20px] shadow-md w-full max-w-sm md:max-w-sm min-w-[380px] mx-auto">
+      <div className="inline-block bg-[#4F4F4F] text-white font-bold text-[18px] px-[15px] py-[3px] mb-[15px] rounded-full">
+        🔥 Happening Soon!
       </div>
       <div className="mb-[15px]">
         <h1 className="text-[20px] font-bold mb-[10px] text-primary">{title}</h1>

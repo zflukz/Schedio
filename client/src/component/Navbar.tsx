@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 interface User {
   name: string;
   role: "admin" | "organizer" | "user";
@@ -11,6 +11,8 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ user }) => {
+    const navigate = useNavigate();
+
   return (
     <nav className="bg-white w-full max-w-[960px] min-w-[600px] shadow-md rounded-full mx-auto">
       <div className="font-sans flex items-center justify-between px-[50px] py-[24px] w-full">
@@ -31,7 +33,10 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
 
         {/* Right: User section */}
         {!user ? (
-          <button className="text-[18px] bg-primary hover:bg-primaryhover text-white font-bold px-4 py-2 rounded-full transition">
+          <button 
+          className="text-[18px] bg-primary hover:bg-primaryhover text-white font-bold px-4 py-2 rounded-full transition"
+          onClick={() => navigate("/signin")}
+          >
             Sign In
           </button>
         ) : (
