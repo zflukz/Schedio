@@ -27,7 +27,7 @@ function App() {
         title="Workshop React & TypeScript"
         date="19 Sep 2025"
         time="13:30 - 15:30 "
-        place="Online Zoom Meeting"
+        place="CB2201"
         objective="Learn how to build a React app with TypeScript"
         description="In this workshop, we will cover the basics of React with TypeScript, including components, props, state, and more."
         organizer="Tech Community"
