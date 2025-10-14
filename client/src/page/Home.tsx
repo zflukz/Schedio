@@ -1,5 +1,7 @@
 import Navbar from '../component/Navbar';
 import Upcomingcard from '../component/Comingcard';
+import HorizontalScrollCards from '../component/HorizontalScrollCards';
+
 interface User {
   name: string;
   role: 'admin' | 'organizer' | 'user';
@@ -16,7 +18,8 @@ function Home() {
         <div className='flex items-center justify-center whitespace-nowrap pt-[85px] pb-[30px] text-[40px] font-bold mx-auto min-w-[500px]'>
            “ Don’t Miss These Events “
         </div>
-		<div className="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[30px]">	
+		<HorizontalScrollCards/>
+		<div className="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[30px] ">	
           <Upcomingcard
             title="Workshop React & TypeScript"
             date="19 Sep 2025"
