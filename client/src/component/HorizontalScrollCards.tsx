@@ -10,7 +10,7 @@ const HorizontalScrollCards: React.FC = () => {
   }));
 
   // Embla Carousel hook
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "center" });
 
   const [cardsPerPage, setCardsPerPage] = useState(3);
 
@@ -31,48 +31,57 @@ const HorizontalScrollCards: React.FC = () => {
   const scrollNext = () => emblaApi?.scrollNext();
 
   return (
-    <div className="relative max-w-[1300px] mx-auto px-[30px]">
-      {/* Left button */}
-      <button
-        onClick={scrollPrev}
-        className="absolute left-[-30px] top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
-      >
-        ◀
-      </button>
+    <div className="relative max-w-[1300px] mx-auto px-[30px] sm:px-[30px]">
+		{/* Left button */}
+		<button
+			onClick={scrollPrev}
+			className="absolute top-1/2 left-0 z-10 transform -translate-y-1/2 bg-white rounded-full shadow p-2 hover:bg-gray-100"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+			<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+			</svg>
+		</button>
 
-      {/* Embla Carousel */}
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-[30px]">
-          {cards.map((c, i) => (
-            <div
-              key={i}
-              className="flex-none"
-              style={{ width: `calc((100% - ${(cardsPerPage - 1) * 30}px) / ${cardsPerPage})` }}
-            >
-              <Upcomingcard
-                title={c.title}
-                date="19 Sep 2025"
-                time="13:30 - 15:30"
-                place={c.place}
-                objective="Learn React + TS"
-                description="Basics of React with TS"
-                organizer="Tech Community"
-                participants={25}
-                maxParticipants={50}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+		{/* Carousel */}
+		<div className="overflow-hidden" ref={emblaRef}>
+			<div className="flex gap-[30px] px-5 py-5">
+				{cards.map((c, i) => (
+				<div
+					key={i}
+					className="flex-none"
+					style={{
+					width: `calc((100% - ${(cardsPerPage - 1) * 30}px) / ${cardsPerPage})`,
+					}}
+				>
+					<Upcomingcard
+					title={c.title}
+					date="19 Sep 2025"
+					time="13:30 - 15:30"
+					place={c.place}
+					objective="Learn React + TS"
+					description="Basics of React with TS"
+					organizer="Tech Community"
+					participants={25}
+					maxParticipants={50}
+					/>
+				</div>
+				))}
+			</div>
+			</div>
 
-      {/* Right button */}
-      <button
-        onClick={scrollNext}
-        className="absolute right-[-30px] top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
-      >
-        ▶
-      </button>
-    </div>
+
+		{/* Right button */}
+		<button
+			onClick={scrollNext}
+			className="absolute top-1/2 right-0 z-10 transform -translate-y-1/2 bg-white rounded-full shadow p-2 hover:bg-gray-100"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+			<path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+			</svg>
+		</button>
+		</div>
+
+
   );
 };
 
