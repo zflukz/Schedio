@@ -24,17 +24,22 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
   maxParticipants,
 }) => {
   return (
-    <div className="font-sans p-6 bg-white rounded-lg shadow-md max-w-lg mx-auto">
-		<div className="px-[15px] px-[3px] mx-[15px] rounded-full bg-[#4F4F4F] font-bold text-[18px]">
-			Happening Tomorrow
-		</div>
-      <h1 className="text-2xl font-bold mb-2">{title}</h1>
-      <p className="text-gray-600 mb-1">
-        <strong>Date:</strong> {date}
-      </p>
-      <p className="text-gray-600 mb-1">
-        <strong>Time:</strong> {time}
-      </p>
+    <div className="font-sans p-6 bg-white rounded-[20px] shadow-md max-w-lg mx-auto">
+      <div className="inline-block bg-primary text-white font-bold text-[18px] px-[15px] py-[3px] mb-[20px] rounded-full">
+        Happening Tomorrow
+      </div>
+      <h1 className="text-2xl font-bold mb-[20px] text-primary">{title}</h1>
+      <div className="flex items-center text-black font-semibold mb-[20px]">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 mr-[10px]">
+          <path fillRule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z" clipRule="evenodd" />
+        </svg>
+        {date}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 ml-[10px] mr-[10px]">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        {time}
+      </div>
+     
       <p className="text-gray-600 mb-1">
         <strong>Place:</strong> {place}
       </p>
@@ -49,6 +54,7 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
         <strong>Participants:</strong> {participants}/{maxParticipants}
       </p>
     </div>
+
   );
 };
 

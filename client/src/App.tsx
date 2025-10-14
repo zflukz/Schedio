@@ -25,8 +25,8 @@ function App() {
       <Navbar user={user} />
        <Upcomingcard
         title="Workshop React & TypeScript"
-        date="2025-10-20"
-        time="10:00 AM - 4:00 PM"
+        date="19 Sep 2025"
+        time="13:30 - 15:30 "
         place="Online Zoom Meeting"
         objective="Learn how to build a React app with TypeScript"
         description="In this workshop, we will cover the basics of React with TypeScript, including components, props, state, and more."
