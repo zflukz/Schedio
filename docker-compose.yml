@@ -19,10 +19,12 @@ services:
 # for local dev
 
   backend:
-    build: ./Server
+    build: ./server
     volumes:
-      - ./Server:/app
+      - ./server:/app
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       DATABASE_URL: DB_API  # Render DB
