@@ -23,6 +23,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit }) => {
 
     setError("");
     onSubmit({ email, password, name: mode === "register" ? name : undefined });
+    navigate("/"); 
   };
 
   return (
