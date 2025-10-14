@@ -20,11 +20,11 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
               email: data.email,
             }
           : {
-              userName: data.email,      // For login, use email as username
+              userName: data.name,      // For login, use email as username
               userPassword: data.password,
             };
 
-      const response = await fetch('', {
+      const response = await fetch('http://localhost:8080/login', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
