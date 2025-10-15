@@ -22,7 +22,7 @@ const Eventcard: React.FC<EventCardProps> = ({
   onViewMore,
 }) => {
   return (
-    <div className="font-sans bg-white p-[30px] rounded-[20px] max-w-md max-w-[390px] shadow-sm">
+    <div className="font-sans bg-white p-[30px] rounded-[20px] max-w-md min-w-[380px] shadow-sm">
       {/* Image */}
       <div className="rounded-[12px] overflow-hidden mb-3">
         <img src={imageUrl} alt={title} className="w-full h-[200px] object-cover " />
@@ -56,23 +56,29 @@ const Eventcard: React.FC<EventCardProps> = ({
 		{location}
 	</div>
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-2 text-[16px] font-semibold">
-        {tags.map((tag, index) => (
-          <span
-            key={index}
-            className="bg-support2 text-text-black px-[15px] py-[3px] rounded-full"
-          >
-            {tag}
-          </span>
-        ))}
+      {/* Tags + View more */}
+      <div className="flex items-center justify-between mt-2">
+        {/* Tags list */}
+        <div className="flex flex-wrap gap-2 text-[16px] font-semibold">
+          {tags.map((tag, index) => (
+            <span
+              key={index}
+              className="bg-support2 text-text-black px-[15px] py-[3px] rounded-full"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* View more button */}
         <button
           onClick={onViewMore}
-          className="text-text-black text-[14px] font-semibold hover:underline ml-auto"
+          className="text-text-black text-[14px] font-semibold hover:underline ml-[10px] whitespace-nowrap"
         >
           View more
         </button>
       </div>
+
     </div>
   );
 };
