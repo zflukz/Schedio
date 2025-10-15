@@ -6,20 +6,20 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
   const [backendError, setBackendError] = useState("");
 
-  const handleAuthSubmit = async (data: { username: string; password: string; name?: string }) => {
+  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
     try {
       const endpoint = mode === "register" ? "/register" : "/login";
 
       const payload =
         mode === "register"
           ? {
-              username: data.username,
-              password: data.password,
-              name: data.name,
+              userName: data.name,
+              userPassword: data.password,
+              userEmail: data.email,
             }
           : {
-              username: data.username,
-              password: data.password,
+              userName: data.username,
+              userPassword: data.password,
             };
 
       const response = await fetch(`http://localhost:8080${endpoint}`, {
@@ -42,7 +42,33 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         navigate("/signin");
       } else {
         localStorage.setItem("token", result.token);
-        navigate("/dashboard");
+        
+        // Get user profile to determine role
+        try {
+          const profileResponse = await fetch("http://localhost:8080/profile", {
+            headers: { "Authorization": `Bearer ${result.token}` }
+          });
+          
+          if (profileResponse.ok) {
+            const profile = await profileResponse.json();
+            alert("User details: " + JSON.stringify(profile, null, 2));
+            
+            const role = profile.userRole?.toLowerCase();
+            
+            if (role === "organizer") {
+              navigate("/organizers-dashboard");
+            } else if (role === "admin") {
+              navigate("/admin-dashboard");
+            } else {
+              navigate("/");
+            }
+          } else {
+            navigate("/");
+          }
+        } catch (profileError) {
+          console.error("Profile fetch error:", profileError);
+          navigate("/");
+        }
       }
     } catch (error) {
       console.error("Network error:", error);

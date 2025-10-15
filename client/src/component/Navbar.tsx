@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 interface User {
   name: string;
-  role: "admin" | "organizer" | "user";
+  role: "admin" | "organizer" | "attendee";
   image?: string;
 }
 
@@ -10,8 +10,50 @@ interface NavbarProps {
   user?: User | null;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ user }) => {
-    const navigate = useNavigate();
+const Navbar: React.FC<NavbarProps> = ({ user: propUser }) => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(propUser || null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      
+      try {
+        const response = await fetch("http://localhost:8080/profile", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          const backendRole = userData.userRole?.toLowerCase();
+          let frontendRole: "admin" | "organizer" | "attendee";
+          
+          if (backendRole === "admin") {
+            frontendRole = "admin";
+          } else if (backendRole === "organizer") {
+            frontendRole = "organizer";
+          } else {
+            frontendRole = "attendee";
+          }
+
+          frontendRole = "attendee"; // Temporary override for testing
+          
+          setUser({
+            name: userData.firstName || userData.userName,
+            role: frontendRole,
+            image: undefined
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+
+    if (!propUser) {
+      fetchUser();
+    }
+  }, [propUser]);
 
   return (
     <nav className="bg-white w-full max-w-[960px] min-w-[600px] shadow-md rounded-full mx-auto">
@@ -44,7 +86,10 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             {/* Dynamic menu by role */}
             {user.role === "admin" && (
               <>
-                <button className="text-[18px] font-bold text-black hover:text-primary transition">
+                <button 
+                  className="text-[18px] font-bold text-black hover:text-primary transition"
+                  onClick={() => navigate("/admin-dashboard")}
+                >
                  User Management
                 </button>
                 
@@ -53,18 +98,33 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
 
             {user.role === "organizer" && (
               <>
-                
+                <button 
+                  className="text-[18px] font-bold text-black hover:text-primary transition"
+                  onClick={() => navigate("/organizers-dashboard")}
+                >
+                  My Events
+                </button>
               </>
             )}
 
-            {user.role === "user" && (
-              <button className="text-[18px] font-bold text-black hover:text-primary transition">
+            {user.role === "attendee" && (
+              <button 
+                className="text-[18px] font-bold text-black hover:text-primary transition"
+                onClick={() => navigate("/")}
+              >
                 My Events
               </button>
             )}
 
             {/* User info */}
-            <div className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full">
+            <div 
+              className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full cursor-pointer"
+              onClick={() => {
+                localStorage.removeItem("token");
+                setUser(null);
+                navigate("/");
+              }}
+            >
               {user.image && (
                 <img
                   src={user.image}

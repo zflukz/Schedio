@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import AuthPage from './page/Sign In';
 import Home from './page/Home';
+import ProtectedRoute from './component/ProtectedRoute';
 interface User {
   name: string;
   role: 'admin' | 'organizer' | 'user';
@@ -31,6 +32,24 @@ function App() {
           <Route
             path="/register"
             element={<AuthPage mode="register" />}
+          />
+          {/* Protected Admin Route */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <div>Admin Dashboard - Only admins can see this</div>
+              </ProtectedRoute>
+            }
+          />
+          {/* Protected Organizer Route */}
+          <Route
+            path="/organizer-dashboard"
+            element={
+              <ProtectedRoute requiredRole="organizer">
+                <div>Organizer Dashboard - Only organizers can see this</div>
+              </ProtectedRoute>
+            }
           />
         </Routes>
     </div>
