@@ -1,0 +1,3 @@
+REACT_APP_BACKEND_URL=https://api.myapp.com
+DB_API=postgresql://user:R0QGckhupZMHseY1z7jvU5PAD4yStMXY@dpg-d38ijl7fte5s73c4jt60-a/schedio
+DB_password=R0QGckhupZMHseY1z7jvU5PAD4yStMXY

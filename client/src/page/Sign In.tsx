@@ -6,25 +6,23 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
   const [backendError, setBackendError] = useState("");
 
-  const handleAuthSubmit = async (data: { email: string; password: string; name?: string }) => {
+  const handleAuthSubmit = async (data: { username: string; password: string; name?: string }) => {
     try {
-      // Decide endpoint based on mode
       const endpoint = mode === "register" ? "/register" : "/login";
 
-      // Map form data to backend DTOs
       const payload =
         mode === "register"
           ? {
-              userName: data.name,       // Full Name
-              userPassword: data.password,
-              email: data.email,
+              username: data.username,
+              password: data.password,
+              name: data.name,
             }
           : {
-              userName: data.name,      // For login, use email as username
-              userPassword: data.password,
+              username: data.username,
+              password: data.password,
             };
 
-      const response = await fetch('http://localhost:8080/login', {
+      const response = await fetch(`http://localhost:8080${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -33,7 +31,6 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
       const result = await response.json();
 
       if (!response.ok) {
-        // Handle error returned by GlobalExceptionHandler
         const message = result.message || JSON.stringify(result);
         setBackendError(message);
         return;
@@ -44,9 +41,8 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
       if (mode === "register") {
         navigate("/signin");
       } else {
-        // Login success
         localStorage.setItem("token", result.token);
-        navigate("/dashboard"); // Redirect after login
+        navigate("/dashboard");
       }
     } catch (error) {
       console.error("Network error:", error);
@@ -54,7 +50,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
     }
   };
 
-  return <AuthForm mode={mode} onSubmit={handleAuthSubmit} />;
+  return <AuthForm mode={mode} onSubmit={handleAuthSubmit} backendError={backendError} />;
 };
 
 export default AuthPage;

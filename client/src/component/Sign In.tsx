@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
   mode: "signin" | "register";
-  onSubmit: (data: { email: string; password: string; name?: string }) => void;
+  onSubmit: (data: { username: string; password: string; name?: string }) => void;
   backendError?: string;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState(""); // ใช้เฉพาะ Register
   const [error, setError] = useState("");
@@ -17,14 +17,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password || (mode === "register" && !name)) {
+    if (!username || !password || (mode === "register" && !name)) {
       setError("Please fill in all required fields.");
       return;
     }
 
     setError("");
-    onSubmit({ email, password, name: mode === "register" ? name : undefined });
-    // navigate("/"); 
+    onSubmit({ username, password, name: mode === "register" ? name : undefined });
   };
 
   return (
@@ -55,22 +54,22 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Your full name"
               required
             />
           </div>
         )}
 
-        {/* Email */}
+        {/* Username */}
         <div className="mb-[20px]">
-          <label className="block mb-[5px] text-[18px] font-semibold">Email</label>
+          <label className="block mb-[5px] text-[18px] font-semibold">Username</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="you@example.com"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Enter your username"
             required
           />
         </div>
@@ -82,7 +81,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Enter your password"
             required
           />
