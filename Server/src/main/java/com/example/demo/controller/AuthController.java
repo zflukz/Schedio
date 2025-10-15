@@ -72,7 +72,7 @@ public class AuthController {
         }
         String token = _jwtUtil.generateToken(user.getUserName());
 
-        return new LoginResponseDto(token,user.getFirstName(), user.getLastName(), user.getUserEmail(), "Login success" );
+        return new LoginResponseDto(token, user.getUserEmail(), "Login success" );
     }
 
     @GetMapping("/profile")
@@ -80,7 +80,13 @@ public class AuthController {
         String username = (String) request.getAttribute("username");
         Users user = _userRepository.findByUserName(username)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
-        return new UserResponseDto(user.getUserID(), user.getUserName());
+        return new UserResponseDto(user.getUserID(),
+                user.getUserName(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getUserEmail(),
+                user.getUserPhone(),
+                user.getUserRole());
     }
 
 
