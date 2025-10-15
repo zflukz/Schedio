@@ -42,6 +42,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   if (!token) return <Navigate to="/signin" />;
 
   if (requiredRole && userRole !== requiredRole) {
+    // Show access denied alert
+    if (requiredRole === "admin") {
+      alert("Access denied: Admin role required");
+    } else if (requiredRole === "organizer") {
+      alert("Access denied: Organizer role required");
+    }
+    
     // Navigate to role-specific home page
     if (userRole === "admin") {
       return <Navigate to="/admin-dashboard" />;
