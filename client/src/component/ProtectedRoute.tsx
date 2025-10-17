@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [alertShown, setAlertShown] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -42,11 +43,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   if (!token) return <Navigate to="/signin" />;
 
   if (requiredRole && userRole !== requiredRole) {
-    // Show access denied alert
-    if (requiredRole === "admin") {
-      alert("Access denied: Admin role required");
-    } else if (requiredRole === "organizer") {
-      alert("Access denied: Organizer role required");
+    // Show access denied alert only once
+    if (!alertShown) {
+      if (requiredRole === "admin") {
+        alert("Access denied: Admin role required");
+      } else if (requiredRole === "organizer") {
+        alert("Access denied: Organizer role required");
+      }
+      setAlertShown(true);
     }
     
     // Navigate to role-specific home page
