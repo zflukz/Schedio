@@ -72,7 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                   className="h-6 w-6 rounded-full"
                 />
               )}
-              <span className="text-[18px] font-bold text-black">{user.name}</span>
+              <span className="text-[18px] font-bold text-white">{user.name}</span>
             </div>
           </div>
         )}
