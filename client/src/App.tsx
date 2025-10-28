@@ -1,27 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import AuthPage from './page/Sign In';
+import Home from './page/Home';
+interface User {
+  name: string;
+  role: 'admin' | 'organizer' | 'user';
+}
+
 
 function App() {
+  const user: User | null = null; // สมมติยังไม่ได้ login
+
+ const handleAuthSubmit = (data: { email: string; password: string; name?: string }) => {
+    console.log("Auth data:", data);
+    // TODO: เรียก API login / register ตาม mode
+  };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a 
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer" 
-        >  
-          u love me
-        </a>  
-      </header>
+    <div className="font-sans bg-background min-h-screen">
+        <Routes>
+          <Route 
+            path="/" 
+            element={<Home/>} />
+          {/* Sign In */  }
+          <Route
+            path="/signin"
+            element={<AuthPage mode="signin" />}
+          />
+          {/* Register */}
+          <Route
+            path="/register"
+            element={<AuthPage mode="register" />}
+          />
+        </Routes>
     </div>
   );
 }
-
 
 export default App;

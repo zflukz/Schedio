@@ -36,3 +36,317 @@
     transform: rotate(360deg);
   }
 }
+
+/* ---------- RangePicker ด้านนอก input ---------- */
+.custom-range-picker {
+  width: 100%;
+  background-color: #ffffff;
+  border: none;
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #101010; /* สีตัวเลขหลังเลือก */
+}
+
+/* placeholder */
+.custom-range-picker .ant-picker-input input::placeholder {
+  font-size: 18px !important;
+  font-weight: 600;
+  font-family: 'Albert Sans', sans-serif;
+  color: #939393;
+}
+/* ข้อความที่โชว์หลังเลือกวันที่ */
+.custom-range-picker .ant-picker-input input {
+  font-size: 18px !important;
+  font-weight: 600;
+  font-family: 'Albert Sans', sans-serif;
+  color: #101010;
+}
+
+
+/* ---------- Popup Calendar ---------- */
+.custom-range-picker-popup .ant-picker-cell-inner {
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #4f4f4f;
+}
+
+/* เดือน + navigation */
+.custom-range-picker-popup .ant-picker-header {
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 500; /* semibold */
+  font-size: 16px;
+  color: #101010;
+}
+
+/* วันในสัปดาห์ (Su, Mo, Tu ...) */
+.custom-range-picker-popup .ant-picker-panel-header .ant-picker-thead th {
+  font-family: 'Albert Sans', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  color: #4f4f4f !important;
+  text-align: center !important;
+}
+
+.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border: 2px solid #3EBAD0 !important; /* สีใหม่ที่ต้องการ */
+}
+
+/* 🔹 ล้าง pseudo element เดิมทั้งหมดก่อน */
+.ant-picker-cell-in-range::before,
+.ant-picker-cell-range-start::before,
+.ant-picker-cell-range-end::before {
+  display: none !important;
+}
+
+/* 🔹 สีพื้นของช่วงทั้งหมด */
+.ant-picker-cell-in-range {
+  background: #3EBAD080 !important; /* สีช่วงกลาง */
+  opacity: 1 !important;
+}
+
+/* 🔹 วันแรกของช่วง */
+.ant-picker-cell-range-start {
+  background: #3EBAD0 !important;
+  border-top-left-radius: 50% !important;
+  border-bottom-left-radius: 50% !important;
+}
+
+/* 🔹 วันท้ายของช่วง */
+.ant-picker-cell-range-end {
+  background: #3EBAD0 !important;
+  border-top-right-radius: 50% !important;
+  border-bottom-right-radius: 50% !important;
+}
+
+/* 🔹 สีตัวเลขวันที่ (ตรงที่เดิมมันฟ้า) */
+.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-range-end .ant-picker-cell-inner {
+  background: #3EBAD0 !important;  /* สีเดียวกับพื้น */
+  color: black !important;          /* เปลี่ยนตัวเลขให้มองเห็นชัด */
+}
+
+/* 🔹 hover effect */
+.ant-picker-cell-range-hover,
+.ant-picker-cell-range-hover-start,
+.ant-picker-cell-range-hover-end {
+  background: #3EBAD080 !important;
+  opacity: 1 !important;
+}
+
+/* เส้นใต้ตอนคลิกที่ start หรือ end ของ RangePicker */
+.ant-picker-active-bar {
+  background: #3EBAD0 !important; /* สีใหม่ */
+}
+
+/* ถ้าใช้ Tailwind + CSS module หรือ global css */
+.custom-dropdown-button:focus,
+.custom-dropdown-button:active {
+  outline: 2px solid #3EBAD0; /* สีขอบที่ต้องการ */
+  outline-offset: 2px;         /* เว้นระยะขอบกับปุ่ม */
+  box-shadow: 0 0 0 4px #3EBAD040; /* glow แบบใสๆ */
+}
+
+.custom-dropdown-button:hover {
+  color: #939393 !important; /* สีข้อความตอน hover */
+  background-color: #ffffff !important; /* ถ้าอยากเปลี่ยน BG ด้วย */
+}
+
+/* ขอบ checkbox */
+.custom-checkbox .ant-checkbox-inner {
+  border-color: #3EBAD0; /* สีขอบ */
+}
+
+/* checkbox ถูกติ๊กแล้ว */
+.custom-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #3EBAD0; /* พื้นกล่อง */
+  border-color: #3EBAD0;     /* ขอบ */
+}
+
+/* hover ทั้งกล่อง + checkbox */
+.custom-checkbox:hover .ant-checkbox-inner {
+  border-color: #3EBAD0; /* ขอบตอน hover */
+  background-color: #3EBAD0 !important; 
+}
+
+/* Change font and size for the text inside the dropdown */
+.dropdown-item {
+  font-family: 'Albert Sans', sans-serif; /* Your font */
+  font-size: 18px;                        /* Desired size */
+  font-weight: 600;                        /* Optional: semibold */
+  color: #101010;                          /* Text color */
+}
+
+.custom-checkbox .ant-checkbox + span {
+  font-family: 'Albert Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #101010;
+}
+
+/* ---------- Pagination ทั้งหมด ---------- */
+
+/* ตัวเลขทั้งหมด */
+.custom-pagination .ant-pagination-item,
+.custom-pagination .ant-pagination-item a,
+.custom-pagination .ant-pagination-prev,
+.custom-pagination .ant-pagination-next,
+.custom-pagination .ant-pagination-prev a,
+.custom-pagination .ant-pagination-next a {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;        /* ทำให้เป็นวงกลม */
+  background-color: transparent; /* ไม่มีพื้นหลัง */
+  border: none;                  /* ไม่มีขอบ */
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #101010;               /* สีตัวเลขปกติ */
+  margin: 0 4px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Hover ตัวเลข / Prev / Next */
+.custom-pagination .ant-pagination-item:not(.ant-pagination-item-active):hover,
+.custom-pagination .ant-pagination-item:not(.ant-pagination-item-active):hover a
+ {
+  color: #3EBAD0 !important;       /* ตัวอักษรสีฟ้า */
+  background-color: transparent !important; /* ไม่มีพื้นหลัง */
+  border: none !important;
+}
+
+/* Active ตัวเลข */
+.custom-pagination .ant-pagination-item-active,
+.custom-pagination .ant-pagination-item-active a {
+  background-color: #3EBAD0 !important; /* พื้นหลังฟ้า */
+  color: white !important;               /* ตัวเลขสีขาว */
+  border-radius: 50%;                    /* วงกลม */
+}
+/* ---------- Prev / Next เป็นวงกลม ---------- */
+.custom-pagination .ant-pagination-prev,
+.custom-pagination .ant-pagination-next,
+.custom-pagination .ant-pagination-prev a,
+.custom-pagination .ant-pagination-next a,
+.custom-pagination .ant-pagination-prev .ant-pagination-item-link,
+.custom-pagination .ant-pagination-next .ant-pagination-item-link {
+  width: 36px;
+  height: 36px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+  background: transparent !important;  /* ล้าง background */
+  border: none !important;
+  color: #101010 !important;
+  padding: 0;
+  margin: 0 4px;
+  box-sizing: border-box;
+}
+
+/* ล้าง hover / focus / active ของ Prev / Next */
+.custom-pagination .ant-pagination-prev:hover,
+.custom-pagination .ant-pagination-next:hover,
+.custom-pagination .ant-pagination-prev:hover a,
+.custom-pagination .ant-pagination-next:hover a,
+.custom-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
+.custom-pagination .ant-pagination-next:hover .ant-pagination-item-link,
+.custom-pagination .ant-pagination-prev:focus,
+.custom-pagination .ant-pagination-next:focus,
+.custom-pagination .ant-pagination-prev:active,
+.custom-pagination .ant-pagination-next:active {
+  background: transparent !important;
+  color: #3EBAD0 !important;
+}
+
+/* Disabled Prev / Next */
+.custom-pagination .ant-pagination-prev.ant-pagination-disabled,
+.custom-pagination .ant-pagination-next.ant-pagination-disabled,
+.custom-pagination .ant-pagination-prev.ant-pagination-disabled a,
+.custom-pagination .ant-pagination-next.ant-pagination-disabled a,
+.custom-pagination .ant-pagination-prev.ant-pagination-disabled .ant-pagination-item-link,
+.custom-pagination .ant-pagination-next.ant-pagination-disabled .ant-pagination-item-link {
+  background: transparent !important;
+  color: #bfbfbf !important;
+  cursor: not-allowed;
+}
+
+/* ---------- Dropdown Button ด้านนอกสุด (pageSize) ---------- */
+.custom-pagination .ant-pagination-options .ant-select-selector {
+  background-color: #ffffff !important;
+  border: 1.5px solid #3EBAD0 !important; /* ✅ ขอบสีประจำ */
+  border-radius: 8px !important;
+  padding: 4px 10px !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ข้อความในปุ่ม dropdown */
+.custom-pagination .ant-pagination-options .ant-select-selection-item {
+  font-family: 'Albert Sans', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #101010 !important;
+  line-height: normal !important;
+}
+
+/* Hover */
+.custom-pagination .ant-pagination-options .ant-select:hover .ant-select-selector {
+  background-color: #FFFFFF !important; /* ✅ ฟ้าใส */
+  border-color: #3EBAD0 !important;
+}
+
+/* Focus (เวลาเปิด dropdown) */
+.custom-pagination .ant-pagination-options .ant-select-focused .ant-select-selector {
+  border-color: #3EBAD0 !important;
+  box-shadow: 0 0 0 2px #3EBAD040 !important; /* glow ฟ้าอ่อน */
+}
+
+/* ปิด pseudo element ที่ antD แทรกมา */
+.custom-pagination .ant-pagination-options .ant-select-selection-item::after {
+  display: none !important;
+}
+
+/* ---------- Dropdown List ---------- */
+.ant-select-dropdown .ant-select-item {
+  font-family: 'Albert Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #101010;
+  background-color: white;       /* พื้นหลัง default */
+  margin: 2px 0;                 /* ช่องว่างระหว่างรายการ */
+  border-radius: 4px;            /* ให้ item มนเล็กน้อย */
+  padding: 4px 12px;             /* เพิ่ม padding ข้างใน */
+}
+
+/* Hover - เปลี่ยนสีพื้นหลัง */
+.ant-select-dropdown .ant-select-item-option:hover,
+.ant-select-dropdown .ant-select-item:hover {
+  background-color: #3EBAD040 !important; /* สีพื้นหลังตอน hover */
+}
+
+/* Active / Selected - เปลี่ยนสีพื้นหลัง */
+.ant-select-dropdown .ant-select-item-option-selected,
+.ant-select-dropdown .ant-select-item-selected {
+  background-color: #3EBAD0 !important; /* สีพื้นหลังอันที่ active */
+  color: white !important;              /* ตัวอักษรขาว */
+}
+
+/* ลบสีฟ้า default ของ button */
+.ant-pagination-options-quick-jumper,
+.ant-pagination-options-chooser .ant-select-selector {
+  background-color: white !important;
+  border: 1px solid #d9d9d9;
+  color: #101010;
+}
+
+/* Hover ของ dropdown button */
+.ant-pagination-options-chooser .ant-select-selector:hover {
+  background-color: #f5f5f5 !important; /* สี hover ของ button */
+}
