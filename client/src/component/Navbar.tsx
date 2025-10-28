@@ -14,7 +14,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
     const navigate = useNavigate();
 
   return (
-    <nav className="bg-white w-full max-w-[960px] min-w-[600px] shadow-md rounded-full mx-auto">
+    <nav className="bg-white w-full max-w-[960px] min-w-[300px] shadow-md rounded-full mx-auto">
       <div className="font-sans flex items-center justify-between px-[50px] py-[24px] w-full">
         {/* Left: Logo with hover */}
         <div className="relative flex items-center cursor-pointer group">

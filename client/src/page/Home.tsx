@@ -259,9 +259,14 @@ function Home() {
 
   return (
     <div className="font-sans bg-background min-h-screen pt-[50px]">
-      <Navbar user={user} />
+      <div className="mx-[15px] sm:mx-[25px] lg:mx-auto">
+        <Navbar user={user} />
+      </div>
 
-      <div className="flex items-center justify-center whitespace-nowrap pt-[85px] pb-[30px] text-[40px] font-bold mx-auto min-w-[500px]">
+      <div className="flex items-center justify-center whitespace-nowrap 
+      pt-[85px] pb-[30px] text-[30px] sm:text-[32px] md:text-[36px] 
+      lg:text-[40px] font-bold mx-auto
+      ">
         “ Don’t Miss These Events “
       </div>
 
@@ -269,10 +274,17 @@ function Home() {
         <HorizontalScrollCards />
       </div>
 
-      <div className="px-[30px] py-[30px] rounded-[15px] bg-[#3EBAD0]/15 max-w-[1300px] mx-auto">
-        <div className="flex items-center justify-center whitespace-nowrap pb-[30px] text-[40px] font-bold mx-auto min-w-[500px]">
+      <div className="px-[30px] py-[30px] rounded-[15px] bg-[#3EBAD0]/15 max-w-[1300px] mx-[15px] sm:mx-[25px] lg:mx-auto">
+        <div
+          className="
+            flex items-center justify-center whitespace-nowrap pb-[30px]
+            text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]
+            font-bold mx-auto
+          "
+        >
           “ Find the Right Event for You ”
         </div>
+
 
         {/* Filter Bar */}
         <div className="flex justify-center pb-[50px]">
