@@ -96,9 +96,12 @@ function Home() {
 
   return (
     <div className="font-sans bg-bg-light min-h-screen pt-[50px]">
-      <div className="mx-[15px] sm:mx-[25px] lg:mx-auto">
-        <Navbar user={user} />
-      </div>
+        <div className="flex-1 flex justify-center px-[15px] sm:px-[25px] lg:px-0">
+          <Navbar user={user} />
+        </div>
+
+      
+
 
       <div className="flex items-center justify-center whitespace-nowrap 
       pt-[85px] pb-[30px] text-[30px] sm:text-[32px] md:text-[36px] 

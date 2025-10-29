@@ -49,15 +49,43 @@ function EventDetailedPage() {
 
 
   return (
-    <div className="font-sans bg-background min-h-screen pt-[50px]">
-      <div className="mx-[15px] sm:mx-[25px] lg:mx-auto">
-        <Navbar user={user} />
-      </div>
+    <div className="font-sans bg-background min-h-screen pt-[30px]">
+      {/* Back + Navbar */}
+  <div className="flex flex-col sm:flex-row sm:items-center w-full px-[15px] sm:px-[25px] lg:px-[40px] gap-[30px]">
+    
+    {/* Back Button */}
+    <div className="flex justify-start sm:w-auto">
+      <button 
+        onClick={() => navigate("/")}
+        className="flex items-center bg-white text-black py-[8px] px-[20px] rounded-full font-semibold text-[16px] hover:shadow-md transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6 mr-[10px]"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+        </svg>
+        Back
+      </button>
+    </div>
 
-      <div className="my-[80px] px-4 sm:px-6">
+    {/* Navbar Centered */}
+    <div className="flex-1 flex justify-center w-full">
+      <Navbar user={user} />
+    </div>
+  </div>
+
+
+
+
+
+      <div className="my-[50px] px-4 sm:px-6">
         <EventDetailedcard event={event} user={user}/>
       </div>
-
       <div className="pb-[80px]">
       <HorizontalScrollCards
         events={events}
