@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 interface User {
   name: string;
   role: "admin" | "organizer" | "user";
@@ -12,6 +12,8 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ user }) => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const isMyEventsPage = location.pathname === "/myevent";
   const handleLogoClick = () => {
       if (!user) {
         navigate("/"); // ถ้ายังไม่ login ให้ไปหน้า home ธรรมดา
@@ -80,7 +82,12 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             )}
 
             {user.role === "user" && (
-              <button className="text-[18px] font-bold text-black hover:text-primary transition">
+              <button 
+                onClick={() => navigate("/myevent")}
+                className={`text-[18px] font-bold transition ${
+                  isMyEventsPage ? "text-primary" : "text-black hover:text-primary"
+                }`}
+              >
                 My Events
               </button>
             )}
