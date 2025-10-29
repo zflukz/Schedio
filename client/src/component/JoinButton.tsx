@@ -1,35 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PopupModal from "./PopupAlert";
 
 interface JoinButtonProps {
-  initiallyJoined?: boolean;
-  user?: { name: string; role: string } | null; // รับ user
-  totalSeats?: number;
-  currentParticipants?: number;
+  status?: "upcoming" | "joined" | "full"; // event status
+  user?: { name: string; role: string } | null;
   onJoin?: () => void;
   onCancel?: () => void;
 }
 
 const JoinButton: React.FC<JoinButtonProps> = ({
-  initiallyJoined = false,
+  status = "upcoming",
   user,
-  totalSeats,
-  currentParticipants,
   onJoin,
   onCancel,
 }) => {
-  const [joined, setJoined] = useState(initiallyJoined);
+  const [currentStatus, setCurrentStatus] = useState(status);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
 
   const isSignedIn = !!user;
-  const isFull =
-    totalSeats !== undefined &&
-    currentParticipants !== undefined &&
-    currentParticipants >= totalSeats;
+
+  // Update local status if prop changes
+  useEffect(() => {
+    setCurrentStatus(status);
+  }, [status]);
 
   const handleJoin = () => {
-    if (!isSignedIn || isFull) return;
-    setJoined(true);
+    if (!isSignedIn || currentStatus === "full") return;
+    setCurrentStatus("joined");
     onJoin?.();
   };
 
@@ -38,7 +35,7 @@ const JoinButton: React.FC<JoinButtonProps> = ({
   };
 
   const confirmCancel = () => {
-    setJoined(false);
+    setCurrentStatus("upcoming");
     setShowCancelPopup(false);
     onCancel?.();
   };
@@ -46,28 +43,21 @@ const JoinButton: React.FC<JoinButtonProps> = ({
   return (
     <>
       <div className="w-full flex flex-col sm:flex-row gap-3">
-        {!joined ? (
-          isFull ? (
-            <button
-              disabled
-              className="w-full bg-white text-text-black border-[1.5px] border-dashed border-text-black cursor-not-allowed font-bold text-[18px] py-[8px] rounded-[10px]"
-            >
-              No Seats Available
-            </button>
-          ) : (
-            <button
-              onClick={handleJoin}
-              disabled={!isSignedIn}
-              className={`w-full font-bold text-[18px] py-[8px] rounded-[10px] transition ${
-                isSignedIn
-                  ? "bg-night-default text-white hover:bg-night-hover"
-                  : "bg-white text-text-black border-[1.5px] border-dashed border-primary cursor-not-allowed"
-              }`}
-            >
-              {isSignedIn ? "Join Now" : "Please sign in to join this event."}
-            </button>
-          )
-        ) : (
+        {currentStatus === "upcoming" && (
+          <button
+            onClick={handleJoin}
+            disabled={!isSignedIn}
+            className={`w-full font-bold text-[18px] py-[8px] rounded-[10px] transition ${
+              isSignedIn
+                ? "bg-night-default text-white hover:bg-night-hover"
+                : "bg-white text-text-black border-[1.5px] border-dashed border-primary cursor-not-allowed"
+            }`}
+          >
+            {isSignedIn ? "Join Now" : "Please sign in to join this event."}
+          </button>
+        )}
+
+        {currentStatus === "joined" && (
           <>
             <button
               disabled
@@ -82,6 +72,15 @@ const JoinButton: React.FC<JoinButtonProps> = ({
               Cancel
             </button>
           </>
+        )}
+
+        {currentStatus === "full" && (
+          <button
+            disabled
+            className="w-full bg-white text-text-black border-[1.5px] border-dashed border-text-black cursor-not-allowed font-bold text-[18px] py-[8px] rounded-[10px]"
+          >
+            No Seats Available
+          </button>
         )}
       </div>
 
