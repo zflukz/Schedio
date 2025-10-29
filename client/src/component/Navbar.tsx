@@ -12,12 +12,34 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ user }) => {
     const navigate = useNavigate();
+  const handleLogoClick = () => {
+      if (!user) {
+        navigate("/"); // ถ้ายังไม่ login ให้ไปหน้า home ธรรมดา
+        return;
+      }
+
+      switch (user.role) {
+        case "admin":
+          navigate("/admin/dashboard"); // หน้า home ของ admin
+          break;
+        case "organizer":
+          navigate("/organizer/dashboard"); // หน้า home ของ organizer
+          break;
+        case "user":
+          navigate("/"); // หน้า home ของ user
+          break;
+        default:
+          navigate("/"); // fallback
+      }
+    };
 
   return (
     <nav className="bg-white w-full max-w-[960px] min-w-[300px] shadow-md rounded-full mx-auto">
       <div className="font-sans flex items-center justify-between px-[50px] py-[24px] w-full">
         {/* Left: Logo with hover */}
-        <div className="relative flex items-center cursor-pointer group">
+        <div className="relative flex items-center cursor-pointer group"
+        onClick={handleLogoClick}
+        >
           <img src="/Logo-25.svg" alt="Logo" className="max-h-[25px]" />
           <img
             src="/Logo-25.svg"
