@@ -3,6 +3,7 @@ import AuthPage from './page/Sign In';
 import Home from './page/Home';
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
+import MyEventPage from "./page/MyEvent";
 interface User {
   name: string;
   role: 'admin' | 'organizer' | 'user';
@@ -25,6 +26,7 @@ function App() {
             path="/" 
             element={<Home/>} />
           <Route path="/event/:eventId" element={<EventDetailedPage />} />
+          <Route path="/myevent" element={<MyEventPage />} />
           {/* Sign In */  }
           <Route
             path="/signin"
