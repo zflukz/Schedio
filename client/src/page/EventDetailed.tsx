@@ -49,39 +49,31 @@ function EventDetailedPage() {
 
 
   return (
-    <div className="font-sans bg-background min-h-screen pt-[30px]">
-      {/* Back + Navbar */}
-  <div className="flex flex-col sm:flex-row sm:items-center w-full px-[15px] sm:px-[25px] lg:px-[40px] gap-[30px]">
-    
-    {/* Back Button */}
-    <div className="flex justify-start sm:w-auto">
-      <button 
-        onClick={() => navigate("/")}
-        className="flex items-center bg-white text-black py-[8px] px-[20px] rounded-full font-semibold text-[16px] hover:shadow-md transition"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 mr-[10px]"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-        </svg>
-        Back
-      </button>
-    </div>
+    <div className="font-sans bg-background min-h-screen">
+      <div className="relative w-full flex flex-col lg:flex-row lg:items-center lg:justify-center px-[15px] sm:px-[25px] lg:px-[60px] pt-[50px]">
+		{/* Back Button */}
+		<button
+			onClick={() => navigate("/")}
+			className="absolute left-[15px] sm:left-[25px] lg:left-[60px] top-[55px] lg:top-auto lg:static flex items-center bg-white text-black py-[8px] px-[20px] rounded-full font-semibold text-[16px] hover:shadow-md transition"
+		>
+			<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			strokeWidth={1.5}
+			stroke="currentColor"
+			className="w-6 h-6 mr-[10px]"
+			>
+			<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+			</svg>
+			Back
+		</button>
 
-    {/* Navbar Centered */}
-    <div className="flex-1 flex justify-center w-full">
-      <Navbar user={user} />
-    </div>
-  </div>
-
-
-
-
+		{/* Navbar Centered */}
+		<div className="flex justify-center w-full lg:flex-grow mt-[60px] lg:mt-0">
+			<Navbar user={user} />
+		</div>
+		</div>
 
       <div className="my-[50px] px-4 sm:px-6">
         <EventDetailedcard event={event} user={user}/>

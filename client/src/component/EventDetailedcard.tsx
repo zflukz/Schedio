@@ -1,5 +1,6 @@
 import React from "react";
 import JoinButton from "./JoinButton";
+import { useEventContext } from "../context/EventContext";
 interface User {
   name: string;
   role: "admin" | "organizer" | "user";
@@ -13,6 +14,7 @@ interface Event {
   location: string;
   totalseats: number;
   currentParticipants: number;
+  status?: "upcoming" | "joined" | "full"; 
   phone?: number;
   tags: string[];
   imageUrl: string;
@@ -25,11 +27,15 @@ interface EventDetailedcardProps {
 }
 
 const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => {
-    const handleJoin = () => {
+    const { joinedEvents, joinEvent, cancelJoinEvent } = useEventContext(); // <-- ดึง joinedEvents
+
+  const handleJoin = () => {
+    joinEvent(event.id); // เพิ่มใน context
     console.log("User joined this event!");
   };
 
   const handleCancel = () => {
+    cancelJoinEvent(event.id); // เพิ่มใน context
     console.log("User canceled the booking!");
   };
   return (
@@ -179,11 +185,17 @@ const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => 
 
         {/* Join Button */}
         <div className="mt-5 ">
-          <JoinButton onJoin={handleJoin} 
-          onCancel={handleCancel}  
-          user={user}
-          totalSeats={event.totalseats}       
-          currentParticipants={event.currentParticipants}
+          <JoinButton 
+            onJoin={handleJoin} 
+            onCancel={handleCancel}  
+            user={user}
+            status={
+              joinedEvents.includes(event.id) 
+                ? "joined" 
+                : event.currentParticipants >= event.totalseats 
+                  ? "full" 
+                  : "upcoming"
+            }
           />
         </div>
       </div>
