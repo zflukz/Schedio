@@ -5,18 +5,22 @@ import Eventcard from "../component/Eventcard";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination } from "antd";
 import { useNavigate } from "react-router-dom"; 
+import { useEventContext } from "../context/EventContext";
+
 interface User {
   name: string;
   role: "admin" | "organizer" | "user";
 }
 
 interface Event {
+  id: string; 
   title: string;
   duration: string;
   date: string;
   time: string;
   location: string;
   totalseats: number;
+  currentParticipants: number;
   phone?: number;
   tags: string[];
   imageUrl: string;
@@ -29,8 +33,12 @@ interface Category {
 }
 
 function Home() {
+  
   const navigate = useNavigate(); // <-- ใช้สำหรับ redirect
-  const user: User | null = null;
+  const user: User | null = {
+  name: "Thanrada",
+  role: "user",
+};
 
   const categories: Category[] = [
     { id: 1, name: "Academic" },
@@ -42,244 +50,7 @@ function Home() {
     { id: 7, name: "Workshop" },
     { id: 8, name: "Volunteer" },
   ];
-
-  const events: Event[] = [
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."    
-      },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-      },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-      },{
-      title: "Cooking NongOak",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-      },
-    {
-      title: "NongOak Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "NongOak Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },{
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      totalseats: 50,
-      phone: 962046598,
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-  ];
+  const { events } = useEventContext();
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -319,8 +90,9 @@ function Home() {
   );
 
   const handleViewDetails = (event: Event) => {
-    navigate(`/event/${event.title}`, { state: { event } }); // ส่ง event ผ่าน state
+  navigate(`/event/${event.id}`, { state: { event } });
   };
+
 
   return (
     <div className="font-sans bg-bg-light min-h-screen pt-[50px]">
@@ -336,7 +108,10 @@ function Home() {
       </div>
 
       <div className="pb-[80px]">
-        <HorizontalScrollCards events={events} onJoin={handleViewDetails} />
+        <HorizontalScrollCards
+          events={events}
+          onJoin={(event) => handleViewDetails(event)}
+        />
       </div>
 
       <div className="px-[30px] py-[30px] rounded-[15px]  max-w-[1300px] mx-[15px] sm:mx-[25px] lg:mx-auto">

@@ -1,12 +1,18 @@
 import React from "react";
-import JoinButton from "./JoinedButton";
+import JoinButton from "./JoinButton";
+interface User {
+  name: string;
+  role: "admin" | "organizer" | "user";
+}
 interface Event {
+  id: string; // or number
   title: string;
   duration: string;
   date: string;
   time: string;
   location: string;
   totalseats: number;
+  currentParticipants: number;
   phone?: number;
   tags: string[];
   imageUrl: string;
@@ -15,9 +21,10 @@ interface Event {
 
 interface EventDetailedcardProps {
   event: Event;
+  user?: User | null;
 }
 
-const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event }) => {
+const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => {
     const handleJoin = () => {
     console.log("User joined this event!");
   };
@@ -165,14 +172,19 @@ const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event }) => {
           <div className="mt-[20px] flex flex-col">
             <h3 className="font-bold text-[24px] mb-[10px] text-center">Event Description</h3>
             <p className="text-[18px] text-text-black leading-relaxed">
-              {event.title} is an exciting event!
+              {event.description} 
             </p>
           </div>
         </div>
 
         {/* Join Button */}
         <div className="mt-5 ">
-          <JoinButton onJoin={handleJoin} onCancel={handleCancel} />
+          <JoinButton onJoin={handleJoin} 
+          onCancel={handleCancel}  
+          user={user}
+          totalSeats={event.totalseats}       
+          currentParticipants={event.currentParticipants}
+          />
         </div>
       </div>
     </div>
