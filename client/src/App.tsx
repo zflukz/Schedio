@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import AuthPage from './page/Sign In';
 import Home from './page/Home';
+import EventDetailedPage from "./page/EventDetailed";
 interface User {
   name: string;
   role: 'admin' | 'organizer' | 'user';
@@ -8,7 +9,8 @@ interface User {
 
 
 function App() {
-  const user: User | null = null; // สมมติยังไม่ได้ login
+  const user: User | null = null ;
+
 
  const handleAuthSubmit = (data: { email: string; password: string; name?: string }) => {
     console.log("Auth data:", data);
@@ -17,11 +19,12 @@ function App() {
 
 
   return (
-    <div className="font-sans bg-background min-h-screen">
+    <div className="font-sans bg-bg-light min-h-screen">
         <Routes>
           <Route 
             path="/" 
             element={<Home/>} />
+          <Route path="/event/:eventId" element={<EventDetailedPage />} />
           {/* Sign In */  }
           <Route
             path="/signin"

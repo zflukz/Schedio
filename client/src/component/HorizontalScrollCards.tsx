@@ -1,17 +1,44 @@
 import React, { useEffect, useState } from "react";
 import Upcomingcard from "./Comingcard";
 import useEmblaCarousel from "embla-carousel-react";
- 
+import { Descriptions } from "antd";
 
-const HorizontalScrollCards: React.FC = () => {
-  const cards = [...Array(10)].map((_, i) => ({
+ interface Event {
+  title: string;
+  duration: string;
+  date: string;
+  time: string;
+  location: string;
+  totalseats: number;
+  phone?: number;
+  tags: string[];
+  imageUrl: string;
+  description: string;
+}
+
+interface HorizontalScrollCardsProps {
+  events?: Event[];
+  onJoin?: (event: Event) => void;
+}
+
+const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, onJoin }) => {
+  const defaultCards = [...Array(10)].map((_, i) => ({
     title: `Workshop ${i + 1}`,
-    place: `CB${2200 + i}`,
+    date: "19 Sep 2025",
+    time: "13:30 - 15:30",
+    location: `CB${2200 + i}`,
+    duration: "2 hr.",
+    totalseats: 50,
+    phone: 962046598,
+    tags: ["Workshop", "Academic"],
+    imageUrl: "https://via.placeholder.com/300x200",
+    description: "Learn the basics of this workshop"
   }));
+  
+  const cards = events || defaultCards;
 
   // Embla Carousel hook
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "center" });
-
   const [cardsPerPage, setCardsPerPage] = useState(3);
 
   // Update cards per view based on window width
@@ -43,31 +70,32 @@ const HorizontalScrollCards: React.FC = () => {
 		</button>
 
 		{/* Carousel */}
-		<div className="overflow-hidden" ref={emblaRef}>
-			<div className="flex gap-[30px] px-5 py-5">
-				{cards.map((c, i) => (
-				<div
-					key={i}
-					className="flex-none"
-					style={{
-					width: `calc((100% - ${(cardsPerPage - 1) * 30}px) / ${cardsPerPage})`,
-					}}
-				>
-					<Upcomingcard
-					title={c.title}
-					date="19 Sep 2025"
-					time="13:30 - 15:30"
-					place={c.place}
-					objective="Learn React + TS"
-					description="Basics of React with TS"
-					organizer="Tech Community"
-					participants={25}
-					maxParticipants={50}
-					/>
-				</div>
-				))}
-			</div>
-			</div>
+		      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex gap-[30px] px-5 py-5">
+          {cards.slice(0, 10).map((c, i) => (
+            <div
+              key={i}
+              className="flex-none"
+              style={{
+                width: `calc((100% - ${(cardsPerPage - 1) * 30}px) / ${cardsPerPage})`,
+              }}
+            >
+              <Upcomingcard
+                title={c.title}
+                date={c.date}
+                time={c.time}
+                place={c.location}
+                objective="Learn React + TS"
+                description="Basics of React with TS"
+                organizer="Tech Community"
+                participants={25}
+                maxParticipants={50}
+                onJoin={() => onJoin && onJoin(c)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
 
 		{/* Right button */}

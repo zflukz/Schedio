@@ -10,6 +10,7 @@ interface EventDetailProps {
   organizer: string;
   participants: number;
   maxParticipants: number;
+  onJoin?: () => void;
 }
 
 const Upcomingcard: React.FC<EventDetailProps> = ({
@@ -22,6 +23,7 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
   organizer,
   participants,
   maxParticipants,
+  onJoin,
 }) => {
   const percentage = Math.round((participants / maxParticipants) * 100);
 
@@ -71,7 +73,10 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
         </div>
 
       {/* Button */}
-      <button className="w-full bg-night-default text-white py-2 rounded-[10px] font-bold text-[18px] hover:bg-night-hover transition">
+      <button 
+        onClick={onJoin}
+        className="w-full bg-night-default text-white py-2 rounded-[10px] font-bold text-[18px] hover:bg-night-hover transition"
+      >
         Join Now
       </button>
     </div>
