@@ -33,7 +33,7 @@ const mockEvents: Event[] = [
   {
     id: "1",
     title: "Cooking Chicken",
-    duration: "2 hr",
+    duration: "2 hr.",
     date: "2025-10-31",
     time: "10:00 - 12:00",
     location: "CB4301",
@@ -49,7 +49,7 @@ const mockEvents: Event[] = [
   {
     id: "2",
     title: "Chicken Language",
-    duration: "2 hr",
+    duration: "2 hr.",
     date: "2025-11-10",
     time: "13:00 - 15:00",
     location: "CB1201",
@@ -64,7 +64,7 @@ const mockEvents: Event[] = [
   {
     id: "3",
     title: "Cooking fegviuf",
-    duration: "2 hr",
+    duration: "2 hr.",
     date: "2025-12-1",
     time: "10:00 - 12:00",
     location: "CB4301",

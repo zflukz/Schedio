@@ -27,15 +27,15 @@ interface EventDetailedcardProps {
 }
 
 const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => {
-    const { joinedEvents, joinEvent, cancelJoinEvent } = useEventContext(); // <-- ดึง joinedEvents
+  const { joinedEvents, joinEvent, cancelJoinEvent } = useEventContext();
 
   const handleJoin = () => {
-    joinEvent(event.id); // เพิ่มใน context
+    joinEvent(event.id);
     console.log("User joined this event!");
   };
 
   const handleCancel = () => {
-    cancelJoinEvent(event.id); // เพิ่มใน context
+    cancelJoinEvent(event.id);
     console.log("User canceled the booking!");
   };
   return (
