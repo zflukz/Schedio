@@ -22,12 +22,12 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           <img
             src="/Logo-25.svg"
             alt="Logo"
-            className="absolute inset-0 transition-opacity duration-200 opacity-100 group-hover:opacity-0"
+            className="absolute inset-0 transition-opacity duration-500 opacity-100 group-hover:opacity-0"
           />
           <img
             src="/Logo-25-hover.svg"
             alt="Logo Hover"
-            className="absolute inset-0 transition-opacity duration-200 opacity-0 group-hover:opacity-100"
+            className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
           />
         </div>
 

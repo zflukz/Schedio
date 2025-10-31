@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import AuthPage from './page/Sign In';
 import Home from './page/Home';
+import HomeAdmin from './page/HomeAdmin';
 interface User {
   name: string;
   role: 'admin' | 'organizer' | 'user';
@@ -22,6 +23,10 @@ function App() {
           <Route 
             path="/" 
             element={<Home/>} />
+          <Route
+            path="/homeadmin"
+            element={<HomeAdmin />}
+          />
           {/* Sign In */  }
           <Route
             path="/signin"
