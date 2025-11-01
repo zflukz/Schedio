@@ -27,8 +27,8 @@ public class Authinterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception{
         String authHeader = request.getHeader("Authorization");
-        
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+
+        if(authHeader == null || !authHeader.startsWith("Bearer")){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized header");
         }
 

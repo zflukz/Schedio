@@ -62,13 +62,16 @@ public class Events {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "file_pdf")
-    private byte[] filePdf;
+    private String filePdf;
 
     @Column(name = "event_by", length = 100)
     private String eventBy;
 
     @Column(name = "event_contact", length = 20)
     private String eventContact;
+
+    @Column(name = "activityHour")
+    private Integer activityHour;
 
     @PrePersist
     void onCreate() {
