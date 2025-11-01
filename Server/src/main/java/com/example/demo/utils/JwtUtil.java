@@ -1,11 +1,13 @@
 package com.example.demo.utils;
 
 import java.util.Date;
+import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -49,6 +51,16 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claimsResolver.apply(claims);
+    }
+
+
     // Validate token
     public boolean isTokenValid(String token) {
         try {
@@ -77,5 +89,16 @@ public class JwtUtil {
     }
 
 
+    public boolean validateToken(String token, UserDetails userDetails) {
+        try {
+            // ดึง username จาก token
+            String username = getUsernameFromToken(token);
+
+            // ตรวจว่า username ตรงกับ UserDetails และ token ยังไม่หมดอายุ
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 }
