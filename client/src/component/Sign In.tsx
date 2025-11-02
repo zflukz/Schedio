@@ -141,7 +141,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
 
         <button
           type="submit"
-          className="w-full mb-[20px] text-[20px] font-bold bg-night-default text-white py-2 rounded-full hover:bg-night-hover transition"
+          className="w-full mb-[20px] text-[20px] font-bold bg-night-default text-white py-2 rounded-full hover:bg-night-hover transition hover:shadow-md"
         >
           {mode === "signin" ? "Sign In" : "Register"}
         </button>
@@ -157,6 +157,27 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
               >
                 Register
               </button>
+              <div className="relative flex items-center my-[20px] w-full">
+                {/* เส้น */}
+                <div className="flex-grow border-t border-text-black"></div>
+
+                {/* คำว่า or */}
+                <span className="absolute left-1/2 transform -translate-x-1/2 bg-white px-3 text-text-black font-normal">
+                  or
+                </span>
+              </div>
+              <button
+                type="button"
+                className="w-full font-semibold mt-[20px] text-[20px] border border-dashed  border-text-black bg-white text-text-black py-2 rounded-[12px] flex items-center justify-center hover:shadow-md transition"
+              >
+                <img
+                  src="/Google Icon Logo.svg"
+                  alt="Google Logo"
+                  className="w-[24px] h-[24px] mr-[10px] "
+                />
+                <span>Sign in with Google</span>
+              </button>
+
             </>
           ) : (
             <>

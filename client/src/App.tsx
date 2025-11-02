@@ -5,6 +5,10 @@ import Home from './page/Home';
 import Profile from './page/Profile';
 import ProtectedRoute from './component/ProtectedRoute';
 
+import EventDetailedPage from "./page/EventDetailed";
+import { EventProvider } from "./context/EventContext";
+import MyEventPage from "./page/MyEvent";
+
 interface User {
   userID: string;
   userName: string;
@@ -72,14 +76,12 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 };
 
 function App() {
-
-
   return (
     <UserProvider>
       <div className="font-sans bg-background min-h-screen">
           <Routes>
             <Route 
-              path="/" 
+              path="/home" 
               element={<Home/>} />
             <Route
               path="/signin"

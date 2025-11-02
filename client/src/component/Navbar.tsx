@@ -1,10 +1,12 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../App";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, setUser } = useUser();
+  const isMyEventsPage = location.pathname === "/myevent";
   
   const getUserRole = () => {
     if (!user?.userRole) return "attendee";
@@ -16,22 +18,33 @@ const Navbar: React.FC = () => {
     return user?.firstName || user?.userName || "User";
   };
 
+  const handleLogoClick = () => {
+    const role = getUserRole();
+    if (!user) {
+      navigate("/"); // ถ้ายังไม่ login ให้ไปหน้า home ธรรมดา
+      return;
+    }
+    switch (role) {
+      case "admin":
+        navigate("/admin/dashboard"); // หน้า home ของ admin
+        break;
+      case "organizer":
+        navigate("/organizer/dashboard"); // หน้า home ของ organizer
+        break;
+      case "attendee":
+        navigate("/home"); // หน้า home ของ user
+        break;
+      default:
+        navigate("/home"); // fallback
+    }
+  };
+
   return (
-    <nav className="bg-white w-full max-w-[960px] min-w-[600px] shadow-md rounded-full mx-auto">
+    <nav className="bg-white w-full max-w-[960px] min-w-[300px] shadow-md rounded-full mx-auto">
       <div className="font-sans flex items-center justify-between px-[50px] py-[24px] w-full">
         {/* Left: Logo with hover */}
-        <div 
-          className="relative flex items-center cursor-pointer group"
-          onClick={() => {
-            const role = getUserRole();
-            if (role === "admin") {
-              navigate("/admin-dashboard");
-            } else if (role === "organizer") {
-              navigate("/organizer-dashboard");
-            } else {
-              navigate("/");
-            }
-          }}
+        <div className="relative flex items-center cursor-pointer group"
+        onClick={handleLogoClick}
         >
           <img src="/Logo-25.svg" alt="Logo" className="max-h-[25px]" />
           <img
@@ -82,8 +95,10 @@ const Navbar: React.FC = () => {
 
             {getUserRole() === "attendee" && (
               <button 
-                className="text-[18px] font-bold text-black hover:text-primary transition"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/myevent")}
+                className={`text-[18px] font-bold transition ${
+                  isMyEventsPage ? "text-primary" : "text-black hover:text-primary"
+                }`}
               >
                 My Events
               </button>

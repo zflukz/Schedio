@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default  {
+export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -7,7 +7,7 @@ export default  {
         primary: "#3EBAD0",
         primaryhover: "#33A9BC",
         secondary: "#FBDE71",
-        background: "#F7F7F7",
+        "bg-light": "#E0F7FA",
         text: {
           black: "#101010",
           white: "#FFFFFF",
@@ -20,16 +20,15 @@ export default  {
         support6: "#1F1F1F",
         night: {
           default: "#1F1F1F",
-          hover: "#0D0D0DF",
+          hover: "#0D0D0D",
         },
         success: '#10B981',
         fail: '#EF4444',
-
       },
       fontFamily: {
-        sans: ['Albert Sans', 'sans-serif'], // 👈 Default body font
+        sans: ['Albert Sans', 'sans-serif'],
       },
     },
   },
   plugins: [],
-}
+};
