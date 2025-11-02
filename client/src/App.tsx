@@ -39,21 +39,26 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   const refreshUser = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
+      console.log('No token found');
       setUser(null);
       return;
     }
 
+    console.log('Fetching user profile with token:', token.substring(0, 50) + '...');
     try {
       const response = await fetch("http://localhost:8080/api/profile", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       
+      console.log('Profile response status:', response.status);
       if (response.ok) {
         const userData = await response.json();
+        console.log('User data received:', userData);
         setUser(userData);
         localStorage.setItem("userData", JSON.stringify(userData));
-        alert("User data: " + JSON.stringify(userData, null, 2));
       } else {
+        const errorText = await response.text();
+        console.log('Profile fetch failed:', errorText);
         setUser(null);
         localStorage.removeItem("token");
         localStorage.removeItem("userData");
@@ -78,45 +83,58 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 function App() {
   return (
     <UserProvider>
-      <div className="font-sans bg-background min-h-screen">
-          <Routes>
-            <Route 
-              path="/home" 
-              element={<Home/>} />
-            <Route
-              path="/signin"
-              element={<AuthPage mode="signin" />}
-            />
-            <Route
-              path="/register"
-              element={<AuthPage mode="register" />}
-            />
-            <Route
-              path="/admin-dashboard"
-              element={
-                <ProtectedRoute requiredRole="admin">
-                  <div>Admin Dashboard - Only admins can see this</div>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/organizer-dashboard"
-              element={
-                <ProtectedRoute requiredRole="organizer">
-                  <div>Organizer Dashboard - Only organizers can see this</div>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-      </div>
+      <EventProvider>
+        <div className="font-sans bg-background min-h-screen">
+            <Routes>
+              <Route 
+                path="/" 
+                element={<Home/>} />
+              <Route 
+                path="/home" 
+                element={<Home/>} />
+              <Route
+                path="/signin"
+                element={<AuthPage mode="signin" />}
+              />
+              <Route
+                path="/register"
+                element={<AuthPage mode="register" />}
+              />
+              <Route
+                path="/admin-dashboard"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <div>Admin Dashboard - Only admins can see this</div>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer-dashboard"
+                element={
+                  <ProtectedRoute requiredRole="organizer">
+                    <div>Organizer Dashboard - Only organizers can see this</div>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/event/:eventId"
+                element={<EventDetailedPage />}
+              />
+              <Route
+                path="/myevent"
+                element={<MyEventPage />}
+              />
+            </Routes>
+        </div>
+      </EventProvider>
     </UserProvider>
   );
 }

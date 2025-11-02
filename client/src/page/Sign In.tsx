@@ -5,7 +5,7 @@ import { useUser } from "../App";
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
-  const { refreshUser } = useUser();
+  const { refreshUser, user } = useUser();
   const [backendError, setBackendError] = useState("");
 
   const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
@@ -45,6 +45,17 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
       } else {
         localStorage.setItem("token", result.token);
         await refreshUser();
+        
+        // Get updated user data and alert it
+        const profileResponse = await fetch("http://localhost:8080/api/profile", {
+          headers: { "Authorization": `Bearer ${result.token}` }
+        });
+        
+        if (profileResponse.ok) {
+          const userData = await profileResponse.json();
+          alert("User data: " + JSON.stringify(userData, null, 2));
+        }
+        
         navigate("/");
       }
     } catch (error) {

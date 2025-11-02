@@ -71,7 +71,7 @@ function EventDetailedPage() {
 
 		{/* Navbar Centered */}
 		<div className="flex justify-center w-full lg:flex-grow mt-[60px] lg:mt-0">
-			<Navbar user={user} />
+			<Navbar />
 		</div>
 		</div>
 
