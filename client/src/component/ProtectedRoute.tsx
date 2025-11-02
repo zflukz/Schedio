@@ -20,7 +20,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
       }
 
       try {
-        const response = await fetch("http://localhost:8080/profile", {
+        const response = await fetch("http://localhost:8080/api/profile", {
           headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -57,7 +57,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     if (userRole === "admin") {
       return <Navigate to="/admin-dashboard" />;
     } else if (userRole === "organizer") {
-      return <Navigate to="/organizers-dashboard" />;
+      return <Navigate to="/organizer-dashboard" />;
     } else {
       return <Navigate to="/" />;
     }

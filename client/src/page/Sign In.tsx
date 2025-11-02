@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import AuthForm from "../component/Sign In";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../App";
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
+  const { refreshUser } = useUser();
   const [backendError, setBackendError] = useState("");
 
   const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
@@ -42,33 +44,8 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         navigate("/signin");
       } else {
         localStorage.setItem("token", result.token);
-        
-        // Get user profile to determine role
-        try {
-          const profileResponse = await fetch("http://localhost:8080/profile", {
-            headers: { "Authorization": `Bearer ${result.token}` }
-          });
-          
-          if (profileResponse.ok) {
-            const profile = await profileResponse.json();
-            alert("User details: " + JSON.stringify(profile, null, 2));
-            
-            const role = profile.userRole?.toLowerCase();
-            
-            if (role === "organizer") {
-              navigate("/organizers-dashboard");
-            } else if (role === "admin") {
-              navigate("/admin-dashboard");
-            } else {
-              navigate("/");
-            }
-          } else {
-            navigate("/");
-          }
-        } catch (profileError) {
-          console.error("Profile fetch error:", profileError);
-          navigate("/");
-        }
+        await refreshUser();
+        navigate("/");
       }
     } catch (error) {
       console.error("Network error:", error);

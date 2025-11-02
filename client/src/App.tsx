@@ -1,58 +1,121 @@
 import { Routes, Route } from "react-router-dom";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AuthPage from './page/Sign In';
 import Home from './page/Home';
+import Profile from './page/Profile';
 import ProtectedRoute from './component/ProtectedRoute';
+
 interface User {
-  name: string;
-  role: 'admin' | 'organizer' | 'user';
+  userID: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  userEmail: string;
+  userPhone: string;
+  userRole: string;
 }
 
+interface UserContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  refreshUser: () => Promise<void>;
+}
+
+const UserContext = createContext<UserContextType | undefined>(undefined);
+
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) throw new Error('useUser must be used within UserProvider');
+  return context;
+};
+
+const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const refreshUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setUser(null);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/profile", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        localStorage.setItem("userData", JSON.stringify(userData));
+        alert("User data: " + JSON.stringify(userData, null, 2));
+      } else {
+        setUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("userData");
+      }
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
+
+  return (
+    <UserContext.Provider value={{ user, setUser, refreshUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
 
 function App() {
-  const user: User | null = null; // สมมติยังไม่ได้ login
-
- const handleAuthSubmit = (data: { email: string; password: string; name?: string }) => {
-    console.log("Auth data:", data);
-    // TODO: เรียก API login / register ตาม mode
-  };
 
 
   return (
-    <div className="font-sans bg-background min-h-screen">
-        <Routes>
-          <Route 
-            path="/" 
-            element={<Home/>} />
-          {/* Sign In */  }
-          <Route
-            path="/signin"
-            element={<AuthPage mode="signin" />}
-          />
-          {/* Register */}
-          <Route
-            path="/register"
-            element={<AuthPage mode="register" />}
-          />
-          {/* Protected Admin Route */}
-          <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <div>Admin Dashboard - Only admins can see this</div>
-              </ProtectedRoute>
-            }
-          />
-          {/* Protected Organizer Route */}
-          <Route
-            path="/organizer-dashboard"
-            element={
-              <ProtectedRoute requiredRole="organizer">
-                <div>Organizer Dashboard - Only organizers can see this</div>
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-    </div>
+    <UserProvider>
+      <div className="font-sans bg-background min-h-screen">
+          <Routes>
+            <Route 
+              path="/" 
+              element={<Home/>} />
+            <Route
+              path="/signin"
+              element={<AuthPage mode="signin" />}
+            />
+            <Route
+              path="/register"
+              element={<AuthPage mode="register" />}
+            />
+            <Route
+              path="/admin-dashboard"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <div>Admin Dashboard - Only admins can see this</div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/organizer-dashboard"
+              element={
+                <ProtectedRoute requiredRole="organizer">
+                  <div>Organizer Dashboard - Only organizers can see this</div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+      </div>
+    </UserProvider>
   );
 }
 

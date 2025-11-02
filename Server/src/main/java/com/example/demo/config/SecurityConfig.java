@@ -47,7 +47,7 @@ public class SecurityConfig {
     SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         http
                 // ครอบคลุมหลาย path ได้ด้วย varargs (ไม่ต้อง OrRequestMatcher/AntPathRequestMatcher)
-                .securityMatcher("/api/**", "/profile/**", "/admin/**", "/organizer/**")
+                .securityMatcher("/api/**", "/admin/**", "/organizer/**")
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -59,7 +59,8 @@ public class SecurityConfig {
                                 "/api/public/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/login" // endpoint ที่ออก JWT
+                                "/login", // endpoint ที่ออก JWT
+                                "/register" // registration endpoint
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
