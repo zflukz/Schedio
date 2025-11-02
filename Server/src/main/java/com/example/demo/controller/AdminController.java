@@ -2,12 +2,14 @@ package com.example.demo.controller;
 
 
 import com.example.demo.common.ApiResponse;
+import com.example.demo.controller.dto.AdminDto;
 import com.example.demo.controller.dto.CreateUserDto;
 import com.example.demo.entity.Users;
 import com.example.demo.interfaces.IUserService;
 import com.example.demo.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -16,9 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/attendee")
-//@Tag(name= "User")
-public class UserController {
+@RequestMapping("/")
+public class AdminController {
 
 
     private final IUserService _userService;
@@ -28,15 +29,29 @@ public class UserController {
 
 
 
-    public UserController(IUserService userService, UserRepository userRepository) {
+    public AdminController(IUserService userService, UserRepository userRepository) {
         this._userService = userService;
         this._userRepository = userRepository;
     }
 
 
-    // POST /attendee/search
-    @PostMapping("/search")
-    public ResponseEntity<ApiResponse<Users>> findEmail(@Valid @RequestBody CreateUserDto dto) {
+    // GET /users  — ดึงผู้ใช้ทั้งหมด
+    @GetMapping({"/api/admin/getAll"})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<List<Users>>> getAll() {
+        List<Users> users = _userService.getAll();
+        return ResponseEntity.ok(
+                ApiResponse.<List<Users>>builder()
+                        .success(true)
+                        .message("Fetch users success")
+                        .data(users)
+                        .build()
+        );
+    }
+
+
+    @PostMapping("api/admin/search")
+    public ResponseEntity<ApiResponse<Users>> findEmail(@Valid @RequestBody AdminDto dto) {
         return _userRepository.findByUserEmail(dto.getUserEmail())
                 .map(user -> ResponseEntity.ok(
                         ApiResponse.<Users>builder()
@@ -53,20 +68,6 @@ public class UserController {
                                 .build()
                 ));
     }
-
-
-    @PostMapping({"","/"})
-    public ResponseEntity<ApiResponse<Users>> createUser(@Valid @RequestBody CreateUserDto dto){
-        Users newUser = _userService.createUser(dto);
-        return ResponseEntity.ok(
-                ApiResponse.<Users>builder()
-                        .success(true)
-                        .message("User create success")
-                        .data(newUser)
-                        .build()
-        );
-    }
-
 
 
 
