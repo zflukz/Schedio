@@ -9,5 +9,7 @@ public class SchedioApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SchedioApplication.class, args);
 	}
-    
+
+
+
 }
