@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEventContext } from "../context/EventContext";
 import MyEventCard from "../component/MyEventcard";
 import Navbar from "../component/Navbar";
 import { useNavigate } from "react-router-dom";
+import { Pagination } from "antd";
 
 const MyEventsList: React.FC = () => {
   const { events, joinedEvents } = useEventContext();
@@ -15,6 +16,15 @@ const MyEventsList: React.FC = () => {
 
   // กรองเฉพาะ event ที่ user join
   const myEvents = events.filter((ev) => joinedEvents.includes(ev.id));
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(6); // จำนวน card ต่อหน้า
+
+  const pagedEvents = myEvents.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   if (myEvents.length === 0) {
     return (
@@ -103,7 +113,7 @@ const MyEventsList: React.FC = () => {
     </div>
 
       {/* Joined Events List */}
-      <div className="flex justify-center items-center ">
+      <div className="flex justify-center items-center pt-[80px]">
         <div className="w-[90%] max-w-[1200px] bg-white px-[30px] py-[20px] sm:px-[50px] sm:py-[30px] rounded-2xl shadow-sm">
           {/* Title */}
           <h1 className="text-[30px] font-semibold text-text-black mb-[20px] text-left">
@@ -112,15 +122,29 @@ const MyEventsList: React.FC = () => {
 
           {/* 2-column Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {myEvents.map((ev) => (
-              <MyEventCard key={ev.id} event={ev} 
-
-              />
+            {pagedEvents.map((ev) => (
+              <MyEventCard key={ev.id} event={ev} />
             ))}
           </div>
+          <div className="flex justify-center pt-[20px]">
+            <Pagination
+              current={currentPage}
+              pageSize={pageSize}
+              total={myEvents.length}
+              onChange={(page, size) => {
+                setCurrentPage(page);
+                if (size) setPageSize(size);
+              }}
+              showSizeChanger={true} // เปิด dropdown เลือก pageSize
+              pageSizeOptions={['3','6','9','12']}
+              className="custom-pagination"
+            />
+            </div>
         </div>
       </div>
-
+      <div className="flex items-center justify-center py-[10px] pt-[50px] text-[14px] font-normal">
+        © 2025 Schedio. All rights reserved.
+      </div>
     </div>
   );
 };
