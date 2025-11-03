@@ -16,11 +16,11 @@ import java.util.List;
 public class EventController {
     
     private final IEventService _eventService;
-    private final EventRepository _eventRepository;
+   // private final EventRepository _eventRepository;
 
     public EventController(IEventService eventService, EventRepository eventRepository) {
         this._eventService = eventService;
-        this._eventRepository = eventRepository;
+        //this._eventRepository = eventRepository;
     }
 
     @GetMapping({"", "/"})
