@@ -4,6 +4,7 @@ import Home from './page/Home';
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
 import MyEventPage from "./page/MyEvent";
+import MyuserAccount from "./page/MyuserAccount";
 interface User {
   name: string;
   role: 'admin' | 'organizer' | 'user';
@@ -27,6 +28,7 @@ function App() {
             element={<Home/>} />
           <Route path="/event/:eventId" element={<EventDetailedPage />} />
           <Route path="/myevent" element={<MyEventPage />} />
+          <Route path="/myprofile" element={<MyuserAccount />} />
           {/* Sign In */  }
           <Route
             path="/signin"
