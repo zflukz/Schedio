@@ -94,7 +94,9 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             )}
 
             {/* User info */}
-            <div className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full">
+            <div className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full"
+            onClick={() => navigate("/myaccount")}
+            >
               {user.image && (
                 <img
                   src={user.image}
