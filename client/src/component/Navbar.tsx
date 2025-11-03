@@ -11,9 +11,10 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ user }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const isMyEventsPage = location.pathname === "/myevent";
+  const firstName = user?.name ? user.name.split(" ")[0] : "";
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isMyEventsPage = location.pathname === "/myevent";
   const handleLogoClick = () => {
       if (!user) {
         navigate("/"); // ถ้ายังไม่ login ให้ไปหน้า home ธรรมดา
@@ -101,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                   className="h-6 w-6 rounded-full"
                 />
               )}
-              <span className="text-[18px] font-bold text-white">{user.name}</span>
+              <span className="text-[18px] font-bold text-white">{firstName}</span>
             </div>
           </div>
         )}
