@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/admin")
 public class AdminController {
 
 
@@ -36,7 +36,7 @@ public class AdminController {
 
 
     // GET /users  — ดึงผู้ใช้ทั้งหมด
-    @GetMapping({"/api/admin/getAll"})
+    @GetMapping({"/getAll"})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<Users>>> getAll() {
         List<Users> users = _userService.getAll();
@@ -50,7 +50,7 @@ public class AdminController {
     }
 
 
-    @PostMapping("api/admin/search")
+    @PostMapping("/search")
     public ResponseEntity<ApiResponse<Users>> findEmail(@Valid @RequestBody AdminDto dto) {
         return _userRepository.findByUserEmail(dto.getUserEmail())
                 .map(user -> ResponseEntity.ok(
