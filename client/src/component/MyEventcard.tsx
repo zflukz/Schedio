@@ -102,7 +102,7 @@ const MyEventCard: React.FC<EventCardProps> = ({ event }) => {
 
 
 
-  <hr className="border-gray-200" />
+  <hr className="border-support1" />
 
   {/* Buttons */}
   <div className="flex flex-wrap gap-2 mt-2 justify-end">
