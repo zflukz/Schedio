@@ -106,6 +106,50 @@ const mockEvents: Event[] = [
     imageUrl: "",
     description: "Lorem ipsum dolor sit amet"
   },
+  {
+    id: "6",
+    title: "Teaching Chicken",
+    duration: "2 hr.",
+    date: "2025-11-5",
+    time: "10:00 - 12:00",
+    location: "CB4301",
+    totalseats: 40,
+    currentParticipants: 15,
+    status: "upcoming",
+    phone: 1234567890,
+    tags: ["Workshop", "Cultural"],
+    imageUrl: "",
+    description: "Lorem ipsum dolor sit amet"
+  },
+  {
+    id: "7",
+    title: "Teaching AiOak",
+    duration: "2 hr.",
+    date: "2025-11-5",
+    time: "10:00 - 12:00",
+    location: "CB4301",
+    totalseats: 40,
+    currentParticipants: 15,
+    status: "upcoming",
+    phone: 1234567890,
+    tags: ["Workshop", "Cultural"],
+    imageUrl: "",
+    description: "Lorem ipsum dolor sit amet"
+  },{
+    id: "8",
+    title: "Teaching Nongnumlaiyud",
+    duration: "2 hr.",
+    date: "2025-11-5",
+    time: "10:00 - 12:00",
+    location: "CB4301",
+    totalseats: 40,
+    currentParticipants: 15,
+    status: "upcoming",
+    phone: 1234567890,
+    tags: ["Workshop", "Cultural"],
+    imageUrl: "",
+    description: "Lorem ipsum dolor sit amet"
+  },
 ];
 
 export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
