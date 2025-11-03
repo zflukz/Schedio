@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.enums.E_EventCategory;
 import com.example.demo.entity.enums.E_EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,6 +50,19 @@ public class Events {
     @Column
     private String poster;
 
+    // @Column(nullable = false)
+    // private String location;
+
+    @Column(nullable = false)
+    private Boolean walkIn = false;
+
+     @Column(name = "activityHour")
+     private Integer activityHour;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private E_EventCategory eventCategory;
+
     // ผู้สร้างอีเวนต์ (Organizer)
     @ManyToMany(mappedBy =  "events")
     private Set<Users> users = new HashSet<>();
@@ -62,7 +76,7 @@ public class Events {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "file_pdf")
-    private byte[] filePdf;
+    private String filePdf;
 
     @Column(name = "event_by", length = 100)
     private String eventBy;
@@ -75,6 +89,4 @@ public class Events {
         if (createdAt == null) createdAt = Instant.now();
         updatedAt = createdAt;
     }
-
-
 }
