@@ -30,7 +30,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String jwt = jwtIssuer.issue(email);
 
         // URL ของ frontend หลังล็อกอินเสร็จ
-        String frontendUrl = "http://localhost:3000/home"; // 👉 เปลี่ยนเป็น domain จริงของคุณ
+        String frontendUrl = "http://localhost:3000"; // 👉 เปลี่ยนเป็น domain จริงของคุณ
 
         // redirect พร้อมแนบ token ไปกับ query string
         String redirectUrl = frontendUrl + "?token=" + URLEncoder.encode(jwt, StandardCharsets.UTF_8);
