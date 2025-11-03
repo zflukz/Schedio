@@ -7,7 +7,7 @@ const MyAccount: React.FC = () => {
 
   const [user, setUser] = useState({
     name: "Thanrada Tungweerapornpong",
-    role: "organizer" as "user" | "organizer" | "admin",
+    role: "user" as "user" | "organizer" | "admin",
     email: "thanrada.fai@gmail.com",
     phone: "081 234 5678",
   });
