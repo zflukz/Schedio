@@ -1,5 +1,8 @@
 package com.example.demo.handler;
 
+import com.example.demo.entity.Users;
+import com.example.demo.entity.enums.E_Role;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtIssuer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,12 +22,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityHandlers {
 
     private final JwtIssuer jwtIssuer;
+    private final UserRepository userRepository;
 
     /** เปลี่ยนเป็นโดเมน Frontend ของคุณได้ผ่าน application.yml */
     @Value("${app.frontend.home-url:http://localhost:3000/home}")
@@ -45,7 +50,7 @@ public class SecurityHandlers {
     /** OAuth2 success → ออก JWT แล้ว redirect กลับ FE */
     @Bean
     public AuthenticationSuccessHandler oauth2SuccessHandler() {
-        return new OAuth2SuccessHandler(jwtIssuer, frontendHomeUrl);
+        return new OAuth2SuccessHandler(jwtIssuer, userRepository, frontendHomeUrl);
     }
 
     /** OAuth2 failure → ส่ง JSON กลับ */
@@ -86,21 +91,49 @@ public class SecurityHandlers {
      */
     static final class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         private final JwtIssuer jwtIssuer;
+        private final UserRepository userRepository;
         private final String frontendHomeUrl;
 
-        OAuth2SuccessHandler(JwtIssuer jwtIssuer, String frontendHomeUrl) {
+        OAuth2SuccessHandler(JwtIssuer jwtIssuer, UserRepository userRepository, String frontendHomeUrl) {
             this.jwtIssuer = jwtIssuer;
+            this.userRepository = userRepository;
             this.frontendHomeUrl = frontendHomeUrl;
         }
 
         @Override
         public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication auth) throws IOException {
-            OAuth2User user = (OAuth2User) auth.getPrincipal();
-            String email = user.getAttribute("email");
-            String jwt = jwtIssuer.issue(email);
+            System.out.println("OAuth2 Success Handler called!");
+            
+            OAuth2User oAuth2User = (OAuth2User) auth.getPrincipal();
+            String email = oAuth2User.getAttribute("email");
+            String name = oAuth2User.getAttribute("name");
+            
+            System.out.println("Google user - Email: " + email + ", Name: " + name);
 
-            // --- วิธี A: redirect + query ?token=... (ง่ายสุด) ---
-            String redirect = frontendHomeUrl + "?token=" + URLEncoder.encode(jwt, StandardCharsets.UTF_8);
+            // Find or create user
+            Optional<Users> existingUser = userRepository.findByUserEmail(email);
+            Users user;
+            
+            if (existingUser.isPresent()) {
+                user = existingUser.get();
+                System.out.println("Found existing user: " + user.getUserName());
+            } else {
+                // Create new user from Google OAuth2
+                user = new Users();
+                user.setUserName(name);
+                user.setUserEmail(email);
+                user.setUserPassword(""); // OAuth2 users don't need password
+                user.setUserRole(E_Role.ATTENDEE);
+                userRepository.save(user);
+                System.out.println("Created new user: " + user.getUserName());
+            }
+            
+            String jwt = jwtIssuer.issue(user.getUserName());
+            System.out.println("Generated JWT: " + jwt.substring(0, Math.min(50, jwt.length())));
+
+            // Redirect to callback instead of home
+            String redirect = "http://localhost:3000/oauth2/callback?token=" + URLEncoder.encode(jwt, StandardCharsets.UTF_8);
+            System.out.println("Redirecting to: " + redirect);
             resp.sendRedirect(redirect);
 
             /* -------- วิธี B: ใช้ Cookie HttpOnly (ปลอดภัยกว่า) --------

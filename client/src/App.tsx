@@ -4,6 +4,7 @@ import AuthPage from './page/Sign In';
 import Home from './page/Home';
 import Profile from './page/Profile';
 import ProtectedRoute from './component/ProtectedRoute';
+import OAuth2Callback from './component/OAuth2Callback';
 
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
@@ -49,7 +50,6 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
       const response = await fetch("http://localhost:8080/api/profile", {
         headers: { "Authorization": `Bearer ${token}` }
       });
-      
       console.log('Profile response status:', response.status);
       if (response.ok) {
         const userData = await response.json();
@@ -131,6 +131,10 @@ function App() {
               <Route
                 path="/myevent"
                 element={<MyEventPage />}
+              />
+              <Route
+                path="/oauth2/callback"
+                element={<OAuth2Callback />}
               />
             </Routes>
         </div>
