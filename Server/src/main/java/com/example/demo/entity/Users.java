@@ -46,6 +46,11 @@ public class Users {
     @Column(name ="phone", length = 20)
     private String userPhone;
 
+    @Column(name = "GoogleID")
+    private String googleID;
+
+
+
 
     @ManyToMany
     @JoinTable(
