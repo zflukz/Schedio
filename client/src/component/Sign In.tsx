@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 interface AuthFormProps {
   mode: "signin" | "register";
@@ -56,9 +56,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {/* Name (เฉพาะ Register) */}
         {mode === "register" && (
           <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Full Name</label>
+            <label htmlFor="auth-full-name" className="block mb-[5px] text-[18px] font-semibold">Full Name</label>
             <input
               type="text"
+              id="auth-full-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -71,9 +72,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {/* Username for signin, Email for register */}
         {mode === "signin" ? (
           <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Username</label>
+            <label htmlFor="auth-username" className="block mb-[5px] text-[18px] font-semibold">Username</label>
             <input
               type="text"
+              id="auth-username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -83,9 +85,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
           </div>
         ) : (
           <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Email</label>
+            <label htmlFor="auth-email" className="block mb-[5px] text-[18px] font-semibold">Email</label>
             <input
               type="email"
+              id="auth-email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -97,9 +100,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
 
         {/* Password */}
         <div className="mb-[25px]">
-          <label className="block mb-[5px] text-[18px] font-semibold">Password</label>
+          <label htmlFor="auth-password" className="block mb-[5px] text-[18px] font-semibold">Password</label>
           <input
             type="password"
+            id="auth-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Upcomingcard from "./Comingcard";
 import useEmblaCarousel from "embla-carousel-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 interface Event {
   id: string; // or number

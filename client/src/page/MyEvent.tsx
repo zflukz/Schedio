@@ -2,7 +2,7 @@ import React from "react";
 import { useEventContext } from "../context/EventContext";
 import MyEventCard from "../component/MyEventcard";
 import Navbar from "../component/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const MyEventsList: React.FC = () => {
   const { events, joinedEvents } = useEventContext();
