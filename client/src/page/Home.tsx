@@ -4,6 +4,8 @@ import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import Eventcard from "../component/Eventcard";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination } from "antd";
+import { useNavigate } from "react-router-dom"; 
+import { useEventContext } from "../context/EventContext";
 
 interface User {
   name: string;
@@ -11,13 +13,18 @@ interface User {
 }
 
 interface Event {
+  id: string; 
   title: string;
   duration: string;
   date: string;
   time: string;
   location: string;
+  totalseats: number;
+  currentParticipants: number;
+  phone?: number;
   tags: string[];
   imageUrl: string;
+  description: string
 }
 
 interface Category {
@@ -26,7 +33,12 @@ interface Category {
 }
 
 function Home() {
-  const user: User | null = null;
+  
+  const navigate = useNavigate(); // <-- ใช้สำหรับ redirect
+  const user: User | null = {
+  name: "Thanrada",
+  role: "user",
+};
 
   const categories: Category[] = [
     { id: 1, name: "Academic" },
@@ -38,187 +50,7 @@ function Home() {
     { id: 7, name: "Workshop" },
     { id: 8, name: "Volunteer" },
   ];
-
-  const events: Event[] = [
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-    },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-    },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-    },
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-    },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-    },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-    },{
-      title: "Cooking NongOak",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-    },
-    {
-      title: "NongOak Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-    },
-    {
-      title: "NongOak Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-    },
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-    },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-    },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-    },{
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-    },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-    },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-    },
-    {
-      title: "Cooking Chicken",
-      duration: "2 hr.",
-      date: "2025-10-20",
-      time: "10:00 - 12:00",
-      location: "CB4301",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1187005922288087091/1420375835528921108/IMG_0811_2.jpeg",
-    },
-    {
-      title: "Chicken Language",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Academic", "Workshop"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957333304021033/7B70C761-1AB0-4A3D-BD48-7CBD581EDB4F_1_105_c.jpeg",
-    },
-    {
-      title: "Chicken Dance",
-      duration: "2 hr.",
-      date: "2025-11-10",
-      time: "13:00 - 15:00",
-      location: "CB1201",
-      tags: ["Workshop", "Social"],
-      imageUrl:
-        "https://cdn.discordapp.com/attachments/1176389332140048465/1427957271392026634/1A10E491-6609-44BE-A69E-FE5B01391B98_1_105_c.jpeg",
-    },
-  ];
+  const { events } = useEventContext();
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -257,22 +89,45 @@ function Home() {
     currentPage * pageSize
   );
 
-  return (
-    <div className="font-sans bg-background min-h-screen pt-[50px]">
-      <Navbar user={user} />
+  const handleViewDetails = (event: Event) => {
+  navigate(`/event/${event.id}`, { state: { event } });
+  };
 
-      <div className="flex items-center justify-center whitespace-nowrap pt-[85px] pb-[30px] text-[40px] font-bold mx-auto min-w-[500px]">
+
+  return (
+    <div className="font-sans bg-bg-light min-h-screen pt-[50px]">
+        <div className="flex-1 flex justify-center px-[15px] sm:px-[25px] lg:px-0">
+          <Navbar user={user} />
+        </div>
+
+      
+
+
+      <div className="flex items-center justify-center whitespace-nowrap 
+      pt-[85px] pb-[30px] text-[30px] sm:text-[32px] md:text-[36px] 
+      lg:text-[40px] font-bold mx-auto
+      ">
         “ Don’t Miss These Events “
       </div>
 
       <div className="pb-[80px]">
-        <HorizontalScrollCards />
+        <HorizontalScrollCards
+          events={events}
+          onJoin={(event) => handleViewDetails(event)}
+        />
       </div>
 
-      <div className="px-[30px] py-[30px] rounded-[15px] bg-[#3EBAD0]/15 max-w-[1300px] mx-auto">
-        <div className="flex items-center justify-center whitespace-nowrap pb-[30px] text-[40px] font-bold mx-auto min-w-[500px]">
+      <div className="px-[30px] py-[30px] rounded-[15px]  max-w-[1300px] mx-[15px] sm:mx-[25px] lg:mx-auto">
+        <div
+          className="
+            flex items-center justify-center whitespace-nowrap pb-[30px]
+            text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]
+            font-bold mx-auto
+          "
+        >
           “ Find the Right Event for You ”
         </div>
+
 
         {/* Filter Bar */}
         <div className="flex justify-center pb-[50px]">
@@ -306,7 +161,7 @@ function Home() {
                 location={event.location}
                 tags={event.tags}
                 imageUrl={event.imageUrl}
-                onViewMore={() => console.log(`Viewing ${event.title}`)}
+                onViewMore={() => handleViewDetails(event)} 
               />
             ))}
           </div>
