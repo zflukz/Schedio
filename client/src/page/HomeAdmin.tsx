@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 import Navbar from "../component/Navbar";
+import { DatePicker, Dropdown, Checkbox, Button } from "antd";
 import {
   CalendarDaysIcon,
   ClockIcon,
   MapPinIcon,
   MagnifyingGlassIcon,
-  FunnelIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "@heroicons/react/24/outline";
@@ -131,19 +131,52 @@ const HomeAdmin: React.FC = () => {
     []
   );
 
+  const { RangePicker } = DatePicker;
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<EventStatus | "All">("All");
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<[string, string] | null>(null);
+
+  const statusOptions = useMemo(
+    () => [
+      { id: 1, name: "Pending" },
+      { id: 2, name: "Approved" },
+      { id: 3, name: "Rejected" },
+    ],
+    []
+  );
 
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
       const matchesSearch = event.title
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
+
       const matchesStatus =
-        statusFilter === "All" || event.status === statusFilter;
-      return matchesSearch && matchesStatus;
+        selectedStatuses.length === 0 || selectedStatuses.includes(event.status);
+
+      const matchesDate =
+        !selectedDateRange ||
+        (new Date(event.date) >= new Date(selectedDateRange[0]) &&
+          new Date(event.date) <= new Date(selectedDateRange[1]));
+
+      return matchesSearch && matchesStatus && matchesDate;
     });
-  }, [events, searchTerm, statusFilter]);
+  }, [events, searchTerm, selectedStatuses, selectedDateRange]);
+
+  const handleStatusToggle = (name: string, checked: boolean) => {
+    const updated = checked
+      ? [...selectedStatuses, name]
+      : selectedStatuses.filter((s) => s !== name);
+    setSelectedStatuses(updated);
+  };
+
+  const statusButtonLabel =
+    selectedStatuses.length === 0
+      ? "Status"
+      : selectedStatuses.length <= 2
+      ? selectedStatuses.join(", ")
+      : `${selectedStatuses.length} selected`;
 
   return (
     <div className="bg-bg-light min-h-screen pb-12">
@@ -195,29 +228,72 @@ const HomeAdmin: React.FC = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <button className="flex items-center justify-between sm:justify-start gap-3 rounded-[18px] border border-[#E5E5E5] bg-white px-4 py-3 text-[16px] text-[#1F1F1F]">
-                  <CalendarDaysIcon className="h-5 w-5 text-[#2AA5B9]" />
-                  Jul 1, 2025 – Jul 31, 2025
-                </button>
-
-                <div className="relative">
-                  <FunnelIcon className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#2AA5B9]" />
-                  <select
-                    value={statusFilter}
-                    onChange={(event) =>
-                      setStatusFilter(event.target.value as EventStatus | "All")
-                    }
-                    className="appearance-none rounded-[18px] border border-[#E5E5E5] bg-white pl-12 pr-10 py-3 text-[16px] text-[#1F1F1F] focus:outline-none focus:border-[#2AA5B9]"
+                <div className="bg-white flex items-center rounded-[18px] px-4 border border-[#E5E5E5] w-full sm:w-[350px] md:w-[320px] lg:w-[350px]">
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 24 24'
+                    fill='currentColor'
+                    className='size-5 md:size-6 text-text-black mr-1 shrink-0'
                   >
-                    <option value="All">Status</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                  </select>
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#9A9A9A] text-[14px]">
-                    ▼
-                  </span>
+                    <path
+                      fillRule='evenodd'
+                      d='M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                  <RangePicker
+                    onChange={(dates, dateStrings) => {
+                      if (!dates) {
+                        setSelectedDateRange(null);
+                      } else {
+                        setSelectedDateRange([dateStrings[0], dateStrings[1]] as [string, string]);
+                      }
+                    }}
+                    bordered={false}
+                    format='MMM D, YYYY'
+                    placeholder={["Start", "End"]}
+                    className='custom-range-picker w-full text-[15px]'
+                    suffixIcon={null}
+                  />
                 </div>
+
+                <Dropdown
+                  dropdownRender={() => (
+                    <div className="bg-white rounded-[12px] shadow-md inline-block px-[20px] py-[15px] min-w-[150px]" onClick={(e) => e.stopPropagation()}>
+                      {statusOptions.map((opt) => (
+                        <div key={opt.id} className="flex items-center rounded-md px-2 py-1 cursor-pointer hover:bg-[#3EBAD080] whitespace-nowrap">
+                          <Checkbox
+                            checked={selectedStatuses.includes(opt.name)}
+                            onChange={(e) => handleStatusToggle(opt.name, e.target.checked)}
+                            className="custom-checkbox"
+                          >
+                            {opt.name}
+                          </Checkbox>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  trigger={["click"]}
+                  placement='bottomCenter'
+                >
+                  <Button className="!h-[54px] !py-[10px] !px-[16px] flex items-center justify-start bg-white text-[16px] text-[#1F1F1F] rounded-[18px] border border-[#E5E5E5] w-full sm:w-[160px] hover:!bg-gray-50">
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      strokeWidth={1.5}
+                      stroke='currentColor'
+                      className='size-5 md:size-6 text-text-black mr-1 shrink-0'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75'
+                      />
+                    </svg>
+                    <span className="truncate max-w-[200px]">{statusButtonLabel}</span>
+                  </Button>
+                </Dropdown>
               </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
