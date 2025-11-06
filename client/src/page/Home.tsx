@@ -95,7 +95,7 @@ function Home() {
 
 
   return (
-    <div className="font-sans bg-bg-light min-h-screen pt-[50px]">
+    <div className="font-sans min-h-screen pt-[50px]">
         <div className="flex-1 flex justify-center px-[15px] sm:px-[25px] lg:px-0">
           <Navbar user={user} />
         </div>

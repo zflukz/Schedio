@@ -1,14 +1,13 @@
 import { Routes, Route } from "react-router-dom";
 import AuthPage from './page/Sign In';
 import Home from './page/Home';
-<<<<<<< HEAD
-import HomeAdmin from './page/HomeAdmin';
-=======
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
 import MyEventPage from "./page/MyEvent";
 import MyAccount from "./page/MyAccount";
->>>>>>> origin/frontend-Fai
+import HomeAdmin from './page/HomeAdmin';
+import AdminEventManagement from './page/AdminEventManagement';
+import AdminUserManagement from './page/AdminUserManagement';
 interface User {
   name: string;
   role: 'admin' | 'organizer' | 'user';
@@ -30,16 +29,9 @@ function App() {
           <Route 
             path="/" 
             element={<Home/>} />
-<<<<<<< HEAD
-          <Route
-            path="/homeadmin"
-            element={<HomeAdmin />}
-          />
-=======
           <Route path="/event/:eventId" element={<EventDetailedPage />} />
           <Route path="/myevent" element={<MyEventPage />} />
           <Route path="/myaccount" element={<MyAccount />} />
->>>>>>> origin/frontend-Fai
           {/* Sign In */  }
           <Route
             path="/signin"
@@ -50,6 +42,9 @@ function App() {
             path="/register"
             element={<AuthPage mode="register" />}
             />
+          <Route path="/admin/dashboard" element={<HomeAdmin />}/>
+          <Route path="/admin/events/:id" element={<AdminEventManagement />} />
+          <Route path="/admin/users" element={<AdminUserManagement />} /> 
         </Routes>
       </EventProvider>
     </div>

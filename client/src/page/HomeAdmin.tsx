@@ -10,6 +10,7 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 
 type EventStatus = "Pending" | "Approved" | "Rejected";
 
@@ -37,14 +38,15 @@ const actionButtonStyles: Record<EventStatus, string> = {
   Approved:
     "bg-[#E5F8FC] text-[#2AA5B9] hover:bg-[#d1eef5] transition-colors",
   Rejected:
-    "bg-[#F2F2F2] text-[#9E9E9E] cursor-not-allowed",
+    "bg-[#F2F2F2] text-[#939393] cursor-not-allowed",
 };
 
 const HomeAdmin: React.FC = () => {
+  const navigate = useNavigate();
   const adminUser = {
     name: "Thanaphat",
     role: "admin" as const,
-    image: "/Profile.svg",
+    image: "/MyuserProfile.svg",
   };
 
   const stats = useMemo(
@@ -144,7 +146,7 @@ const HomeAdmin: React.FC = () => {
   }, [events, searchTerm, statusFilter]);
 
   return (
-    <div className="bg-[#F5F5F5] min-h-screen pb-12">
+    <div className="bg-bg-light min-h-screen pb-12">
       <div className="pt-10">
         <Navbar user={adminUser} />
       </div>
@@ -231,7 +233,11 @@ const HomeAdmin: React.FC = () => {
                           {event.title}
                         </h3>
                         <div className="mt-3 flex flex-wrap items-center gap-3 text-[15px] text-[#525252]">
-                          <span className="inline-flex items-center gap-2 rounded-full bg-[#FBDE71] px-3 py-1 text-[#6C4B00] font-medium">
+                          <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium ${
+                            event.status === "Rejected"
+                              ? "bg-[#D0D0D0] text-black"
+                              : "bg-[#FBDE71] text-[#6C4B00]"
+                          }`}>
                             <StarIcon className="h-4 w-4 text-white" />
                             {event.duration}
                           </span>
@@ -269,8 +275,12 @@ const HomeAdmin: React.FC = () => {
                       {event.submissionDate}
                     </div>
                     <button
-                      className={`rounded-full px-5 py-2 text-[15px] font-semibold ${actionButtonStyles[event.status]}`}
+                      className={`class="text-[14px] font-semibold bg-[#3EBAD0]/30 text-[#33A9BC] px-3 py-2 rounded-[8px] hover:bg-[#3EBAD0]/45 transition" ${actionButtonStyles[event.status]}`}
                       disabled={event.status === "Rejected"}
+                      onClick={() => {
+                        if (event.status === "Rejected") return;
+                        navigate(`/admin/events/${event.id}`, { state: { event: { ...event, tags: ["Academic", "Workshop"], totalseats: 50, contactName: "Wongsakorn", contactPhone: "0923397882" } } });
+                      }}
                     >
                       View Details
                     </button>

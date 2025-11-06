@@ -69,7 +69,10 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             {/* Dynamic menu by role */}
             {user.role === "admin" && (
               <>
-                <button className="text-[18px] font-bold text-black hover:text-primary transition">
+                <button 
+                onClick={() => navigate("/admin/users")}
+                className="text-[18px] font-bold text-black hover:text-primary transition"
+                >
                  User Management
                 </button>
                 
