@@ -73,7 +73,7 @@ public class AdminController {
     }
 
 
-    @PutMapping("/edit/attendee/{id}")
+    @PutMapping("/edit/attendee/{userID}")
     public ResponseEntity<ApiResponse<Users>> updateUser(
             @PathVariable UUID userID,
             @Valid @RequestBody EditUserDto dto) {

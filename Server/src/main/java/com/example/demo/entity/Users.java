@@ -56,7 +56,7 @@ public class Users {
     @JoinTable(
             name = "user_event",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "created_at")
+            inverseJoinColumns = @JoinColumn(name = "event_id")
     )
     private Set<Events> events = new HashSet<>();
 
@@ -80,17 +80,6 @@ public class Users {
     }
 
 
-//    // ผู้ใช้เป็นผู้สร้างอีเวนต์ (1:N)
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "organizer", fetch = FetchType.LAZY)
-//    private Set<Events> createdEvents = new HashSet<>();
-//
-//    // การลงทะเบียนของผู้ใช้ (1:N) ผ่าน entity กลาง
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<EventRegisters> registrations = new HashSet<>();
-//
-//
 
 
 }
