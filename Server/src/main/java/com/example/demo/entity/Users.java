@@ -13,10 +13,21 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users",
-        indexes = @Index(name = "idx_users_role", columnList = "role"),
-        uniqueConstraints = @UniqueConstraint(name = "uk_users_email", columnNames = "email"))
+@Builder
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_users_role", columnList = "role"),
+                @Index(name = "idx_users_googleid", columnList = "GoogleID")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_users_googleid", columnNames = "GoogleID")
+        }
+)
+
 public class Users {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -67,6 +78,8 @@ public class Users {
         this.userEmail = userEmail;
     }
 
+
+
     public String getUserEmail() {
         return userEmail;
     }
@@ -78,7 +91,6 @@ public class Users {
     public String getUserPassword() {
         return userPassword;
     }
-
 
 
 

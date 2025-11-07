@@ -16,7 +16,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
+
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    // ✅ ฉีดจากไฟล์ handler รวม (SecurityHandlers.java)
+
     private final AuthenticationEntryPoint apiEntryPoint;
     private final AccessDeniedHandler apiDeniedHandler;
     private final AuthenticationSuccessHandler oauth2SuccessHandler;
@@ -48,7 +48,7 @@ public class SecurityConfig {
     SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         http
                 // ครอบคลุมหลาย path ได้ด้วย varargs (ไม่ต้อง OrRequestMatcher/AntPathRequestMatcher)
-                .securityMatcher("/api/**", "/profile/**", "/admin/**", "/organizer/**")
+                .securityMatcher("/api/**")
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -66,7 +66,9 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(f -> f.disable()).httpBasic(b -> b.disable()).oauth2Login(o -> o.disable())
+                .formLogin(f -> f.disable())
+                .httpBasic(b -> b.disable())
+                .oauth2Login(o -> o.disable())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
