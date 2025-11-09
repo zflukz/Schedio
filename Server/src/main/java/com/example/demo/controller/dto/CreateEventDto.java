@@ -14,8 +14,8 @@ public class CreateEventDto {
     @NotBlank(message = "Title is required")
     private String title;
 
-    // @NotBlank(message = "Location is required")
-    // private String location;
+     @NotBlank(message = "Location is required")
+     private String location;
 
     private Integer activityHour;
     private String eventBy;
@@ -30,13 +30,13 @@ public class CreateEventDto {
     @NotNull(message = "End date/time is required")
     private Instant endsAt;
 
-    @NotBlank(message = "Event category is required")
+    @NotNull(message = "Event category is required")
     private E_EventCategory eventCategory;
 
-    @NotBlank(message = "Capacity is required")
+//    @NotNull(message = "Capacity is required")
     private Integer capacity;
 
-    @NotBlank(message = "Walk-in status is required")
+    @NotNull(message = "Walk-in status is required")
     private Boolean walkIn;
 
     private String poster;

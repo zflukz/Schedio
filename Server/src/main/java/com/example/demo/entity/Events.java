@@ -5,7 +5,7 @@ import com.example.demo.entity.enums.E_EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.Instant;
 import java.util.*;
@@ -44,23 +44,23 @@ public class Events {
     private Integer capacity;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "status", nullable = false, length = 20)
     private E_EventStatus status = E_EventStatus.PENDING;
 
     @Column
     private String poster;
 
-    // @Column(nullable = false)
-    // private String location;
+     @Column(nullable = false)
+     private String location;
 
-    @Column(nullable = false)
+    @Column(name = "walk_in", nullable = false)
     private Boolean walkIn = false;
 
-     @Column(name = "activityHour")
-     private Integer activityHour;
+    @Column(name = "activity_hour")
+    private Integer activityHour;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "event_category", nullable = false, length = 20)
     private E_EventCategory eventCategory;
 
     // ผู้สร้างอีเวนต์ (Organizer)
@@ -81,7 +81,7 @@ public class Events {
     @Column(name = "event_by", length = 100)
     private String eventBy;
 
-    @Column(name = "event_contact", length = 20)
+    @Column(name = "event_contact", length = 100)
     private String eventContact;
 
     @PrePersist
@@ -89,4 +89,7 @@ public class Events {
         if (createdAt == null) createdAt = Instant.now();
         updatedAt = createdAt;
     }
+
+    @Column(name = "is_edit_requested")
+    private Boolean editRequested = false;
 }
