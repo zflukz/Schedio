@@ -1,33 +1,22 @@
-version: "3.8"
 services:
+  backend:
+    build: ./Server
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_url=${DB_url}
+      - DB_user=${DB_user}
+      - DB_password=${DB_password}
+      - GOOGLE_ID=${GOOGLE_ID}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
+    env_file:
+      - .env
+
   frontend:
     build: ./client
     ports:
       - "3000:3000"
-    restart: always
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    stdin_open: true
-    tty: true
     environment:
-      - CHOKIDAR_USEPOLLING=true     # Forces polling every few seconds
-      - WATCHPACK_POLLING=true       # Webpack polling
-      - WDS_SOCKET_PORT=0           # WebSocket fix
-      - WDS_SOCKET_HOST=localhost 
-    command: npm start
-# for local dev
-
-  backend:
-    build: ./Server
-    volumes:
-      - ./Server:/app
-      - ~/.m2:/root/.m2
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env
-    environment:
-      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
-      DB_password : ${DB_password}
-    command: ["mvn", "spring-boot:run"]
+      - REACT_APP_BACKEND_URL=http://localhost:8080
+    depends_on:
+      - backend

@@ -47,7 +47,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         await refreshUser();
         
         // Get updated user data and alert it
-        const profileResponse = await fetch("http://localhost:8080/api/profile", {
+        const profileResponse = await fetch(`http://localhost:8080/api/profile`, {
           headers: { "Authorization": `Bearer ${result.token}` }
         });
         
