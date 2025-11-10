@@ -2,13 +2,13 @@ import { Routes, Route } from "react-router-dom";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AuthPage from './page/Sign In';
 import Home from './page/Home';
-import Profile from './page/Profile';
 import ProtectedRoute from './component/ProtectedRoute';
 import OAuth2Callback from './component/OAuth2Callback';
 
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
 import MyEventPage from "./page/MyEvent";
+import MyAccount from "./page/MyAccount";
 
 interface User {
   userID: string;
@@ -117,10 +117,10 @@ function App() {
                 }
               />
               <Route
-                path="/profile"
+                path="/myaccount"
                 element={
                   <ProtectedRoute>
-                    <Profile />
+                    <MyAccount />
                   </ProtectedRoute>
                 }
               />
