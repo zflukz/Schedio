@@ -32,6 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .password(user.getUserPassword() != null ? user.getUserPassword() : "")
                 .authorities(roleName)
                 .build();
+
     }
+
+
 }
 

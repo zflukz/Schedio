@@ -15,8 +15,7 @@ public class SecurityCorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(List.of(
-                "http://localhost:3000",    // ✅ FE ของคุณ
-                "https://your-frontend.com" // ถ้ามี
+                "http://localhost:3000"    // ✅ FE ของคุณ
         ));
         cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
