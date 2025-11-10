@@ -107,9 +107,10 @@ const Navbar: React.FC = () => {
             {/* User info */}
             <div 
               className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full cursor-pointer"
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("/myaccount")}
             >
-              <span className="text-[18px] font-bold text-black">{getUserName()}</span>
+              <span className="text-[18px] font-bold text-white">{getUserName()}
+              </span>
             </div>
           </div>
         )}
