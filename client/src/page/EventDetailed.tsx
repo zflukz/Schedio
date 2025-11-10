@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import EventDetailedcard from "../component/EventDetailedcard";

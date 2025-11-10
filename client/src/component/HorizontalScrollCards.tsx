@@ -47,9 +47,7 @@ const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, o
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
 
-  const handleViewDetails = (event: Event, eventId: string) => {
-    navigate(`/event/${eventId}`, { state: { event } });
-  };
+  
 
   return (
     <div className="relative max-w-[1300px] mx-auto">

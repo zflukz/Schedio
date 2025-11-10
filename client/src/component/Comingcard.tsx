@@ -1,5 +1,4 @@
 import React from "react";
-import JoinButton from "./JoinButton";
 interface EventDetailProps {
   id: string; // or number
   title: string;
@@ -21,9 +20,6 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
   date,
   time,
   place,
-  objective,
-  description,
-  organizer,
   currentParticipants,
   totalseats,
   onJoin,
