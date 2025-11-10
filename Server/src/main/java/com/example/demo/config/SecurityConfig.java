@@ -60,8 +60,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/public/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
                                 "/login", // endpoint ที่ออก JWT
                                 "/register" // registration endpoint
                         ).permitAll()
@@ -85,7 +83,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/public/**","/error",
                                 "/oauth2/**","/login/**",
-                                "/v3/api-docs/**","/swagger-ui/**",
+                                "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html",
                                 "/favicon.ico","/assets/**","/static/**").permitAll()
                         .anyRequest().authenticated()
                 )
