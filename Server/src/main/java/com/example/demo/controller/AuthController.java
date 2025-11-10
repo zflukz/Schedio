@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 import com.example.demo.utils.JwtUtil;
 
@@ -72,16 +75,27 @@ public class AuthController {
         }
         String token = _jwtUtil.generateToken(user.getUserName());
 
-        return new LoginResponseDto(token,user.getFirstName(), user.getLastName(), user.getUserEmail(), "Login success" );
+        return new LoginResponseDto(token, user.getUserEmail(), "Login success" );
     }
 
-    @GetMapping("/profile")
-    public UserResponseDto profile (HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
+    @GetMapping("/api/profile")
+    public UserResponseDto profile(@AuthenticationPrincipal UserDetails ud) {
+        String username = ud.getUsername(); // = userName จาก token
         Users user = _userRepository.findByUserName(username)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
-        return new UserResponseDto(user.getUserID(), user.getUserName());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
+
+        return new UserResponseDto(
+                user.getUserID(),
+                user.getUserName(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getUserEmail(),
+                user.getUserPhone(),
+                user.getUserRole()
+        );
     }
+
+
 
 
 

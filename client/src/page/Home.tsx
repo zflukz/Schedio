@@ -7,11 +7,6 @@ import { Pagination } from "antd";
 import { useNavigate } from "react-router-dom"; 
 import { useEventContext } from "../context/EventContext";
 
-interface User {
-  name: string;
-  role: "admin" | "organizer" | "user";
-}
-
 interface Event {
   id: string; 
   title: string;
@@ -34,11 +29,7 @@ interface Category {
 
 function Home() {
   
-  const navigate = useNavigate(); // <-- ใช้สำหรับ redirect
-  const user: User | null = {
-  name: "Thanrada",
-  role: "user",
-};
+  const navigate = useNavigate();
 
   const categories: Category[] = [
     { id: 1, name: "Academic" },
@@ -97,7 +88,7 @@ function Home() {
   return (
     <div className="font-sans bg-bg-light min-h-screen pt-[50px]">
         <div className="flex-1 flex justify-center px-[15px] sm:px-[25px] lg:px-0">
-          <Navbar user={user} />
+          <Navbar />
         </div>
 
       

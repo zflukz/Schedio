@@ -23,11 +23,11 @@ public class Users {
     @Column(name="user_id", updatable = false)
     private UUID userID;
 
-    @Column(name="username", length = 100, nullable = false)
+    @Column(name="username", length = 100) // nullable = true
     private String userName;
 
-    @JsonIgnore // ป้องกันรั่วใน Response
-    @Column(name="password", length = 100, nullable = false)
+    @JsonIgnore
+    @Column(name="password", length = 100) // nullable = true
     private String userPassword;
 
     @Column(name="firstname", length = 100)
@@ -47,10 +47,31 @@ public class Users {
     private String userPhone;
 
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_event",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "created_at")
+    )
+    private Set<Events> events = new HashSet<>();
+
+
     public Users(String userName, String userPassword, String userEmail){
         this.userName = userName;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
     }
 
 

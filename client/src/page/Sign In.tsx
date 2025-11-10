@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import AuthForm from "../component/Sign In";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../App";
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
+  const { refreshUser, user } = useUser();
   const [backendError, setBackendError] = useState("");
 
-  const handleAuthSubmit = async (data: { username: string; password: string; name?: string }) => {
+  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
     try {
       const endpoint = mode === "register" ? "/register" : "/login";
 
       const payload =
         mode === "register"
           ? {
-              username: data.username,
-              password: data.password,
-              name: data.name,
+              userName: data.name,
+              userPassword: data.password,
+              userEmail: data.email,
             }
           : {
-              username: data.username,
-              password: data.password,
+              userName: data.username,
+              userPassword: data.password,
             };
 
       const response = await fetch(`http://localhost:8080${endpoint}`, {
@@ -42,7 +44,19 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         navigate("/signin");
       } else {
         localStorage.setItem("token", result.token);
-        navigate("/dashboard");
+        await refreshUser();
+        
+        // Get updated user data and alert it
+        const profileResponse = await fetch("http://localhost:8080/api/profile", {
+          headers: { "Authorization": `Bearer ${result.token}` }
+        });
+        
+        if (profileResponse.ok) {
+          const userData = await profileResponse.json();
+          alert("User data: " + JSON.stringify(userData, null, 2));
+        }
+        
+        navigate("/");
       }
     } catch (error) {
       console.error("Network error:", error);
