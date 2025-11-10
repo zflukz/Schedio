@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 
 import com.example.demo.controller.dto.CreateUserDto;
+import com.example.demo.controller.dto.EditUserDto;
 import com.example.demo.entity.Users;
 import com.example.demo.interfaces.IUserService;
 
@@ -46,6 +47,10 @@ public class UserService implements IUserService {
         return _userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
     }
 
+    public Users findByGoogleID(String id){
+        return _userRepository.findByGoogleID(id).orElseThrow(()-> new RuntimeException("User not found"));
+    }
+
 
     @Transactional
     public Users updateUserByID(UUID id , CreateUserDto body){
@@ -58,8 +63,23 @@ public class UserService implements IUserService {
         user.setUserPhone(body.getUserPhone());
         user.setUserRole(body.getUserRole());
         return _userRepository.save(user);
-
     }
+
+    @Transactional
+    public Users editUserByID(UUID id , EditUserDto body){
+        Users user = _userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("User not found"));
+        user.setUserPassword(body.getUserPassword());
+        user.setFirstName(body.getFirstName());
+        user.setLastName(body.getLastName());
+        user.setUserEmail(body.getUserEmail());
+        user.setUserPhone(body.getUserPhone());
+        user.setUserRole(body.getUserRole());
+        return _userRepository.save(user);
+    }
+
+
+
 
     @Transactional
     public void deleteUserByID(UUID id) {

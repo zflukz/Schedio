@@ -1,6 +1,7 @@
 package com.example.demo.utils;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -99,6 +100,22 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public String generate(Map<String, Object> claims, String userEmail) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expiration);
+
+        // กัน null
+        Map<String, Object> safeClaims = (claims == null) ? Map.of() : claims;
+
+        return Jwts.builder()
+                .subject(userEmail)       // จะเอา email เป็น subject
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .claims(safeClaims)       // แนบ custom claims: uid, role, email ฯลฯ
+                .signWith(getSigningKey())// HS256 จาก getSigningKey()
+                .compact();
     }
 
 }
