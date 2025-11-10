@@ -2,15 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import Navbar from "../component/Navbar";
 import { useNavigate } from "react-router-dom";
 import PopupModal from "../component/PopupAlert";
+import { useUser } from "../App";
 const MyAccount: React.FC = () => {
   const navigate = useNavigate();
-
-  const [user, setUser] = useState({
-    name: "Thanrada Tungweerapornpong",
-    role: "user" as "user" | "organizer" | "admin",
-    email: "thanrada.fai@gmail.com",
-    phone: "081 234 5678",
-  });
+  const { user, setUser } = useUser();
+  
 
   // state สำหรับแก้ไขเบอร์โทร
   const [isEditingPhone, setIsEditingPhone] = useState(false);
@@ -70,7 +66,7 @@ const confirmSaveName = () => {
         </div>
 
         <div className="flex justify-center w-full lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
-          <Navbar user={user} />
+          <Navbar />
         </div>
       </div>
 
@@ -88,7 +84,14 @@ const confirmSaveName = () => {
             </svg>
             My Account
           </button>
-          <button className="flex items-center gap-[10px] px-[15px] py-[5px] text-text-black font-semibold rounded-[8px] hover:bg-[#3EBAD0]/45 transition">
+          <button className="flex items-center gap-[10px] px-[15px] py-[5px] text-text-black font-semibold rounded-[8px] hover:bg-[#3EBAD0]/45 transition"
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userData");
+            setUser(null);
+            navigate("/");
+          }}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
             </svg>
@@ -111,10 +114,15 @@ const confirmSaveName = () => {
                       <input
                         ref={nameInputRef}
                         type="text"
-                        value={user.name}
-                        onChange={(e) => setUser((prev) => ({ ...prev, name: e.target.value }))}
+                        value={user?.userName}
+                        onChange={(e) => {
+                          if (user) {
+                            setUser({ ...user, userName: e.target.value });
+                          }
+                        }}
                         className="bg-support1 rounded-[12px] px-3 py-1 text-[16px] focus:ring-2 focus:ring-primary outline-none"
-                        style={{ width: `${user.name.length + 4}ch` }}  />
+                        style={{ width: `${(user?.userName?.length || 0) + 4}ch` }}
+                      />
                       {/* ปุ่ม Save */}
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" 
                        fill="none" className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
@@ -127,7 +135,7 @@ const confirmSaveName = () => {
                     </>
                   ) : (
                     <>
-                      <h2 className="text-[18px] font-semibold">{user.name}</h2>
+                      <h2 className="text-[18px] font-semibold">{user?.userName}</h2>
                       {/* ปุ่มแก้ไข */}
                       <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -155,7 +163,7 @@ const confirmSaveName = () => {
                     </>
                   )}
                 </div>
-                <p className="text-support3 text-[16px] mt-1 capitalize">{user.role}</p>
+                <p className="text-support3 text-[16px] mt-1 capitalize">{user?.userRole}</p>
               </div>
             </div>
 
@@ -167,11 +175,11 @@ const confirmSaveName = () => {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
               </svg>
-              <span>{user.email}</span>
+              <span>{user?.userEmail}</span>
             </div>
 
             {/* 📱 Phone (เฉพาะ organizer) */}
-            {user.role === "organizer" && (
+            {user?.userRole === "organizer" && (
               <div className="flex items-center gap-2 text-[18px] font-semibold">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
@@ -182,8 +190,12 @@ const confirmSaveName = () => {
                     <input
                       ref={inputRef}
                       type="text"
-                      value={user.phone}
-                      onChange={(e) => setUser((prev) => ({ ...prev, phone: e.target.value }))}
+                      value={user?.userPhone}
+                      onChange={(e) => {
+                        if (user) {
+                          setUser({ ...user, userPhone: e.target.value });
+                        }
+                      }}
                       className="bg-support1 rounded-[12px] px-2 py-1 text-[16px] focus:ring-2 focus:ring-primary outline-none"
                     />
                     
@@ -198,7 +210,7 @@ const confirmSaveName = () => {
                   </>
                 ) : (
                   <>
-                    <span>{user.phone}</span>
+                    <span>{user?.userPhone}</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"

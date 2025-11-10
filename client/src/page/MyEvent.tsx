@@ -53,7 +53,7 @@ const MyEventsList: React.FC = () => {
 
       {/* Navbar Centered */}
       <div className="flex justify-center w-full lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
-        <Navbar user={user} />
+        <Navbar />
       </div>
     </div>
 
@@ -108,7 +108,7 @@ const MyEventsList: React.FC = () => {
 
       {/* Navbar Centered */}
       <div className="flex justify-center w-full lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
-        <Navbar user={user} />
+        <Navbar />
       </div>
     </div>
 
