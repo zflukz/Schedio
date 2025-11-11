@@ -4,7 +4,7 @@ import AuthPage from './page/Sign In';
 import Home from './page/Home';
 import ProtectedRoute from './component/ProtectedRoute';
 import OAuth2Callback from './component/OAuth2Callback';
-
+import HomeOrganizer from "./page/HomeOrganixer";
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
 import MyEventPage from "./page/MyEvent";
@@ -109,10 +109,10 @@ function App() {
                 }
               />
               <Route
-                path="/organizer-dashboard"
+                path="/organizer/dashboard"
                 element={
                   <ProtectedRoute requiredRole="organizer">
-                    <div>Organizer Dashboard - Only organizers can see this</div>
+                    <HomeOrganizer />
                   </ProtectedRoute>
                 }
               />
