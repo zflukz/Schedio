@@ -34,7 +34,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
   };
 
   return (
-    <div className="font-sans flex items-center justify-center min-h-screen">
+    <div className="font-sans flex items-center justify-center min-h-screen bg-bg-light">
       <form
         onSubmit={handleSubmit}
         className="bg-white px-[50px] py-[50px] rounded-[20px] shadow-md w-full max-w-lg"
