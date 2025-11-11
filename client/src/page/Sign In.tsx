@@ -46,17 +46,25 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         localStorage.setItem("token", result.token);
         await refreshUser();
         
-        // Get updated user data and alert it
+        // Get updated user data and navigate based on role
         const profileResponse = await fetch(`http://localhost:8080/api/profile`, {
           headers: { "Authorization": `Bearer ${result.token}` }
         });
         
         if (profileResponse.ok) {
           const userData = await profileResponse.json();
-          alert("User data: " + JSON.stringify(userData, null, 2));
+          const userRole = userData.userRole?.toLowerCase();
+          
+          if (userRole === "admin") {
+            navigate("/admin/dashboard");
+          } else if (userRole === "organizer") {
+            navigate("/organizer/dashboard");
+          } else {
+            navigate("/");
+          }
+        } else {
+          navigate("/");
         }
-        
-        navigate("/");
       }
     } catch (error) {
       console.error("Network error:", error);
