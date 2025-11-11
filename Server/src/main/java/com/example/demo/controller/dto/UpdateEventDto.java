@@ -18,7 +18,7 @@ public class UpdateEventDto {
     private E_EventCategory eventCategory;
     private Integer capacity;
     private Boolean walkIn;
-    private String poster;
+    private String Poster;
     private String filePdf;
 
     // ถ้า admin จะเปลี่ยนเป็นสถานะนี้ตอน update

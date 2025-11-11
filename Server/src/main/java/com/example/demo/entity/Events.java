@@ -48,7 +48,7 @@ public class Events {
     private E_EventStatus status = E_EventStatus.PENDING;
 
 
-    @Column(name = "Poster")
+    @Column(name = "Poster", columnDefinition = "TEXT")
     private String Poster;
 
      @Column(nullable = false)

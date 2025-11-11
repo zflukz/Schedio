@@ -80,11 +80,29 @@ public class EventController {
             @RequestParam(value = "eventBy") String eventBy,
             @RequestParam(value = "eventContactEmail") String eventContactEmail,
             @RequestParam(value = "eventContactPhone") String eventContactPhone,
-            @RequestParam(value = "filePdf") String filePdf,
+            @RequestParam("filePdf") MultipartFile pdfFile,
             HttpServletRequest request
     ) {
         Users currentUser = getCurrentUser(request);
         
+        String posterUrl;
+        try {
+            posterUrl = blobService.uploadToBlob(file);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                    "Failed to upload image: " + e.getMessage());
+        }
+        
+        if (!"application/pdf".equals(pdfFile.getContentType())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must be PDF");
+        }
+        String pdfUrl;
+        try {
+            pdfUrl = blobService.uploadToBlob(pdfFile);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                    "Failed to upload PDF: " + e.getMessage());
+        }
         CreateEventDto dto = new CreateEventDto();
         dto.setTitle(title);
         dto.setLocation(location);
@@ -98,15 +116,10 @@ public class EventController {
         dto.setEventBy(eventBy);
         dto.setEventContactEmail(eventContactEmail);
         dto.setEventContactPhone(eventContactPhone);
-        dto.setFilePdf(filePdf);
+        dto.setFilePdf(pdfUrl);
+        dto.setPoster(posterUrl);
         
         Events newEvent = eventService.createEvent(dto, currentUser);
-        String poster = uploadEventImage(newEvent, file);
-        if (poster != null) {
-            dto.setPoster(poster);
-        }
-        else return ResponseEntity.badRequest().build();
-
         return ResponseEntity.ok(
                 ApiResponse.<Events>builder()
                         .success(true)
@@ -114,7 +127,7 @@ public class EventController {
                         .data(newEvent)
                         .build()
         );
-    }
+    } 
     
     @PostMapping("/create-json")
     public ResponseEntity<ApiResponse<Events>> createEventJson(
@@ -150,16 +163,7 @@ public class EventController {
         );
     }
 
-    private String uploadEventImage(Events event, MultipartFile file) {
-        try {
-            String imageUrl = blobService.uploadToBlob(file);
-            event.setPoster(imageUrl);
-            return imageUrl;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
-                    "Failed to upload image: " + e.getMessage());
-        }
-    }
+
 
     private Users getCurrentUser(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");

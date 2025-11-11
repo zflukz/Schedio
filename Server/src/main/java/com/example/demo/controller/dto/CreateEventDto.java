@@ -46,7 +46,7 @@ public class CreateEventDto {
     @NotNull(message = "Walk-in status is required")
     private Boolean walkIn;
 
-    private String poster;
+    private String Poster;
 
     @NotBlank(message = "Event Proposal is required")
     private String filePdf;
