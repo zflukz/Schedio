@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Service
 public class EventService implements IEventService {
-    
+
     @Autowired
     private EventRepository _eventRepository;
 

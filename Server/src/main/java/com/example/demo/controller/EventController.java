@@ -5,16 +5,16 @@ import com.example.demo.controller.dto.CreateEventDto;
 import com.example.demo.controller.dto.UpdateEventDto;
 import com.example.demo.entity.Events;
 import com.example.demo.entity.Users;
-import com.example.demo.entity.enums.E_Role;
 import com.example.demo.interfaces.IEventService;
-//import com.example.demo.repository.EventRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.VercelBlobService;
 import com.example.demo.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -24,20 +24,22 @@ import java.util.UUID;
 @RequestMapping("/events")
 public class EventController {
     
-    private final IEventService _eventService;
-    private final UserRepository  _userRepository;
-    private final JwtUtil  _jwtUtil;
+    private final IEventService eventService;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final VercelBlobService blobService;
 
-
-    public EventController(IEventService eventService, UserRepository _userRepository, JwtUtil  _jwtUtil) {
-        this._eventService = eventService;
-        this._userRepository = _userRepository;
-        this._jwtUtil = _jwtUtil;
+    public EventController(IEventService eventService, UserRepository userRepository, 
+                          JwtUtil jwtUtil, VercelBlobService blobService) {
+        this.eventService = eventService;
+        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
+        this.blobService = blobService;
     }
 
-    @GetMapping({"", "/"})
+    @GetMapping
     public ResponseEntity<ApiResponse<List<Events>>> getAll() {
-        List<Events> events = _eventService.getAll();
+        List<Events> events = eventService.getAll();
         return ResponseEntity.ok(
                 ApiResponse.<List<Events>>builder()
                         .success(true)
@@ -47,26 +49,58 @@ public class EventController {
         );
     }
 
-    // Creating Event ONLY Organizer
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Events>> createEvent(
+            @RequestParam("poster") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("location") String location,
+            @RequestParam("description") String description,
+            @RequestParam("startsAt") String startsAt,
+            @RequestParam("endsAt") String endsAt,
+            @RequestParam("eventCategory") String eventCategory,
+            @RequestParam("walkIn") Boolean walkIn,
+            @RequestParam(value = "capacity", required = false) Integer capacity,
+            @RequestParam(value = "activityHour", required = false) Integer activityHour,
+            @RequestParam(value = "eventBy", required = false) String eventBy,
+            @RequestParam(value = "eventContact", required = false) String eventContact,
+            @RequestParam(value = "filePdf", required = false) String filePdf,
+            HttpServletRequest request
+    ) {
+        Users currentUser = getCurrentUser(request);
+        
+        CreateEventDto dto = new CreateEventDto();
+        dto.setTitle(title);
+        dto.setLocation(location);
+        dto.setDescription(description);
+        dto.setStartsAt(java.time.Instant.parse(startsAt));
+        dto.setEndsAt(java.time.Instant.parse(endsAt));
+        dto.setEventCategory(com.example.demo.entity.enums.E_EventCategory.valueOf(eventCategory));
+        dto.setWalkIn(walkIn);
+        dto.setCapacity(capacity);
+        dto.setActivityHour(activityHour);
+        dto.setEventBy(eventBy);
+        dto.setEventContact(eventContact);
+        dto.setFilePdf(filePdf);
+        
+        Events newEvent = eventService.createEvent(dto, currentUser);
+        uploadEventImage(newEvent, file);
+        
+        return ResponseEntity.ok(
+                ApiResponse.<Events>builder()
+                        .success(true)
+                        .message("Event created successfully")
+                        .data(newEvent)
+                        .build()
+        );
+    }
+    
+    @PostMapping("/create-json")
+    public ResponseEntity<ApiResponse<Events>> createEventJson(
             @Valid @RequestBody CreateEventDto dto,
             HttpServletRequest request
     ) {
-
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid Authorization Header");
-        }
-
-        String token = authHeader.substring(7);
-        String username = _jwtUtil.getUsernameFromToken(token);
-
-        Users currentUser = _userRepository.findByUserName(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
-
-        Events newEvent = _eventService.createEvent(dto, currentUser);
-
+        Users currentUser = getCurrentUser(request);
+        Events newEvent = eventService.createEvent(dto, currentUser);
         return ResponseEntity.ok(
                 ApiResponse.<Events>builder()
                         .success(true)
@@ -76,25 +110,14 @@ public class EventController {
         );
     }
 
-    // Edit & Updating ONLY Admin
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse<Events>> updateEvent(
             HttpServletRequest request,
             @PathVariable UUID id,
             @Valid @RequestBody UpdateEventDto dto
     ) {
-        String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid Authorization header");
-        }
-
-        String token = header.substring(7);
-        String username = _jwtUtil.getUsernameFromToken(token);
-
-        Users currentUser = _userRepository.findByUserName(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
-
-        Events updatedEvent = _eventService.updateEventByID(id, dto, currentUser);
+        Users currentUser = getCurrentUser(request);
+        Events updatedEvent = eventService.updateEventByID(id, dto, currentUser);
 
         return ResponseEntity.ok(
                 ApiResponse.<Events>builder()
@@ -103,5 +126,28 @@ public class EventController {
                         .data(updatedEvent)
                         .build()
         );
+    }
+
+    private void uploadEventImage(Events event, MultipartFile file) {
+        try {
+            String imageUrl = blobService.uploadToBlob(file);
+            event.setPoster(imageUrl);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
+                    "Failed to upload image: " + e.getMessage());
+        }
+    }
+
+    private Users getCurrentUser(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtil.getUsernameFromToken(token);
+
+        return userRepository.findByUserName(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
     }
 }
