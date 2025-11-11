@@ -84,12 +84,7 @@ const Navbar: React.FC = () => {
 
             {getUserRole() === "organizer" && (
               <>
-                <button 
-                  className="text-[18px] font-bold text-black hover:text-primary transition"
-                  onClick={() => navigate("/organizer-dashboard")}
-                >
-                  My Events
-                </button>
+               
               </>
             )}
 
