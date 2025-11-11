@@ -74,9 +74,7 @@ public class Events {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "file_pdf")
+    @Column(name = "file_pdf", columnDefinition = "TEXT")
     private String filePdf;
 
     @Column(name = "event_by", length = 100)
