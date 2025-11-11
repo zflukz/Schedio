@@ -1,5 +1,4 @@
 import React from "react";
-import JoinButton from "./JoinButton";
 interface EventDetailProps {
   id: string; // or number
   title: string;
