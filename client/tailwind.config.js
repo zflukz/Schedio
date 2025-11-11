@@ -7,7 +7,7 @@ export default {
         primary: "#3EBAD0",
         primaryhover: "#33A9BC",
         secondary: "#FBDE71",
-        "bg-light": "#E0F7FA",
+        "bg-light": "#F7F7F7",
         text: {
           black: "#101010",
           white: "#FFFFFF",
