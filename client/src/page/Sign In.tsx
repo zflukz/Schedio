@@ -5,7 +5,7 @@ import { useUser } from "../App";
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
-  const { refreshUser, user } = useUser();
+  const { refreshUser } = useUser();
   const [backendError, setBackendError] = useState("");
 
   const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {

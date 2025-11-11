@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import EventDetailedcard from "../component/EventDetailedcard";
@@ -25,10 +25,7 @@ interface User {
   description: string
 }
 
-interface Category {
-  id: number;
-  name: string;
-}
+
 
 function EventDetailedPage() {
 
@@ -39,7 +36,6 @@ function EventDetailedPage() {
 };
   const location = useLocation();
   const { event } = location.state as { event: Event };
-  const { eventId } = useParams<{ eventId: string }>();
   const { events } = useEventContext();
 
   const handleViewDetails = (event: Event) => {
