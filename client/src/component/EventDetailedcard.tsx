@@ -76,7 +76,7 @@ const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => 
 
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-[10px] mt-[10px] text-[20px] font-semibold mb-[20px]">
+          <div className="flex flex-wrap gap-[10px] mt-[10px] text-[20px] font-medium mb-[20px]">
             {event.tags.map((tag, idx) => (
               <span
                 key={idx}

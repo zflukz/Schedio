@@ -65,7 +65,7 @@ const Eventcard: React.FC<EventCardProps> = ({
       {/* Tags + View more */}
       <div className="flex items-center justify-between mt-2">
         {/* Tags list */}
-        <div className="flex flex-wrap gap-2 text-[16px] font-semibold">
+        <div className="flex flex-wrap gap-2 text-[16px] font-medium">
           {tags.map((tag, index) => (
             <span
               key={index}
