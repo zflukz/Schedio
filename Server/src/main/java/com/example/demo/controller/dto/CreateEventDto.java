@@ -18,8 +18,15 @@ public class CreateEventDto {
      private String location;
 
     private Integer activityHour;
+
+    @NotBlank(message = "Organizer name is required")
     private String eventBy;
-    private String eventContact;
+
+    @NotBlank(message = "Contact email is required")
+    private String eventContactEmail;
+
+    @NotBlank(message = "Contact phone number is required")
+    private String eventContactPhone;
 
     @NotBlank(message = "Description is required")
     private String description;
@@ -40,6 +47,8 @@ public class CreateEventDto {
     private Boolean walkIn;
 
     private String poster;
+
+    @NotBlank(message = "Event Proposal is required")
     private String filePdf;
 
     private E_EventStatus status = E_EventStatus.PENDING;

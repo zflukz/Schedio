@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/events")
@@ -49,6 +48,23 @@ public class EventController {
         );
     }
 
+    //Get Organizer info fore pre-filling the create event form
+    @GetMapping("/create")
+    public ResponseEntity<?> getCreateEventInfo(HttpServletRequest request) {
+        Users currentUser = getCurrentUser(request);
+
+        String fullName = (currentUser.getFirstName() != null ? currentUser.getFirstName() : "") +
+                " " + (currentUser.getLastName() != null ? currentUser.getLastName() : "");
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("organizerName", fullName.trim());
+        response.put("organizerEmail", Optional.ofNullable(currentUser.getUserEmail()).orElse(""));
+        response.put("organizerPhone", Optional.ofNullable(currentUser.getUserPhone()).orElse(""));
+
+        return ResponseEntity.ok(response);
+    }
+
+
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Events>> createEvent(
             @RequestParam("poster") MultipartFile file,
@@ -61,9 +77,10 @@ public class EventController {
             @RequestParam("walkIn") Boolean walkIn,
             @RequestParam(value = "capacity", required = false) Integer capacity,
             @RequestParam(value = "activityHour", required = false) Integer activityHour,
-            @RequestParam(value = "eventBy", required = false) String eventBy,
-            @RequestParam(value = "eventContact", required = false) String eventContact,
-            @RequestParam(value = "filePdf", required = false) String filePdf,
+            @RequestParam(value = "eventBy") String eventBy,
+            @RequestParam(value = "eventContactEmail") String eventContactEmail,
+            @RequestParam(value = "eventContactPhone") String eventContactPhone,
+            @RequestParam(value = "filePdf") String filePdf,
             HttpServletRequest request
     ) {
         Users currentUser = getCurrentUser(request);
@@ -79,12 +96,17 @@ public class EventController {
         dto.setCapacity(capacity);
         dto.setActivityHour(activityHour);
         dto.setEventBy(eventBy);
-        dto.setEventContact(eventContact);
+        dto.setEventContactEmail(eventContactEmail);
+        dto.setEventContactPhone(eventContactPhone);
         dto.setFilePdf(filePdf);
         
         Events newEvent = eventService.createEvent(dto, currentUser);
-        uploadEventImage(newEvent, file);
-        
+        String poster = uploadEventImage(newEvent, file);
+        if (poster != null) {
+            dto.setPoster(poster);
+        }
+        else return ResponseEntity.badRequest().build();
+
         return ResponseEntity.ok(
                 ApiResponse.<Events>builder()
                         .success(true)
@@ -128,10 +150,11 @@ public class EventController {
         );
     }
 
-    private void uploadEventImage(Events event, MultipartFile file) {
+    private String uploadEventImage(Events event, MultipartFile file) {
         try {
             String imageUrl = blobService.uploadToBlob(file);
             event.setPoster(imageUrl);
+            return imageUrl;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 
                     "Failed to upload image: " + e.getMessage());

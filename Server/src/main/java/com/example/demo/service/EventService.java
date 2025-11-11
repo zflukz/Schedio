@@ -41,7 +41,8 @@ public class EventService implements IEventService {
         newEvent.setTitle(body.getTitle());
         newEvent.setLocation(body.getLocation());
         newEvent.setEventBy(body.getEventBy());
-        newEvent.setEventContact(body.getEventContact());
+        newEvent.setEventContactEmail(body.getEventContactEmail());
+        newEvent.setEventContactPhone(body.getEventContactPhone());
         newEvent.setDescription(body.getDescription());
         newEvent.setStartsAt(body.getStartsAt());
         newEvent.setEndsAt(body.getEndsAt());
@@ -52,20 +53,6 @@ public class EventService implements IEventService {
         newEvent.setPoster(body.getPoster());
         newEvent.setFilePdf(body.getFilePdf());
         newEvent.setStatus(body.getStatus());
-
-        //Auto-fill organizer info
-        String fullName =
-                (currentUser.getFirstName() != null ? currentUser.getFirstName() : "") + " " + (currentUser.getLastName() != null ? currentUser.getLastName() : "");
-        newEvent.setEventBy(fullName.trim());
-
-        newEvent.setEventContact(
-                currentUser.getUserEmail() != null ? currentUser.getUserEmail() : "unknown"
-        );
-
-        //รองรับหลาย organizer ต่อ event
-//        currentUser.getEvents().add(newEvent);
-//        _userRepository.save(currentUser);
-
 
         return _eventRepository.save(newEvent);
     }
@@ -103,7 +90,8 @@ public class EventService implements IEventService {
         if (body.getTitle() != null) event.setTitle(body.getTitle());
         if (body.getLocation() != null) event.setLocation(body.getLocation());
         if (body.getEventBy() != null) event.setEventBy(body.getEventBy());
-        if (body.getEventContact() != null) event.setEventContact(body.getEventContact());
+        if (body.getEventContactEmail() != null) event.setEventContactEmail(body.getEventContactEmail());
+        if (body.getEventContactPhone() != null) event.setEventContactPhone(body.getEventContactPhone());
         if (body.getDescription() != null) event.setDescription(body.getDescription());
         if (body.getStartsAt() != null) event.setStartsAt(body.getStartsAt());
         if (body.getEndsAt() != null) event.setEndsAt(body.getEndsAt());

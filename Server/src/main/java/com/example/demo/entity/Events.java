@@ -47,8 +47,9 @@ public class Events {
     @Column(name = "status", nullable = false, length = 20)
     private E_EventStatus status = E_EventStatus.PENDING;
 
-    @Column
-    private String poster;
+
+    @Column(name = "Poster")
+    private String Poster;
 
      @Column(nullable = false)
      private String location;
@@ -81,8 +82,11 @@ public class Events {
     @Column(name = "event_by", length = 100)
     private String eventBy;
 
-    @Column(name = "event_contact", length = 100)
-    private String eventContact;
+    @Column(name = "event_contact_email", length = 100)
+    private String eventContactEmail;
+
+    @Column(name = "event_contact_phone", length = 20)
+    private String eventContactPhone;
 
     @PrePersist
     void onCreate() {
@@ -92,4 +96,10 @@ public class Events {
 
     @Column(name = "is_edit_requested")
     private Boolean editRequested = false;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
+    @Column(name = "is_cancelled")
+    private Boolean isCancelled = false;
 }

@@ -11,7 +11,8 @@ public class UpdateEventDto {
     private String location;
     private Integer activityHour;
     private String eventBy;
-    private String eventContact;
+    private String eventContactEmail;
+    private String eventContactPhone;
     private Instant startsAt;
     private Instant endsAt;
     private E_EventCategory eventCategory;
