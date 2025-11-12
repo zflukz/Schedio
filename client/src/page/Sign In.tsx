@@ -24,7 +24,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
               userPassword: data.password,
             };
 
-      const response = await fetch(`http://localhost:8080${endpoint}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -47,7 +47,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         await refreshUser();
         
         // Get updated user data and alert it
-        const profileResponse = await fetch("http://localhost:8080/api/profile", {
+        const profileResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/profile`, {
           headers: { "Authorization": `Bearer ${result.token}` }
         });
         
