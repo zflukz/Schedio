@@ -47,7 +47,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
     console.log('Fetching user profile with token:', token.substring(0, 50) + '...');
     try {
-      const response = await fetch("http://localhost:8080/api/profile", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/profile`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       console.log('Profile response status:', response.status);
