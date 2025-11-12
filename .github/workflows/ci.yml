@@ -26,11 +26,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # ✅ Optional: clear Jest cache to avoid stale module resolution
+      - name: Clear Jest cache
+        run: npm test -- --clearCache || true
+
       - name: Build
         run: npm run build
 
+      # ✅ Run tests safely in CI (no watch mode, fail fast)
       - name: Test
-        run: npm test -- --watch=false --ci
+        run: |
+          npm test -- --watch=false --ci
+
 
   backend:
     name: Backend
