@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AuthForm from "../component/Sign In";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useUser } from "../App";
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
