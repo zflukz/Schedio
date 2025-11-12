@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 interface AuthFormProps {
   mode: "signin" | "register";
-  onSubmit: (data: { username?: string; email?: string; password: string; name?: string }) => void;
+  onSubmit: (data: { username: string; email?: string; password: string }) => void;
   backendError?: string;
 }
 
@@ -12,24 +12,21 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // ใช้เฉพาะ Register
   const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const requiredField = mode === "signin" ? username : email;
-    if (!requiredField || !password || (mode === "register" && !name)) {
+    if (!username || !password || (mode === "register" && !email)) {
       setError("Please fill in all required fields.");
       return;
     }
 
     setError("");
     onSubmit({ 
-      username: mode === "signin" ? username : undefined,
+      username,
       email: mode === "register" ? email : undefined,
-      password, 
-      name: mode === "register" ? name : undefined 
+      password
     });
   };
 
@@ -53,37 +50,24 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {/* Backend error from API */}
         {backendError && <p className="text-red-500 mb-4">{backendError}</p>}
 
-        {/* Name (เฉพาะ Register) */}
+        {/* Username (เฉพาะ Register) */}
         {mode === "register" && (
           <div className="mb-[20px]">
-            <label htmlFor="auth-full-name" className="block mb-[5px] text-[18px] font-semibold">Full Name</label>
+            <label htmlFor="auth-username-register" className="block mb-[5px] text-[18px] font-semibold">Username</label>
             <input
               type="text"
-              id="auth-full-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              id="auth-username-register"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Your full name"
+              placeholder="Choose a username"
               required
             />
           </div>
         )}
 
-        {/* Username for signin, Email for register */}
-        {mode === "signin" ? (
-          <div className="mb-[20px]">
-            <label htmlFor="auth-username" className="block mb-[5px] text-[18px] font-semibold">Username</label>
-            <input
-              type="text"
-              id="auth-username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
-        ) : (
+        {/* Email (เฉพาะ Register) */}
+        {mode === "register" && (
           <div className="mb-[20px]">
             <label htmlFor="auth-email" className="block mb-[5px] text-[18px] font-semibold">Email</label>
             <input

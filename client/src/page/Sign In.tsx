@@ -8,14 +8,14 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const { refreshUser } = useUser();
   const [backendError, setBackendError] = useState("");
 
-  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
+  const handleAuthSubmit = async (data: { username: string; email?: string; password: string }) => {
     try {
       const endpoint = mode === "register" ? "/register" : "/login";
 
       const payload =
         mode === "register"
           ? {
-              userName: data.name,
+              userName: data.username,
               userPassword: data.password,
               userEmail: data.email,
             }

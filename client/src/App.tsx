@@ -4,7 +4,7 @@ import AuthPage from './page/Sign In';
 import Home from './page/Home';
 import Profile from './page/Profile';
 import ProtectedRoute from './component/ProtectedRoute';
-import OAuth2Callback from './component/OAuth2Callback';
+import OAuth2Callback from './page/OAuth2Callback';
 
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
