@@ -50,21 +50,19 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {/* Backend error from API */}
         {backendError && <p className="text-red-500 mb-4">{backendError}</p>}
 
-        {/* Username (เฉพาะ Register) */}
-        {mode === "register" && (
-          <div className="mb-[20px]">
-            <label htmlFor="auth-username-register" className="block mb-[5px] text-[18px] font-semibold">Username</label>
-            <input
-              type="text"
-              id="auth-username-register"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Choose a username"
-              required
-            />
-          </div>
-        )}
+        {/* Username */}
+        <div className="mb-[20px]">
+          <label htmlFor="auth-username" className="block mb-[5px] text-[18px] font-semibold">Username</label>
+          <input
+            type="text"
+            id="auth-username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder={mode === "signin" ? "Enter your username" : "Choose a username"}
+            required
+          />
+        </div>
 
         {/* Email (เฉพาะ Register) */}
         {mode === "register" && (
