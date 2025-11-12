@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import EventDetailedcard from "../component/EventDetailedcard";
-import { useLocation, useNavigate } from "react-router-dom"; 
+import { useLocation, useNavigate } from "react-router"; 
 import { useEventContext } from "../context/EventContext";
 
 interface User {
