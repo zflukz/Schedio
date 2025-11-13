@@ -114,7 +114,8 @@ const MyEventsList: React.FC = () => {
 
       {/* Joined Events List */}
       <div className="flex justify-center items-center pt-[80px]">
-        <div className="w-[90%] max-w-[1200px] bg-white px-[30px] py-[20px] sm:px-[50px] sm:py-[30px] rounded-2xl shadow-sm">
+      <div className="px-4 sm:px-6 w-full">
+        <div className="max-w-[1200px] mx-auto bg-white p-[25px] rounded-2xl shadow-sm ">
           {/* Title */}
           <h1 className="text-[30px] font-semibold text-text-black mb-[20px] text-left">
             My Events ({myEvents.length})
@@ -140,6 +141,7 @@ const MyEventsList: React.FC = () => {
               className="custom-pagination"
             />
             </div>
+        </div>
         </div>
       </div>
       <div className="flex items-center justify-center py-[10px] pt-[50px] text-[14px] font-normal">
