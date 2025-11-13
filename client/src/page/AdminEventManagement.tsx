@@ -68,6 +68,8 @@ const AdminEventManagement: React.FC = () => {
         "Event description is not available. This is a placeholder when opening the page directly.",
     } as AdminEventDetail);
 
+  const isPending = data.status === "Pending";
+
   return (
     <div className="bg-bg-light min-h-screen pb-12 pt-[50px]">
       {/* Top section with Navbar and Back button (same pattern as MyEvent.tsx) */}
@@ -180,14 +182,16 @@ const AdminEventManagement: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-10 flex gap-3 justify-center">
-                <button className="px-[80px] py-2 rounded-[10px] bg-[#BFF1D0] text-[#0F9D58] font-semibold" onClick={() => navigate(-1)}>
-                Approve
+            {isPending && (
+              <div className="mt-10 flex gap-3 justify-center">
+                  <button className="px-[80px] py-2 rounded-[10px] bg-[#BFF1D0] text-[#0F9D58] font-semibold" onClick={() => navigate(-1)}>
+                  Approve
+                  </button>
+                  <button className="px-[80px] py-2 rounded-[10px] bg-[#FFD6D6] text-[#D14343] font-semibold" onClick={() => setIsRejectModalOpen(true)}>
+                  Reject
                 </button>
-                <button className="px-[80px] py-2 rounded-[10px] bg-[#FFD6D6] text-[#D14343] font-semibold" onClick={() => setIsRejectModalOpen(true)}>
-                Reject
-              </button>
-            </div>
+              </div>
+            )}
             
           </div>
         </section>
@@ -195,7 +199,7 @@ const AdminEventManagement: React.FC = () => {
         <p className="mt-8 text-center text-[14px] text-[#6B6B6B]">© 2025 Schedio. All rights reserved.</p>
       </main>
 
-      {isRejectModalOpen && (
+      {isPending && isRejectModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-[480px] rounded-[24px] bg-white px-8 py-8 shadow-xl">
             <h3 className="text-[20px] font-semibold text-center text-[#1F1F1F]">
