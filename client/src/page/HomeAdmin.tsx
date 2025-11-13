@@ -24,6 +24,7 @@ interface AdminEvent {
   location: string;
   submissionLabel: string;
   submissionDate: string;
+  submissionBy: string;
 }
 
 const statusBadgeStyles: Record<EventStatus, string> = {
@@ -38,7 +39,7 @@ const actionButtonStyles: Record<EventStatus, string> = {
   Approved:
     "bg-[#E5F8FC] text-[#2AA5B9] hover:bg-[#d1eef5] transition-colors",
   Rejected:
-    "bg-[#F2F2F2] text-[#939393] cursor-not-allowed",
+    "bg-[#F2F2F2] text-[#939393] cursor-pointer",
 };
 
 const HomeAdmin: React.FC = () => {
@@ -71,6 +72,7 @@ const HomeAdmin: React.FC = () => {
         location: "LX Floor 1",
         submissionLabel: "Date Submitted:",
         submissionDate: "30 Aug 2025",
+        submissionBy: "Admin02",
       },
       {
         id: "2",
@@ -82,6 +84,7 @@ const HomeAdmin: React.FC = () => {
         location: "LX Floor 1",
         submissionLabel: "Date Submitted:",
         submissionDate: "30 Aug 2025",
+        submissionBy: "Admin02",
       },
       {
         id: "3",
@@ -93,6 +96,7 @@ const HomeAdmin: React.FC = () => {
         location: "LX Floor 1",
         submissionLabel: "Approved on:",
         submissionDate: "30 Aug 2025",
+        submissionBy: "Admin01",
       },
       {
         id: "4",
@@ -104,6 +108,7 @@ const HomeAdmin: React.FC = () => {
         location: "LX Floor 1",
         submissionLabel: "Approved on:",
         submissionDate: "30 Aug 2025",
+        submissionBy: "Admin01",
       },
       {
         id: "5",
@@ -115,6 +120,7 @@ const HomeAdmin: React.FC = () => {
         location: "LX Floor 1",
         submissionLabel: "Rejected on:",
         submissionDate: "1 Sep 2025",
+        submissionBy: "Admin03",
       },
       {
         id: "6",
@@ -126,6 +132,7 @@ const HomeAdmin: React.FC = () => {
         location: "LX Floor 1",
         submissionLabel: "Rejected on:",
         submissionDate: "1 Sep 2025",
+        submissionBy: "Admin03",
       },
     ],
     []
@@ -184,8 +191,8 @@ const HomeAdmin: React.FC = () => {
         <Navbar user={adminUser} />
       </div>
 
-      <main className="max-w-[1140px] mx-auto w-full px-4 sm:px-8">
-        <section className="pt-12 pb-10 text-center">
+      <main className="max-w-[1280px] mx-auto w-full px-4 sm:px-8">
+        <section className="pt-12 pb-10 text-center max-w-[840px] mx-auto w-full">
           <h1 className="text-[32px] sm:text-[40px] font-bold text-[#1F1F1F]">
             Dashboard
           </h1>
@@ -211,24 +218,23 @@ const HomeAdmin: React.FC = () => {
 
         <section className="bg-white border border-[#ECECEC] rounded-[32px] shadow-[0px_24px_48px_rgba(16,24,40,0.06)] px-6 sm:px-10 py-10">
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <h2 className="text-[28px] sm:text-[32px] font-semibold text-[#1F1F1F]">
                 Events Management
               </h2>
-              <div className="relative w-full sm:w-auto sm:min-w-[320px]">
-                <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#9A9A9A]" />
-                <input
-                  type="text"
-                  placeholder="Search your events."
-                  className="w-full rounded-[18px] border border-[#E5E5E5] bg-[#F8F8F8] py-3 pl-12 pr-4 text-[16px] text-[#1F1F1F] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#2AA5B9] focus:bg-white"
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                />
-              </div>
-            </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                <div className="relative w-full sm:w-auto sm:min-w-[280px]">
+                  <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#9A9A9A]" />
+                  <input
+                    type="text"
+                    placeholder="Search your events."
+                    className="w-full rounded-[18px] border border-[#E5E5E5] bg-[#F8F8F8] py-3 pl-12 pr-4 text-[16px] text-[#1F1F1F] placeholder:text-[#9A9A9A] focus:outline-none focus:border-[#2AA5B9] focus:bg-white"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                  />
+                </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <div className="bg-white flex items-center rounded-[18px] px-4 border border-[#E5E5E5] w-full sm:w-[350px] md:w-[320px] lg:w-[350px]">
+                <div className="bg-white flex items-center rounded-[18px] px-4 border border-[#E5E5E5] w-full sm:w-[280px]">
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -295,6 +301,7 @@ const HomeAdmin: React.FC = () => {
                   </Button>
                 </Dropdown>
               </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
               {filteredEvents.map((event) => (
@@ -303,21 +310,20 @@ const HomeAdmin: React.FC = () => {
                   className="flex h-full flex-col justify-between rounded-[28px] border border-[#F0F0F0] bg-white px-6 py-6 shadow-[0px_18px_36px_rgba(16,24,40,0.04)]"
                 >
                   <div className="space-y-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h3 className="text-[22px] font-semibold text-[#1F1F1F]">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <h3 className={`text-[22px] font-semibold ${
+                          event.status === "Rejected" ? "text-[#939393]" : "text-[#3EBAD0]"}`}>
                           {event.title}
                         </h3>
-                        <div className="mt-3 flex flex-wrap items-center gap-3 text-[15px] text-[#525252]">
-                          <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium ${
-                            event.status === "Rejected"
-                              ? "bg-[#D0D0D0] text-black"
-                              : "bg-[#FBDE71] text-[#6C4B00]"
-                          }`}>
-                            <StarIcon className="h-4 w-4 text-white" />
-                            {event.duration}
-                          </span>
-                        </div>
+                        <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium text-[15px] ${
+                          event.status === "Rejected"
+                            ? "bg-[#D0D0D0] text-black"
+                            : "bg-[#FBDE71] text-[#6C4B00]"
+                        }`}>
+                          <StarIcon className="h-4 w-4 text-white" />
+                          {event.duration}
+                        </span>
                       </div>
 
                       <span
@@ -327,17 +333,19 @@ const HomeAdmin: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="space-y-3 text-[15px] text-[#525252]">
-                      <div className="flex items-center gap-3">
-                        <CalendarDaysIcon className="h-5 w-5 text-[#2AA5B9]" />
+                    <div className="flex flex-wrap items-center gap-3 text-[15px] text-black">
+                      <div className="flex items-center gap-2">
+                        <CalendarDaysIcon className="h-5 w-5" />
                         {event.date}
                       </div>
-                      <div className="flex items-center gap-3">
-                        <ClockIcon className="h-5 w-5 text-[#2AA5B9]" />
+                      <span>|</span>
+                      <div className="flex items-center gap-2">
+                        <ClockIcon className="h-5 w-5" />
                         {event.time}
                       </div>
-                      <div className="flex items-center gap-3">
-                        <MapPinIcon className="h-5 w-5 text-[#2AA5B9]" />
+                      <span>|</span>
+                      <div className="flex items-center gap-2">
+                        <MapPinIcon className="h-5 w-5" />
                         {event.location}
                       </div>
                     </div>
@@ -345,16 +353,16 @@ const HomeAdmin: React.FC = () => {
 
                   <div className="mt-6 flex items-center justify-between border-t border-[#F3F3F3] pt-4">
                     <div className="text-[15px] text-[#7B7B7B]">
-                      <span className="font-medium text-[#525252]">
+                      <span className="font-medium text-black">
                         {event.submissionLabel}
                       </span>{" "}
-                      {event.submissionDate}
+                      <span className="text-[#939393]">{event.submissionDate}</span>{" "}
+                      <span className="text-black font-medium">By</span>{" "}
+                      <span className="text-black">{event.submissionBy}</span>
                     </div>
                     <button
-                      className={`class="text-[14px] font-semibold bg-[#3EBAD0]/30 text-[#33A9BC] px-3 py-2 rounded-[8px] hover:bg-[#3EBAD0]/45 transition" ${actionButtonStyles[event.status]}`}
-                      disabled={event.status === "Rejected"}
+                      className={`text-[14px] font-semibold px-3 py-2 rounded-[8px] transition ${actionButtonStyles[event.status]}`}
                       onClick={() => {
-                        if (event.status === "Rejected") return;
                         navigate(`/admin/events/${event.id}`, { state: { event: { ...event, tags: ["Academic", "Workshop"], totalseats: 50, contactName: "Wongsakorn", contactPhone: "0923397882" } } });
                       }}
                     >
