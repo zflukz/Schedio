@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
               <>
                 <button 
                   className="text-[18px] font-bold text-black hover:text-primary transition"
-                  onClick={() => navigate("/admin-dashboard")}
+                  onClick={() => navigate("/admin/usermanagement")}
                 >
                  User Management
                 </button>
