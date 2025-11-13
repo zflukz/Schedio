@@ -353,12 +353,23 @@ const HomeAdmin: React.FC = () => {
 
                   <div className="mt-6 flex items-center justify-between border-t border-[#F3F3F3] pt-4">
                     <div className="text-[15px] text-[#7B7B7B]">
-                      <span className="font-medium text-black">
-                        {event.submissionLabel}
-                      </span>{" "}
-                      <span className="text-[#939393]">{event.submissionDate}</span>{" "}
-                      <span className="text-black font-medium">By</span>{" "}
-                      <span className="text-black">{event.submissionBy}</span>
+                      {event.status === "Pending" ? (
+                        <>
+                          <span className="font-medium text-black">
+                            {event.submissionLabel}
+                          </span>{" "}
+                          <span className="text-[#939393]">{event.date}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="font-medium text-black">
+                            {event.submissionLabel}
+                          </span>{" "}
+                          <span className="text-[#939393]">{event.submissionDate}</span>{" "}
+                          <span className="text-black font-medium">By</span>{" "}
+                          <span className="text-black">{event.submissionBy}</span>
+                        </>
+                      )}
                     </div>
                     <button
                       className={`text-[14px] font-semibold px-3 py-2 rounded-[8px] transition ${actionButtonStyles[event.status]}`}
