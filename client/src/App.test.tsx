@@ -73,7 +73,7 @@ test('allows a user to sign in and navigates to the home page', async () => {
 
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      'http://localhost:8080/login',
+      `${process.env.REACT_APP_BACKEND_URL}/login`,
       expect.objectContaining({
         method: 'POST',
       })
