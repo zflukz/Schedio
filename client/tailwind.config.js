@@ -1,3 +1,4 @@
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -24,6 +25,7 @@ export default {
         },
         success: '#10B981',
         fail: '#EF4444',
+        remind: '#CA8A04',
       },
       fontFamily: {
         sans: ['Albert Sans', 'sans-serif'],
