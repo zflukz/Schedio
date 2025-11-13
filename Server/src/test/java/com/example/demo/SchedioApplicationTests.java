@@ -16,7 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 	"spring.jpa.properties.hibernate.format_sql=false",
 	"spring.sql.init.mode=never",
 	"jwt.secret=test-secret",
-	"jwt.expiration=3600000"
+	"jwt.expiration=3600000",
+	"cors.allowed.origins=*"
 })
 class SchedioApplicationTests {
 
