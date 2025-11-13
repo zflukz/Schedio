@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 type Role = "Admin" | "Organizer" | "User";
 type Status = "active" | "banned";
@@ -205,22 +206,24 @@ const AdminUserManagement: React.FC = () => {
       {/* Confirm Ban Modal */}
       {confirmUserId && (
         <>
-          <div className="fixed inset-0 bg-black/30"></div>
-          <div className="fixed inset-0 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-20 bg-black/30"></div>
+          <div className="fixed inset-0 z-30 flex items-center justify-center p-4">
             <div className="w-full max-w-[360px] rounded-[18px] bg-white p-6 text-center shadow-xl">
-              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#FFF0F0] text-[#E25A5A]">!</div>
+              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#FDEDEC] text-[#E25A5A]">
+                <ExclamationTriangleIcon className="w-7 h-7" fill="#D63031" color="#FDEDEC"/>
+              </div>
               <h3 className="text-[20px] font-bold text-[#1F1F1F]">{confirmAction === "unban" ? "Unban this user?" : "Ban this user?"}</h3>
               <p className="mt-1 text-[14px] text-[#8A8A8A]">{confirmAction === "unban" ? "Their account will be reactivated. Do you want to continue?" : "This will remove all user data. Do you want to continue?"}</p>
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <button
                   onClick={() => { setConfirmUserId(null); setConfirmAction(null); }}
-                  className="rounded-full bg-[#EEEEEE] px-4 py-2 font-semibold text-[#6F6F6F] hover:bg-[#E7E7E7] transition"
+                  className="rounded-full bg-[#E2E2E2] px-4 py-2 font-semibold text-black hover:bg-[#D0D0D0] transition"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={performConfirm}
-                  className="rounded-full bg-[#FF5A5A] px-4 py-2 font-semibold text-white hover:bg-[#ef4c4c] transition"
+                  className="rounded-full bg-[#EF4444] px-4 py-2 font-semibold text-white hover:bg-[#DC2626] transition"
                 >
                   Yes
                 </button>

@@ -6,6 +6,8 @@ import { EventProvider } from "./context/EventContext";
 import MyEventPage from "./page/MyEvent";
 import MyAccount from "./page/MyAccount";
 import HomeAdmin from './page/HomeAdmin';
+import HomeOrganize from './page/HomeOrganize';
+import OrganizeCreateEvent from "./page/OrganizeCreateEvent";
 import AdminEventManagement from './page/AdminEventManagement';
 import AdminUserManagement from './page/AdminUserManagement';
 interface User {
@@ -45,6 +47,8 @@ function App() {
           <Route path="/admin/dashboard" element={<HomeAdmin />}/>
           <Route path="/admin/events/:id" element={<AdminEventManagement />} />
           <Route path="/admin/users" element={<AdminUserManagement />} /> 
+          <Route path="/organizer/dashboard" element={<HomeOrganize />} />
+          <Route path="/organizer/events/create" element={<OrganizeCreateEvent />} />
         </Routes>
       </EventProvider>
     </div>

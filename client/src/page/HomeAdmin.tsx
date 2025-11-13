@@ -222,7 +222,7 @@ const HomeAdmin: React.FC = () => {
               <h2 className="text-[28px] sm:text-[32px] font-semibold text-[#1F1F1F]">
                 Events Management
               </h2>
-              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-center">
                 <div className="relative w-full sm:w-auto sm:min-w-[280px]">
                   <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#9A9A9A]" />
                   <input
@@ -234,7 +234,7 @@ const HomeAdmin: React.FC = () => {
                   />
                 </div>
 
-                <div className="bg-white flex items-center rounded-[18px] px-4 border border-[#E5E5E5] w-full sm:w-[280px]">
+                <div className="bg-white flex items-center rounded-[18px] px-4 py-2 border border-[#E5E5E5] w-full sm:w-[280px]">
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
