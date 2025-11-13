@@ -55,7 +55,15 @@ const confirmSaveName = () => {
       <div className="w-full flex flex-col lg:flex-row lg:items-center relative mb-6">
         <div className="flex justify-start mb-4 lg:mb-0">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => {
+              if (user?.userRole === "admin") {
+              navigate("/admin/dashboard"); 
+              } else if (user?.userRole === "organizer") {
+              navigate("/organizer/dashboard"); 
+              } else {
+              navigate("/"); 
+              }
+            }}			
             className="flex items-center bg-white text-black py-[8px] px-[20px] rounded-full font-semibold text-[16px] hover:shadow-md transition z-10"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mr-[10px]">
