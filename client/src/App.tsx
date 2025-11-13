@@ -4,12 +4,15 @@ import AuthPage from './page/Sign In';
 import Home from './page/Home';
 import ProtectedRoute from './component/ProtectedRoute';
 import OAuth2Callback from './component/OAuth2Callback';
-import HomeOrganizer from "./page/HomeOrganixer";
+import HomeOrganizer from "./page/HomeOrganizer";
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
 import MyEventPage from "./page/MyEvent";
 import MyAccount from "./page/MyAccount";
-
+import CreateEvent from "./page/CreateEvent";
+import CreateSuccess from "./page/CreateSuccess";
+import HomeAdmin from "./page/HomeAdmin";
+import EventOrganizerandAdminDatailed from "./page/EventOrganizer&AdminDatailed";
 interface User {
   userID: string;
   userName: string;
@@ -54,7 +57,11 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
       if (response.ok) {
         const userData = await response.json();
         console.log('User data received:', userData);
-        setUser(userData);
+        const normalizedUser = {
+          ...userData,
+          userRole: userData.userRole?.toLowerCase(),
+        };
+        setUser(normalizedUser); 
         localStorage.setItem("userData", JSON.stringify(userData));
       } else {
         const errorText = await response.text();
@@ -101,10 +108,10 @@ function App() {
                 element={<AuthPage mode="register" />}
               />
               <Route
-                path="/admin-dashboard"
+                path="/admin/dashboard"
                 element={
                   <ProtectedRoute requiredRole="admin">
-                    <div>Admin Dashboard - Only admins can see this</div>
+                    <HomeAdmin />
                   </ProtectedRoute>
                 }
               />
@@ -115,6 +122,26 @@ function App() {
                     <HomeOrganizer />
                   </ProtectedRoute>
                 }
+              />
+              <Route
+                path="/organizer/create event"
+                element={
+                  <ProtectedRoute requiredRole="organizer">
+                    <CreateEvent />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/success"
+                element={
+                  <ProtectedRoute requiredRole="organizer">
+                    <CreateSuccess />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/event/:eventId"
+                element={<EventOrganizerandAdminDatailed />}
               />
               <Route
                 path="/myaccount"
