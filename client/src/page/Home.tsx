@@ -5,22 +5,8 @@ import Eventcard from "../component/Eventcard";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination } from "antd";
 import { useNavigate } from "react-router-dom"; 
-import { useEventContext } from "../context/EventContext";
+import { useEventContext,Event } from "../context/EventContext";
 
-interface Event {
-  id: string; 
-  title: string;
-  duration: string;
-  date: string;
-  time: string;
-  location: string;
-  totalseats: number;
-  currentParticipants: number;
-  phone?: number;
-  tags: string[];
-  imageUrl: string;
-  description: string
-}
 
 interface Category {
   id: number;

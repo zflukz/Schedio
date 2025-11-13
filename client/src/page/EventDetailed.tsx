@@ -2,27 +2,13 @@ import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import EventDetailedcard from "../component/EventDetailedcard";
 import { useLocation, useNavigate,useParams } from "react-router-dom"; 
-import { useEventContext } from "../context/EventContext";
+import { useEventContext, Event } from "../context/EventContext";
 
 interface User {
   name: string;
   role: "admin" | "organizer" | "user";
 }
 
- interface Event {
-  id: string; // or number
-  title: string;
-  duration: string;
-  date: string;
-  time: string;
-  location: string;
-  totalseats: number;
-  currentParticipants: number;
-  phone?: number;
-  tags: string[];
-  imageUrl: string;
-  description: string
-}
 
 interface Category {
   id: number;

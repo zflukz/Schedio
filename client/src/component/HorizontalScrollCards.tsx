@@ -2,21 +2,8 @@ import React, { useEffect, useState } from "react";
 import Upcomingcard from "./Comingcard";
 import useEmblaCarousel from "embla-carousel-react";
 import { useNavigate } from "react-router-dom";
+import { Event } from "../context/EventContext";
 
-interface Event {
-  id: string; // or number
-  title: string;
-  duration: string;
-  date: string;
-  time: string;
-  location: string;
-  totalseats: number;
-  currentParticipants: number;
-  phone?: number;
-  tags: string[];
-  imageUrl: string;
-  description: string;
-}
 
 interface HorizontalScrollCardsProps {
   events: Event[];

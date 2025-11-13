@@ -1,25 +1,11 @@
 import React from "react";
 import JoinButton from "./JoinButton";
-import { useEventContext } from "../context/EventContext";
+import { useEventContext, Event } from "../context/EventContext";
 interface User {
   name: string;
   role: "admin" | "organizer" | "user";
 }
-interface Event {
-  id: string; // or number
-  title: string;
-  duration: string;
-  date: string;
-  time: string;
-  location: string;
-  totalseats: number;
-  currentParticipants: number;
-  status?: "upcoming" | "joined" | "full"; 
-  phone?: number;
-  tags: string[];
-  imageUrl: string;
-  description: string
-}
+
 
 interface EventDetailedcardProps {
   event: Event;
