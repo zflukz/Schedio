@@ -1,11 +1,11 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import { useUser } from "../App";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, setUser } = useUser();
+  const { user } = useUser();
   const isMyEventsPage = location.pathname === "/myevent";
   
   const getUserRole = () => {

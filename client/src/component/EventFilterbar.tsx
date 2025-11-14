@@ -24,7 +24,6 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
   onSearchChange,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   const handleCategoryToggle = (name: string, checked: boolean) => {
@@ -37,11 +36,9 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
 
   const handleDateChange: RangePickerProps["onChange"] = (dates, dateStrings) => {
     if (!dates) {
-      setDateRange(null);
       onDateRangeChange?.(null);
     } else {
       const range: [string, string] = [dateStrings[0], dateStrings[1]];
-      setDateRange(range);
       onDateRangeChange?.(range);
     }
   };

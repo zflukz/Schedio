@@ -1,7 +1,8 @@
+import React from "react";
 import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import EventDetailedcard from "../component/EventDetailedcard";
-import { useLocation, useNavigate,useParams } from "react-router-dom"; 
+import { useLocation, useNavigate } from "react-router"; 
 import { useEventContext } from "../context/EventContext";
 
 interface User {
@@ -24,10 +25,7 @@ interface User {
   description: string
 }
 
-interface Category {
-  id: number;
-  name: string;
-}
+
 
 function EventDetailedPage() {
 
@@ -38,7 +36,6 @@ function EventDetailedPage() {
 };
   const location = useLocation();
   const { event } = location.state as { event: Event };
-  const { eventId } = useParams<{ eventId: string }>();
   const { events } = useEventContext();
 
   const handleViewDetails = (event: Event) => {

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 interface AuthFormProps {
   mode: "signin" | "register";
-  onSubmit: (data: { username?: string; email?: string; password: string; name?: string }) => void;
+  onSubmit: (data: { username: string; email?: string; password: string }) => void;
   backendError?: string;
 }
 
@@ -12,24 +12,21 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // ใช้เฉพาะ Register
   const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const requiredField = mode === "signin" ? username : email;
-    if (!requiredField || !password || (mode === "register" && !name)) {
+    if (!username || !password || (mode === "register" && !email)) {
       setError("Please fill in all required fields.");
       return;
     }
 
     setError("");
     onSubmit({ 
-      username: mode === "signin" ? username : undefined,
+      username,
       email: mode === "register" ? email : undefined,
-      password, 
-      name: mode === "register" ? name : undefined 
+      password
     });
   };
 
@@ -53,39 +50,27 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {/* Backend error from API */}
         {backendError && <p className="text-red-500 mb-4">{backendError}</p>}
 
-        {/* Name (เฉพาะ Register) */}
+        {/* Username */}
+        <div className="mb-[20px]">
+          <label htmlFor="auth-username" className="block mb-[5px] text-[18px] font-semibold">Username</label>
+          <input
+            type="text"
+            id="auth-username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder={mode === "signin" ? "Enter your username" : "Choose a username"}
+            required
+          />
+        </div>
+
+        {/* Email (เฉพาะ Register) */}
         {mode === "register" && (
           <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Your full name"
-              required
-            />
-          </div>
-        )}
-
-        {/* Username for signin, Email for register */}
-        {mode === "signin" ? (
-          <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
-        ) : (
-          <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Email</label>
+            <label htmlFor="auth-email" className="block mb-[5px] text-[18px] font-semibold">Email</label>
             <input
               type="email"
+              id="auth-email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -97,9 +82,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
 
         {/* Password */}
         <div className="mb-[25px]">
-          <label className="block mb-[5px] text-[18px] font-semibold">Password</label>
+          <label htmlFor="auth-password" className="block mb-[5px] text-[18px] font-semibold">Password</label>
           <input
             type="password"
+            id="auth-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -168,7 +154,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
               </div>
               <button
                 type="button"
-                onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+                onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/oauth2/authorization/google`}
                 className="w-full font-semibold mt-[20px] text-[20px] border border-dashed  border-text-black bg-white text-text-black py-2 rounded-[12px] flex items-center justify-center hover:shadow-md transition"
               >
                 <img

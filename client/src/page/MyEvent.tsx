@@ -2,17 +2,11 @@ import React, { useState } from "react";
 import { useEventContext } from "../context/EventContext";
 import MyEventCard from "../component/MyEventcard";
 import Navbar from "../component/Navbar";
-import { useNavigate } from "react-router-dom";
-import { Pagination } from "antd";
+import { useNavigate } from "react-router";
 
 const MyEventsList: React.FC = () => {
   const { events, joinedEvents } = useEventContext();
   const navigate = useNavigate();
-
-  const user = {
-    name: "Thanrada",
-    role: "user" as const,
-  };
 
   // กรองเฉพาะ event ที่ user join
   const myEvents = events.filter((ev) => joinedEvents.includes(ev.id));

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend  # important: point to backend folder
+        working-directory: Server
 
     steps:
       - uses: actions/checkout@v3

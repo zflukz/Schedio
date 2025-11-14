@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Upcomingcard from "./Comingcard";
 import useEmblaCarousel from "embla-carousel-react";
-import { useNavigate } from "react-router-dom";
 
 interface Event {
   id: string; // or number
@@ -24,12 +23,8 @@ interface HorizontalScrollCardsProps {
 }
 
 const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, onJoin }) => {
-  const navigate = useNavigate();
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "start",
-    containScroll: "trimSnaps",
-  });
+  // Embla Carousel hook
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "center" });
   const [cardsPerPage, setCardsPerPage] = useState(3);
 
   const updateCardsPerPage = () => {
@@ -46,8 +41,6 @@ const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, o
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
-
-  
 
   return (
     <div className="relative max-w-[1300px] mx-auto">

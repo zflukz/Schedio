@@ -1,9 +1,9 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AuthPage from './page/Sign In';
 import Home from './page/Home';
 import ProtectedRoute from './component/ProtectedRoute';
-import OAuth2Callback from './component/OAuth2Callback';
+import OAuth2Callback from './page/OAuth2Callback';
 
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
@@ -47,7 +47,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
     console.log('Fetching user profile with token:', token.substring(0, 50) + '...');
     try {
-      const response = await fetch("http://localhost:8080/api/profile", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/profile`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       console.log('Profile response status:', response.status);
