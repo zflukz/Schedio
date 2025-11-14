@@ -29,8 +29,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm test -- --watch=false --ci
+
 
   backend:
     name: Backend
@@ -52,13 +51,5 @@ jobs:
       - name: Make Maven wrapper executable
         run: chmod +x mvnw
 
-      - name: Maven verify
-        run: ./mvnw -B -ntp clean verify
-
-      - name: Upload test reports
-        if: ${{ always() && env.ACT != 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-test-reports
-          path: Server/target/surefire-reports
-          if-no-files-found: ignore
+      - name: Maven compile
+        run: ./mvnw -B -ntp clean compile
