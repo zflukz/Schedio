@@ -142,8 +142,11 @@ const MyEventCard: React.FC<EventCardProps> = ({ event, role = "user" }) => {
 
         <hr className="border-support1 mt-[10px] mb-[10px]" />
 {/* Status Date & Buttons */}
-<div className={`flex flex-col lg:flex-row items-start gap-2 mt-0 mb-0 flex-1
-  ${role === "user" ? "justify-end" : "justify-between"}`}>
+<div
+  className={`flex flex-col md:flex-col lg:flex-row md:items-start sm:items-center gap-2 mt-0 mb-0 flex-1
+  ${role === "user" ? "justify-end" : "justify-between"}`}
+>
+
   
   {/* Status Date (Organizer/Admin view) */}
   {(role === "organizer" || role === "admin") && (
@@ -166,33 +169,40 @@ const MyEventCard: React.FC<EventCardProps> = ({ event, role = "user" }) => {
     </div>
   )}
 
-  {/* Buttons */}
-  <div className="flex flex-col sm:flex-row gap-2 mt-2 lg:mt-0 items-stretch lg:items-end w-full lg:w-auto">
-    <button
-      onClick={() => {
-        if (role === "organizer") navigate(`/organizer/event/${event.id}`, { state: { event } });
-        else if (role === "admin") navigate(`/admin/event/${event.id}`, { state: { event } });
-        else navigate(`/event/${event.id}`, { state: { event } });
-      }}
-      className={`text-[14px] font-semibold px-3 py-2 rounded-[8px] transition
-        ${
-          (role === "organizer" || role === "admin") && (event.adminStatus as any) === "Rejected"
-            ? "bg-support1 text-support3 hover:bg-support2 w-full sm:w-auto"
-            : "bg-[#3EBAD0]/30 text-primary hover:bg-[#3EBAD0]/45 w-full sm:w-auto"
-        }`}
-    >
-      View Details
-    </button>
+{/* Buttons */}
+<div className="flex flex-col sm:flex-row gap-2 mt-2 lg:mt-0 
+  items-center sm:items-end 
+  w-full sm:w-full lg:w-auto">
 
-    {role === "user" && isJoined && (
-      <button
-        onClick={() => setShowCancelPopup(true)}
-        className="text-[14px] font-semibold bg-support1 text-text-black px-3 py-2 rounded-[8px] hover:bg-support2 transition w-full sm:w-auto"
-      >
-        Cancel
-      </button>
-    )}
-  </div>
+  <button
+    onClick={() => {
+      if (role === "organizer") navigate(`/organizer/event/${event.id}`, { state: { event } });
+      else if (role === "admin") navigate(`/admin/event/${event.id}`, { state: { event } });
+      else navigate(`/event/${event.id}`, { state: { event } });
+    }}
+    className={`text-[14px] font-semibold px-3 py-2 rounded-[8px] transition
+      w-full sm:w-full lg:w-fit
+      ${
+        (role === "organizer" || role === "admin") && (event.adminStatus as any) === "Rejected"
+          ? "bg-support1 text-support3 hover:bg-support2"
+          : "bg-[#3EBAD0]/30 text-primary hover:bg-[#3EBAD0]/45"
+      }`}
+  >
+    View Details
+  </button>
+
+  {role === "user" && isJoined && (
+    <button
+      onClick={() => setShowCancelPopup(true)}
+      className="text-[14px] font-semibold bg-support1 text-text-black px-3 py-2 rounded-[8px] hover:bg-support2 transition
+        w-full sm:w-full lg:w-fit"
+    >
+      Cancel
+    </button>
+  )}
+
+</div>
+
 </div>
 
 
