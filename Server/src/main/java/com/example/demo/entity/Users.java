@@ -4,6 +4,7 @@ import com.example.demo.entity.enums.E_Role;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.*;
 @AllArgsConstructor
 @Entity
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(
         name = "users",
         indexes = {
@@ -63,13 +65,7 @@ public class Users {
 
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_event",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
-    )
-    private Set<Events> events = new HashSet<>();
+
 
 
     public Users(String userName, String userPassword, String userEmail){

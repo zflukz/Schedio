@@ -1,6 +1,6 @@
 package com.example.demo.controller.dto;
 
-import com.example.demo.entity.enums.E_EventStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +15,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EventRegistrationResponseDto {
     private UUID regId;
-    private UUID userId;
-    private UUID eventId;
-    private String eventTitle;
-    private E_EventStatus status;
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
     private Instant registeredAt;
 }

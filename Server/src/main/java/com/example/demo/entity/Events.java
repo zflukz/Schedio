@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
-import com.example.demo.entity.enums.E_EventStatus;
+import com.example.demo.entity.enums.E_EventCategory;
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.Instant;
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "events",
         indexes = {
                 @Index(name = "idx_events_status", columnList = "status"),
@@ -42,16 +44,29 @@ public class Events {
     @Column
     private Integer capacity;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private E_EventStatus status = E_EventStatus.PENDING;
 
-    @Column
-    private String poster;
+
+
+    @Column(name = "Poster", columnDefinition = "TEXT")
+    private String Poster;
+
+     @Column(nullable = false)
+     private String location;
+
+    @Column(name = "walk_in", nullable = false)
+    private Boolean walkIn = false;
+
+    @Column(name = "activity_hour")
+    private Integer activityHour;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_category", nullable = false, length = 20)
+    private E_EventCategory eventCategory;
 
     // ผู้สร้างอีเวนต์ (Organizer)
-    @ManyToMany(mappedBy =  "events")
-    private Set<Users> users = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id", foreignKey = @ForeignKey(name = "fk_event_organizer"))
+    private Users organizer;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -59,17 +74,17 @@ public class Events {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Column(name = "file_pdf", columnDefinition = "text")
+    @Column(name = "file_pdf", columnDefinition = "TEXT")
     private String filePdf;
 
     @Column(name = "event_by", length = 100)
     private String eventBy;
 
-    @Column(name = "event_contact", length = 20)
-    private String eventContact;
+    @Column(name = "event_contact_email", length = 100)
+    private String eventContactEmail;
 
-    @Column(name = "activityHour")
-    private Integer activityHour;
+    @Column(name = "event_contact_phone", length = 20)
+    private String eventContactPhone;
 
     @PrePersist
     void onCreate() {
@@ -77,5 +92,12 @@ public class Events {
         updatedAt = createdAt;
     }
 
+    @Column(name = "is_edit_requested")
+    private Boolean editRequested = false;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
+    @Column(name = "is_cancelled")
+    private Boolean isCancelled = false;
 }

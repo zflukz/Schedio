@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.entity.enums.E_EventStatus;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,9 +38,7 @@ public class EventRegisters {
             foreignKey = @ForeignKey(name = "fk_reg_event"))
     private Events event;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="status", nullable = false, length = 20)
-    private E_EventStatus status = E_EventStatus.PENDING;
+
 
     @Column(name="registered_at", nullable = false)
     private Instant registeredAt;

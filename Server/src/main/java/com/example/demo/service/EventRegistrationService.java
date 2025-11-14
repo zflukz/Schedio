@@ -73,16 +73,25 @@ public class EventRegistrationService {
     }
 
     public boolean canViewEventRegistrations(UUID userId, UUID eventId, com.example.demo.entity.enums.E_Role role) {
-        return role == com.example.demo.entity.enums.E_Role.ADMIN;
+        if (role == com.example.demo.entity.enums.E_Role.ADMIN) {
+            return true;
+        }
+        
+        Events event = eventRepository.findById(eventId).orElse(null);
+        if (event == null) {
+            return false;
+        }
+        
+        return event.getOrganizer() != null && event.getOrganizer().getUserID().equals(userId);
     }
 
     private EventRegistrationResponseDto toDto(EventRegisters registration) {
         return EventRegistrationResponseDto.builder()
                 .regId(registration.getRegId())
-                .userId(registration.getUser().getUserID())
-                .eventId(registration.getEvent().getEventId())
-                .eventTitle(registration.getEvent().getTitle())
-                .status(registration.getStatus())
+                .userName(registration.getUser().getUserName())
+                .firstName(registration.getUser().getFirstName())
+                .lastName(registration.getUser().getLastName())
+                .email(registration.getUser().getUserEmail())
                 .registeredAt(registration.getRegisteredAt())
                 .build();
     }
