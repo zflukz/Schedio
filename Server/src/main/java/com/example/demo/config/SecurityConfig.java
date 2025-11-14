@@ -79,12 +79,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/public/**","/error",
-                                "/oauth2/**","/login/**",
+                                "/oauth2/**","/login/**","/login","/register",
                                 "/v3/api-docs/**","/swagger-ui/**",
                                 "/favicon.ico","/assets/**","/static/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(o -> o
+                        .authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
                         .successHandler(oauth2SuccessHandler)
                         .failureHandler(oauth2FailureHandler)
                 );

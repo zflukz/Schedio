@@ -4,7 +4,7 @@ import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import Eventcard from "../component/Eventcard";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination } from "antd";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router"; 
 import { useEventContext } from "../context/EventContext";
 
 interface Event {
