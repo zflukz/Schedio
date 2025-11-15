@@ -18,7 +18,6 @@ import java.util.*;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "events",
         indexes = {
-                @Index(name = "idx_events_status", columnList = "status"),
                 @Index(name = "idx_events_starts_at", columnList = "starts_at")
         })
 public class Events {
@@ -59,9 +58,42 @@ public class Events {
     @Column(name = "activity_hour")
     private Integer activityHour;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "event_category", nullable = false, length = 20)
-    private E_EventCategory eventCategory;
+    @Column(name = "event_category", nullable = false, length = 500)
+    private String eventCategories;
+    
+    // Helper methods for categories
+    @Transient
+    public Set<E_EventCategory> getCategorySet() {
+        if (eventCategories == null || eventCategories.isEmpty()) {
+            return new HashSet<>();
+        }
+        Set<E_EventCategory> categories = new HashSet<>();
+        for (String cat : eventCategories.split(",")) {
+            try {
+                categories.add(E_EventCategory.valueOf(cat.trim()));
+            } catch (IllegalArgumentException e) {
+                // Skip invalid categories
+            }
+        }
+        return categories;
+    }
+    
+    @Transient
+    public void setCategorySet(Set<E_EventCategory> categories) {
+        if (categories == null || categories.isEmpty()) {
+            this.eventCategories = "";
+        } else {
+            this.eventCategories = String.join(",", categories.stream()
+                .map(E_EventCategory::name)
+                .toArray(String[]::new));
+        }
+    }
+    
+    // For JSON serialization - returns first category for backward compatibility
+    public E_EventCategory getEventCategory() {
+        Set<E_EventCategory> categories = getCategorySet();
+        return categories.isEmpty() ? null : categories.iterator().next();
+    }
 
     // ผู้สร้างอีเวนต์ (Organizer)
     @ManyToOne(fetch = FetchType.LAZY)

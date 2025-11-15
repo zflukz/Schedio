@@ -17,20 +17,26 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
           ? {
               userName: data.username,
               userPassword: data.password,
-              userEmail: data.email,
+              email: data.email,
             }
           : {
               userName: data.username,
               userPassword: data.password,
             };
 
+      console.log('Sending request to:', `${process.env.REACT_APP_BACKEND_URL}${endpoint}`);
+      console.log('Payload:', payload);
+      
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
+      console.log('Response status:', response.status);
+      
       const result = await response.json();
+      console.log('Response data:', result);
 
       if (!response.ok) {
         const message = result.message || JSON.stringify(result);
@@ -60,7 +66,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
       }
     } catch (error) {
       console.error("Network error:", error);
-      setBackendError("Network error. Please try again later.");
+      setBackendError(`Network error: ${error}. Please check if backend is running.`);
     }
   };
 

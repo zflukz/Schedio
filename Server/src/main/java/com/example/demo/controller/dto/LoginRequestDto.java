@@ -9,23 +9,23 @@ import lombok.Data;
 public class LoginRequestDto {
 
 
-    @NotBlank(message = "username is require")
-    public String userName;
+    @NotBlank(message = "Username or email is required")
+    public String usernameOrEmail;
 
-    @NotBlank(message = "password is require")
+    @NotBlank(message = "Password is required")
     public String userPassword;
 
-    public LoginRequestDto(String userName, String userPassword){
-        this.userName = userName;
+    public LoginRequestDto(String usernameOrEmail, String userPassword){
+        this.usernameOrEmail = usernameOrEmail;
         this.userPassword = userPassword;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsernameOrEmail() {
+        return usernameOrEmail;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsernameOrEmail(String usernameOrEmail) {
+        this.usernameOrEmail = usernameOrEmail;
     }
 
     public String getUserPassword() {

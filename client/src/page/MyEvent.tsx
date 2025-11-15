@@ -3,6 +3,7 @@ import { useEventContext } from "../context/EventContext";
 import MyEventCard from "../component/MyEventcard";
 import Navbar from "../component/Navbar";
 import { useNavigate } from "react-router";
+import { Pagination } from "antd";
 
 const MyEventsList: React.FC = () => {
   const { events, joinedEvents } = useEventContext();
