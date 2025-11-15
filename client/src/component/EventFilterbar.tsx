@@ -70,7 +70,7 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
   // Dropdown content
   const dropdownContent = (
     <div
-      className="bg-white rounded-[12px] shadow-md inline-block px-[20px] py-[15px] min-w-[150px]"
+      className="bg-white rounded-[12px] shadow-md px-[20px] py-[15px] min-w-[150px] w-full sm:w-auto"
       onClick={(e) => e.stopPropagation()}
     >
       {(role === "user" ? categories : statuses)
@@ -203,8 +203,16 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
           trigger={["click"]}
           placement="bottomCenter"
         >
-          <Button className={`custom-dropdown-button !h-[62px] md:!h-[62px] !py-[10px] !px-[12px] flex items-center justify-between bg-white font-sans font-semibold text-[18px] rounded-[12px] shadow-sm border border-support1 w-full sm:w-[200px] md:w-[160px] lg:w-[200px] hover:!bg-gray-50 hover:!shadow-md transition-shadow ${((role === "user" && selectedCategories.length > 0) || (role !== "user" && selectedStatuses.length > 0)) ? "text-text-black" : "text-support3"}`}>
-            <div className="flex items-center">
+          <Button
+            className={`custom-dropdown-button !h-[62px] md:!h-[62px] !py-[10px] !px-[12px] 
+              flex items-center justify-between bg-white font-sans font-semibold text-[18px]
+              rounded-[12px] shadow-sm border border-support1 w-full sm:w-[200px] md:w-[160px] lg:w-[200px]
+              hover:!bg-gray-50 hover:!shadow-md transition-shadow
+              ${((role === "user" && selectedCategories.length > 0) || (role !== "user" && selectedStatuses.length > 0))
+                ? "text-text-black" : "text-support3"}`}>
+
+            {/* LEFT CONTENT */}
+            <div className="flex items-center flex-1 min-w-0 overflow-hidden">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -216,19 +224,23 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+                  d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a.75.75 0 0 1-3 0m3 0a.75.75 0 0 0-3 0m-9.75 0h9.75"
                 />
               </svg>
-              <span className="truncate max-w-[250px] sm:max-w-[120px] md:max-w-[80px] lg:max-w-[120px]">{buttonLabel}</span>
+
+              <span className="truncate block">
+                {buttonLabel}
+              </span>
             </div>
-            {/* Clear All Button */}
+
+            {/* CLEAR BUTTON */}
             {((role === "user" && selectedCategories.length > 0) || (role !== "user" && selectedStatuses.length > 0)) && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleClearAll();
                 }}
-                className="ml-1 p-0.5 hover:bg-support2 rounded-full transition-colors flex-shrink-0"
+                className="ml-2 p-0.5 hover:bg-support2 rounded-full transition-colors shrink-0"
                 title="Clear all selections"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5 text-support3 hover:text-text-black">
@@ -237,6 +249,7 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
               </button>
             )}
           </Button>
+
         </Dropdown>
       </div>
     </div>
