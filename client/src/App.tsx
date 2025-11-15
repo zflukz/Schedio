@@ -13,6 +13,7 @@ import CreateEvent from "./page/CreateEvent";
 import CreateSuccess from "./page/CreateSuccess";
 import HomeAdmin from "./page/HomeAdmin";
 import EventOrganizerandAdminDatailed from "./page/EventOrganizer&AdminDatailed";
+import UserManagement from "./page/UserManagement";
 interface User {
   userID: string;
   userName: string;
@@ -112,6 +113,14 @@ function App() {
                 element={
                   <ProtectedRoute requiredRole="admin">
                     <HomeAdmin />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/usermanagement"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <UserManagement />
                   </ProtectedRoute>
                 }
               />
