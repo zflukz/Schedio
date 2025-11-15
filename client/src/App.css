@@ -189,6 +189,7 @@ input[placeholder*="Search"] {
 
 .custom-dropdown-button:hover {
   color: #939393 !important; /* สีข้อความตอน hover */
+  border: 1px solid #3EBAD0 !important;
   background-color: #ffffff !important; /* ถ้าอยากเปลี่ยน BG ด้วย */
 }
 
@@ -262,7 +263,7 @@ input[placeholder*="Search"] {
 /* Active ตัวเลข */
 .custom-pagination .ant-pagination-item-active,
 .custom-pagination .ant-pagination-item-active a {
-  background-color: #3EBAD0 !important; /* พื้นหลังฟ้า */
+  background-color: #101010 !important; /* พื้นหลังฟ้า */
   color: white !important;               /* ตัวเลขสีขาว */
   border-radius: 50%;                    /* วงกลม */
 }
@@ -317,7 +318,7 @@ input[placeholder*="Search"] {
 /* ---------- Dropdown Button ด้านนอกสุด (pageSize) ---------- */
 .custom-pagination .ant-pagination-options .ant-select-selector {
   background-color: #ffffff !important;
-  border: 1.5px solid #3EBAD0 !important; /* ✅ ขอบสีประจำ */
+  border: 1.5px solid #101010!important; /* ✅ ขอบสีประจำ */
   border-radius: 8px !important;
   padding: 4px 10px !important;
   transition: all 0.2s ease !important;
@@ -798,3 +799,34 @@ input[placeholder="Search your events."]:focus {
   font-family: 'Albert Sans', sans-serif !important;
 }
 
+/* Search bar ของ UserManagement */
+.custom-search-input {
+  font-family: 'Albert Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #101010;
+  padding: 8px 12px;
+  border: 1px solid #D0D0D0;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.custom-search-input::placeholder {
+  color: #939393;
+  font-weight: 400;
+}
+
+.custom-search-input:hover,
+.custom-search-input:focus {
+  border-color: #3EBAD0;
+  box-shadow: 0 0 0 4px #3EBAD040;
+}
+.my-role-button {
+  background-color: #3EBAD040 !important;
+  color: #3EBAD0 !important;
+}
+.my-role-button:hover {
+  background-color: #3EBAD040 !important;
+  color: #3EBAD0 !important;
+}
