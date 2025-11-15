@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
   mode: "signin" | "register";
-  onSubmit: (data: { username?: string; email?: string; password: string; name?: string }) => void;
+  onSubmit: (data: { username?: string; email?: string; password: string; firstname?: string; lastname?: string}) => void;
   backendError?: string;
 }
 
@@ -12,14 +12,15 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // ใช้เฉพาะ Register
+  const [firstname, setfirstName] = useState(""); // ใช้เฉพาะ Register
+  const [lastname, setlastName] = useState(""); // ใช้เฉพาะ Register
   const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const requiredField = mode === "signin" ? username : email;
-    if (!requiredField || !password || (mode === "register" && !name)) {
+    if (!requiredField || !password || (mode === "register" && !firstname && !lastname)) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -29,7 +30,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
       username: mode === "signin" ? username : undefined,
       email: mode === "register" ? email : undefined,
       password, 
-      name: mode === "register" ? name : undefined 
+      firstname: mode === "register" ? firstname : undefined ,
+      lastname: mode === "register" ? lastname : undefined 
+
     });
   };
 
@@ -55,34 +58,51 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
 
         {/* Name (เฉพาะ Register) */}
         {mode === "register" && (
-          <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Your full name"
-              required
-            />
+          <div className="flex flex-row gap-4 mb-[20px]">
+            {/* First Name */}
+            <div className="flex flex-col w-1/2">
+              <label className="block mb-[5px] text-[18px] font-semibold">First name</label>
+              <input
+                type="text"
+                value={firstname}
+                onChange={(e) => setfirstName(e.target.value)}
+                className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Your First name"
+                required
+              />
+            </div>
+
+            {/* Last Name (หรือ field ที่ 2) */}
+            <div className="flex flex-col w-1/2">
+              <label className="block mb-[5px] text-[18px] font-semibold">Last name</label>
+              <input
+                type="text"
+                value={lastname}
+                onChange={(e) => setlastName(e.target.value)}
+                className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Your Last name"
+                required
+              />
+            </div>
           </div>
         )}
 
         {/* Username for signin, Email for register */}
         {mode === "signin" ? (
           <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Username</label>
+            <label className="block mb-[5px] text-[18px] font-semibold">Username or Email</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter your username"
+              placeholder="Enter your username or Email"
               required
             />
           </div>
         ) : (
           <div className="mb-[20px]">
+            <div className="mb-[20px]">
             <label className="block mb-[5px] text-[18px] font-semibold">Email</label>
             <input
               type="email"
@@ -92,7 +112,20 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
               placeholder="you@example.com"
               required
             />
+            </div>
+            <div className="mb-[20px]">
+            <label className="block mb-[5px] text-[18px] font-semibold">Username</label>
+            <input
+              type="username"
+              value={username}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="user12345"
+              required
+            />
+            </div>
           </div>
+          
         )}
 
         {/* Password */}
