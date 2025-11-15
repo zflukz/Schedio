@@ -1,7 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar";
 import { useUser } from "../App";
+import PopupModal from "../component/PopupAlert";
+import { Pagination, Dropdown, Button, Checkbox } from "antd";
+import "../App.css";
 
 type Role = "Admin" | "Organizer" | "User";
 type Status = "active" | "banned";
@@ -27,27 +30,24 @@ const rolePill = (role: Role) => {
 
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
-  	const { user, setUser } = useUser(); 
+  const { user } = useUser();
 
-  const adminUser = {
-    name: "Thanaphat",
-    role: "admin" as const,
-    image: "/MyuserProfile.svg",
-  };
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(6);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const [users, setUsers] = useState<UMUser[]>([
-    { id: "u1", name: "Wongsakorn", email: "wongsakorn.yuc@gmail.com", role: "Admin",     status: "active" },
-    { id: "u2", name: "Thanaphat",  email: "thanaphat.pom@gmail.com",   role: "Organizer", status: "active" },
-    { id: "u3", name: "Woramate",   email: "woramate.sir@gmail.com",    role: "User",      status: "banned" },
-    { id: "u4", name: "Thanrada",   email: "thanrada.fai@gmail.com",    role: "User",      status: "active" },
+    { id: "u1", name: "Wongsakorn", email: "wongsakorn.yuc@gmail.com", role: "Admin", status: "active" },
+    { id: "u2", name: "Thanaphat", email: "thanaphat.pom@gmail.com", role: "Organizer", status: "active" },
+    { id: "u3", name: "Woramate", email: "woramate.sir@gmail.com", role: "User", status: "banned" },
+    { id: "u4", name: "Thanrada", email: "thanrada.fai@gmail.com", role: "User", status: "active" },
   ]);
-  const [page] = useState(1);
-  const [roleFocusId, setRoleFocusId] = useState<string | null>(null);
 
   const [confirmUserId, setConfirmUserId] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<"ban" | "unban" | null>(null);
 
-  const data = useMemo(() => users, [users]);
+  const roles: Role[] = ["Admin", "Organizer", "User"];
+
 
   const handleChangeRole = (id: string, role: Role) => {
     setUsers(prev => prev.map(u => (u.id === id ? { ...u, role } : u)));
@@ -58,179 +58,305 @@ const UserManagement: React.FC = () => {
     setConfirmAction("ban");
   };
 
-  const performConfirm = () => {
-    if (!confirmUserId || !confirmAction) return;
-    if (confirmAction === "ban") {
-      setUsers(prev =>
-        prev.map(u => (u.id === confirmUserId ? { ...u, status: "banned" } : u))
-      );
-    } else {
-      setUsers(prev =>
-        prev.map(u => (u.id === confirmUserId ? { ...u, status: "active" } : u))
-      );
-    }
-    setConfirmUserId(null);
-    setConfirmAction(null);
-  };
-
   const handleUnban = (id: string) => {
     setConfirmUserId(id);
     setConfirmAction("unban");
   };
 
+  const performConfirm = () => {
+    if (!confirmUserId || !confirmAction) return;
+    setUsers(prev =>
+      prev.map(u =>
+        u.id === confirmUserId
+          ? { ...u, status: confirmAction === "ban" ? "banned" : "active" }
+          : u
+      )
+    );
+    setConfirmUserId(null);
+    setConfirmAction(null);
+  };
+
+
+
+  
+  
+    const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
+  const dropdownContent = ["Admin", "Organizer", "User"].map((roleItem) => (
+  <div
+    key={roleItem}
+    className="flex items-center rounded-md px-2 py-1 cursor-pointer hover:bg-[#3EBAD080] whitespace-nowrap"
+    onClick={() => {
+      setSelectedRoles((prev: Role[]) =>
+        prev.includes(roleItem as Role)
+          ? prev.filter((r) => r !== roleItem)
+          : [...prev, roleItem as Role]
+      );
+    }}
+  >
+    <Checkbox checked={selectedRoles.includes(roleItem as Role)}>
+      {roleItem}
+    </Checkbox>
+  </div>
+));
+
+
+
+  const filteredUsers = users.filter(u =>
+    u.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    u.email.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
+  const pagedUsers = filteredUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
   return (
     <div className="bg-bg-light min-h-screen pb-12 pt-10">
-      {/* Top section with Navbar and Back button (same pattern as AdminEventManagement.tsx) */}
+      {/* Top section */}
       <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
-        {/* Back Button */}
         <div className="flex justify-start mb-4 lg:mb-0">
           <button
             onClick={() => navigate(-1)}
             className="flex items-center bg-white text-black py-[8px] px-[20px] rounded-full font-semibold text-[16px] hover:shadow-md transition z-10"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6 mr-[10px]"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mr-[10px]">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
             Back
           </button>
         </div>
-
-        {/* Navbar Centered */}
         <div className="flex justify-center w-full lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
           <Navbar />
         </div>
       </div>
 
-      {/* Content card */}
-      <main className="mx-auto mt-[75px] w-full max-w-[1040px] rounded-[24px] bg-white px-6 py-8 shadow-[0px_24px_48px_rgba(16,24,40,0.06)]">
-        <h1 className="text-[28px] sm:text-[32px] font-semibold text-[#1F1F1F]">Users Management</h1>
+      {/* Main content */}
+      <div className="flex justify-center items-center pt-[80px]">
+        <div className="px-4 sm:px-6 w-full">
+          <div className="max-w-[1200px] mx-auto bg-white p-[25px] rounded-2xl shadow-sm ">
+            <h1 className="text-[28px] sm:text-[30px] font-semibold text-[#1F1F1F]">Users Management</h1>
 
-        {/* Table */}
-        <div className="mt-6 overflow-hidden rounded-[16px] border border-[#E2E2E2] border-1">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-[#F7F7F7] text-left text-[#6B6B6B]">
-                <th className="px-6 py-4 font-medium">Name</th>
-                <th className="px-6 py-4 font-medium">Email</th>
-                <th className="px-6 py-4 font-medium">Role</th>
-                <th className="px-6 py-4 font-medium">Action</th>
-              </tr>
-            </thead>
-            <tbody className="text-[#1F1F1F]">
-              {data.map(u => (
-                <tr key={u.id} className="border-t border-[#E2E2E2]">
-                  <td className="px-6 py-5">{u.name}</td>
-                  <td className="px-6 py-5">{u.email}</td>
-                  <td className="px-6 py-5">
-                    <span className={`inline-flex rounded-full px-3 py-1 text-[14px] font-semibold ${rolePill(u.role)}`}>
-                      {u.role}
-                    </span>
-                  </td>
-                  <td className="px-6 py-5">
-                    <div className="flex items-center gap-3">
-                      {u.status === "active" ? (
-                        <button
-                          onClick={() => handleBan(u.id)}
-                          className="rounded-[10px] bg-[#FFE5E5] px-6 py-2 text-[14px] font-semibold text-[#E25A5A] hover:bg-[#ffd9d9] transition"
+            {/* Search Bar */}
+            <div className="mt-4 flex flex-wrap gap-4 items-center">
+              <div className="bg-white flex items-center rounded-[12px] px-[16px] py-[12px] shadow-sm border border-support1 w-full sm:w-[400px] md:w-[350px] lg:w-[400px] min-h-[62px] hover:shadow-md transition-shadow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                  stroke="currentColor"
+                  className="size-6 md:size-8 pr-[8px]"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search your events."
+                  className="outline-none w-full text-text-black placeholder:text-support3 text-[18px]"
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                />
+              </div>
+              {/* Role Dropdown (Updated with your custom button layout) */}
+              <div className="relative w-full sm:w-auto">
+                <Dropdown
+                  dropdownRender={() => (
+                    <div className="bg-white rounded-[12px] shadow-md p-2 min-w-[160px]">
+                      {["Admin", "Organizer", "User"].map((roleItem) => (
+                        <div
+                          key={roleItem}
+                          className="flex items-center rounded-md px-2 py-1 cursor-pointer hover:bg-[#3EBAD080] whitespace-nowrap"
+                          onClick={() =>
+                            setSelectedRoles((prev: Role[]) =>
+                              prev.includes(roleItem as Role)
+                                ? prev.filter((r) => r !== roleItem)
+                                : [...prev, roleItem as Role]
+                            )
+                          }
                         >
-                          Ban
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleUnban(u.id)}
-                          className="rounded-[10px] bg-[#F2F2F2] px-4 py-2 text-[14px] font-semibold text-[#9B9B9B]"
-                        >
-                          Unban
-                        </button>
-                      )}
-
-                      {/* Change Role dropdown */}
-                      <div className="relative">
-                        <select
-                          aria-label="Change Role"
-                          value={roleFocusId === u.id ? u.role : ""}
-                          onChange={e => {
-                            const next = e.target.value as Role | "";
-                            if (next === "") return; // keep current value when selecting placeholder
-                            handleChangeRole(u.id, next as Role);
-                          }}
-                          onFocus={() => setRoleFocusId(u.id)}
-                          onBlur={() => setRoleFocusId(null)}
-                          className="appearance-none rounded-[10px] bg-[#DDF6FB] px-4 py-2 pr-9 text-[14px] font-semibold text-[#2AA5B9] hover:bg-[#c9eef6] transition"
-                        >
-                          <option value="">Change Role</option>
-                          <option value="Admin">Admin</option>
-                          <option value="Organizer">Organizer</option>
-                          <option value="User">User</option>
-                        </select>
-                        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#2AA5B9]">
-                          ▾
-                        </span>
-                      </div>
+                          <Checkbox
+                            className="custom-checkbox"
+                            checked={selectedRoles.includes(roleItem as Role)}
+                          >
+                            {roleItem}
+                          </Checkbox>
+                        </div>
+                      ))}
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="mt-6 flex items-center justify-center gap-2">
-          <button className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E5E5] text-[#9A9A9A]">
-            <span className="-translate-x-[1px] rotate-180">›</span>
-          </button>
-          <div className="flex items-center gap-2 text-[15px]">
-            <button className="h-9 w-9 rounded-full bg-[#1F1F1F] text-white font-medium">1</button>
-            <span className="text-[#9A9A9A]">2</span>
-            <span className="text-[#9A9A9A]">…</span>
-            <span className="text-[#9A9A9A]">4</span>
-            <span className="text-[#9A9A9A]">5</span>
-          </div>
-          <button className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E5E5] text-[#9A9A9A]">
-            <span>›</span>
-          </button>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="mt-10 pb-8 text-center text-[14px] text-white/70">
-        © 2025 Schedio. All rights reserved.
-      </footer>
-
-      {/* Confirm Ban Modal */}
-      {confirmUserId && (
-        <>
-          <div className="fixed inset-0 bg-black/30"></div>
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <div className="w-full max-w-[360px] rounded-[18px] bg-white p-6 text-center shadow-xl">
-              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#FFF0F0] text-[#E25A5A]">!</div>
-              <h3 className="text-[20px] font-bold text-[#1F1F1F]">{confirmAction === "unban" ? "Unban this user?" : "Ban this user?"}</h3>
-              <p className="mt-1 text-[14px] text-[#8A8A8A]">{confirmAction === "unban" ? "Their account will be reactivated. Do you want to continue?" : "This will remove all user data. Do you want to continue?"}</p>
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <button
-                  onClick={() => { setConfirmUserId(null); setConfirmAction(null); }}
-                  className="rounded-full bg-[#EEEEEE] px-4 py-2 font-semibold text-[#6F6F6F] hover:bg-[#E7E7E7] transition"
+                  )}
+                  trigger={["click"]}
+                  placement="bottomCenter"
                 >
-                  Cancel
-                </button>
-                <button
-                  onClick={performConfirm}
-                  className="rounded-full bg-[#FF5A5A] px-4 py-2 font-semibold text-white hover:bg-[#ef4c4c] transition"
-                >
-                  Yes
-                </button>
+                  <Button
+                    className={`custom-dropdown-button !h-[62px] md:!h-[62px] !py-[10px] !px-[12px] flex items-center justify-between bg-white font-sans font-semibold text-[18px] rounded-[12px] shadow-sm border border-support1 w-full sm:w-[200px] md:w-[160px] lg:w-[200px] hover:!bg-gray-50 hover:!shadow-md transition-shadow ${
+                      selectedRoles.length > 0 ? "text-text-black" : "text-support3"
+                    }`}
+                  >
+                    <div className="flex items-center flex-1 overflow-hidden">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5 mr-[10px] md:size-6 text-text-black shrink-0"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a.75.75 0 0 1-3 0m3 0a.75.75 0 0 0-3 0m-9.75 0h9.75"
+                        />
+                      </svg>
+
+                      <span className="truncate block max-w-full">
+                        {selectedRoles.length > 0 ? selectedRoles.join(", ") : "Select role"}
+                      </span>
+                    </div>
+
+
+                    {/* Clear Button (Preserved 100%) */}
+                    {selectedRoles.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedRoles([]);
+                        }}
+                        className="ml-1 p-0.5 hover:bg-support2 rounded-full transition-colors flex-shrink-0"
+                        title="Clear all selections"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5 text-support3 hover:text-text-black">
+                          <path
+                            fillRule="evenodd"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </Button>
+                </Dropdown>
               </div>
             </div>
+
+            {/* Users Table */}
+            <div className="mt-6 overflow-x-auto rounded-[8px] border border-support2">
+            <div className="min-w-[600px]">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#F7F7F7] text-left text-text-black font-semibold">
+                    <th className="px-6 py-4 font-medium">Name</th>
+                    <th className="px-6 py-4 font-medium">Email</th>
+                    <th className="px-6 py-4 font-medium">Role</th>
+                    <th className="px-6 py-4 font-medium">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="text-[#1F1F1F]">
+                  {pagedUsers.map(u => (
+                    <tr key={u.id} className="border-t border-support2">
+                      <td className="px-6 py-5">{u.name}</td>
+                      <td className="px-6 py-5">{u.email}</td>
+                      <td className="px-6 py-5">
+                        <span className={`inline-flex rounded-full px-3 py-1 text-[14px] font-semibold ${rolePill(u.role)}`}>
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-3">
+                          {u.status === "active" ? (
+                            <button
+                              onClick={() => handleBan(u.id)}
+                              className="rounded-[10px] bg-[#FFE5E5] px-6 py-2 text-[14px] font-semibold text-[#E25A5A] hover:bg-[#FFD9D9] transition"
+                            >
+                              Ban
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleUnban(u.id)}
+                              className="rounded-[10px] bg-[#F2F2F2] px-4 py-2 text-[14px] font-semibold text-[#9B9B9B]"
+                            >
+                              Unban
+                            </button>
+                          )}
+
+                          {/* Change Role Dropdown */}
+                          <Dropdown
+                            dropdownRender={() => (
+                              <div className="bg-white rounded-[12px] shadow-md p-2 min-w-[140px]">
+                                {roles.map(role => (
+                                  <div
+                                    key={role}
+                                    className="cursor-pointer hover:bg-[#3EBAD080] px-2 py-1 rounded dropdown-item"
+                                    onClick={() => handleChangeRole(u.id, role)}
+                                  >
+                                    <Checkbox
+                                      className="custom-checkbox"
+                                      checked={u.role === role}
+                                    >
+                                      {role}
+                                    </Checkbox>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            trigger={["click"]}
+                          >
+                            <Button 
+                              style={{ fontWeight: 600 }}
+                              className="font-sans text-[16px] px-[20px] py-[8px] border-none rounded-[12px] w-[140px] flex justify-between items-center my-role-button"
+                              >
+                                {u.role} 
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-5">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                              </Button>
+                          </Dropdown>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-center pt-[20px]">
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={filteredUsers.length}
+                onChange={(page, size) => {
+                  setCurrentPage(page);
+                  if (size) setPageSize(size);
+                }}
+                showSizeChanger
+                pageSizeOptions={["3","6","9","12"]}
+                className="custom-pagination"
+              />
+            </div>
           </div>
-        </>
+        </div>
+      </div>
+
+      {/* Confirm Modal */}
+      {confirmUserId && confirmAction && (
+        <PopupModal
+          title={confirmAction === "ban" ? "Ban this user?" : "Unban this user?"}
+          message={
+            confirmAction === "ban" ? (
+              <>This will remove all user data. <br /> Do you want to continue?</>
+            ) : (
+              <>Their account will be reactivated.<br /> Do you want to continue?</>
+            )
+          }
+          confirmText="Yes"
+          cancelText="Cancel"
+          confirmColor={confirmAction === "ban" ? "red" : "green"}
+          onConfirm={performConfirm}
+          onCancel={() => { setConfirmUserId(null); setConfirmAction(null); }}
+        />
       )}
     </div>
   );
