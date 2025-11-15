@@ -50,9 +50,9 @@ const confirmSaveName = () => {
   setShowSavePopupName(false);
 };
   return (
-    <div className="flex min-h-screen bg-bg-light font-sans flex-col pt-[50px] px-[15px] sm:px-[25px] lg:px-[60px]">
+<div className="flex flex-col min-h-screen bg-bg-light">
       {/* Top Navbar + Back button */}
-      <div className="w-full flex flex-col lg:flex-row lg:items-center relative mb-6">
+  <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] lg:top-[50px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
         <div className="flex justify-start mb-4 lg:mb-0">
           <button
             onClick={() => {
@@ -79,6 +79,7 @@ const confirmSaveName = () => {
       </div>
 
       {/* Main container */}
+      <div className=" sm:pt-[80px] px-4 sm:px-6 w-full">
       <div className="flex flex-col lg:flex-row gap-6 bg-white px-[30px] py-[30px] rounded-[20px] max-w-[940px] w-full mx-auto my-[60px]">
         {/* Sidebar */}
         <div className="bg-white rounded-[12px] shadow-md px-[25px] py-[15px] flex flex-col gap-[10px] self-start">
@@ -249,6 +250,10 @@ const confirmSaveName = () => {
           </div>
         </main>
       </div>
+      </div>
+      <footer className="flex items-center justify-center py-[20px] text-[14px] font-normal mt-auto bg-bg-light">
+        © 2025 Schedio. All rights reserved.
+      </footer>
       {showSavePopupName && (
         <PopupModal
           title="Save Changes?"

@@ -137,9 +137,9 @@ console.log("User in HomeAdmin:", user);
 		</div>
 		</div>
 	  </div>
-	  <div className="flex items-center justify-center py-[10px] pt-[30px] text-[14px] font-normal">
-		© 2025 Schedio. All rights reserved.
-	  </div>
+	  <footer className="flex items-center justify-center py-[20px] text-[14px] font-normal mt-auto bg-bg-light">
+        © 2025 Schedio. All rights reserved.
+      </footer>
 	</div>
   );
 };

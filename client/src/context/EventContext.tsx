@@ -4,6 +4,11 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 // Status สำหรับ user / organizer/admin
 export type UserEventStatus = "upcoming" | "joined" | "full";
 export type AdminEventStatus = "Pending" | "Approved" | "Rejected";
+export interface UserJoined {
+  id: string;
+  name: string;
+  email: string;
+}
 export interface Event {
   id: string;
   title: string;
@@ -29,6 +34,8 @@ export interface Event {
   posterUrl?: string;
   proposalName?: string;
   proposalUrl?: string;
+  joinedUsers?: UserJoined[]; 
+
 }
 
 
@@ -70,6 +77,10 @@ const mockEvents: Event[] = [
     proposalName: "Chicken Workshop Proposal",
     proposalUrl: "https://drive.google.com/file/d/1zBLjv1FPp4q7O-sGiESp66ZXCU1rfcGa/view?usp=sharing",
     statusDate: "2025-11-02", // ถ้าต้องใช้เก็บวันที่สถานะ
+    joinedUsers: [
+      { id: "u1", name: "Alice Johnson", email: "alice@example.com"},
+      { id: "u2", name: "Bob Smith", email: "bob@example.com" },
+    ],
   },
   {
     id: "2",
@@ -79,7 +90,7 @@ const mockEvents: Event[] = [
     location: "CB5202",
     duration: "3 hr.",
     totalseats: 25,
-    currentParticipants: 0,
+    currentParticipants: 5,
     adminStatus: "Pending",
     phone: 9876543210,
     tags: ["Workshop", "Cultural"],
@@ -114,6 +125,10 @@ const mockEvents: Event[] = [
     posterUrl: "",
     proposalName: "Creative Writing Contest Proposal",
     proposalUrl: "",
+    joinedUsers: [
+      { id: "u1", name: "Alice Johnson", email: "alice@example.com"  },
+      { id: "u2", name: "Bob Smith", email: "bob@example.com" },
+    ],
   },
 ];
 

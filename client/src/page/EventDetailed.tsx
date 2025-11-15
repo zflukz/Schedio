@@ -34,8 +34,8 @@ function EventDetailedPage() {
 
 
   return (
-    <div className="font-sans bg-background min-h-screen pt-[50px]">
-    <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
+<div className="flex flex-col min-h-screen bg-bg-light">
+  <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] lg:top-[50px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
       {/* Back Button */}
       <div className="flex justify-start mb-4 lg:mb-0">
         <button
@@ -62,7 +62,7 @@ function EventDetailedPage() {
       </div>
     </div>
 
-      <div className="my-[50px] px-4 sm:px-6">
+      <div className="my-[30px] lg:mt-[150px] px-4 sm:px-6">
         <EventDetailedcard event={event} user={user}/>
       </div>
       <div className="pb-[80px]">
@@ -72,9 +72,9 @@ function EventDetailedPage() {
       />
       </div>      
 
-      <div className="flex items-center justify-center py-[10px] pt-[30px] text-[14px] font-normal">
+       <footer className="flex items-center justify-center py-[20px] text-[14px] font-normal mt-auto bg-bg-light">
         © 2025 Schedio. All rights reserved.
-      </div>
+      </footer>
     </div>
   );
 }

@@ -109,10 +109,10 @@ const UserManagement: React.FC = () => {
   const pagedUsers = filteredUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <div className="bg-bg-light min-h-screen pb-12 pt-10">
+<div className="flex flex-col min-h-screen bg-bg-light">
       {/* Top section */}
-      <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
-        <div className="flex justify-start mb-4 lg:mb-0">
+  <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] lg:top-[50px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
+        <div className="flex justify-start mb-4 lg:mb-0 ">
           <button
             onClick={() => navigate(-1)}
             className="flex items-center bg-white text-black py-[8px] px-[20px] rounded-full font-semibold text-[16px] hover:shadow-md transition z-10"
@@ -129,10 +129,10 @@ const UserManagement: React.FC = () => {
       </div>
 
       {/* Main content */}
-      <div className="flex justify-center items-center pt-[80px]">
+      <div className="flex-1 flex justify-center items-center pt-[80px]">
         <div className="px-4 sm:px-6 w-full">
           <div className="max-w-[1200px] mx-auto bg-white p-[25px] rounded-2xl shadow-sm ">
-            <h1 className="text-[28px] sm:text-[30px] font-semibold text-[#1F1F1F]">Users Management</h1>
+            <h1 className="text-[28px] sm:text-[30px] font-semibold text-text-black">Users Management</h1>
 
             {/* Search Bar */}
             <div className="mt-4 flex flex-wrap gap-4 items-center">
@@ -245,7 +245,7 @@ const UserManagement: React.FC = () => {
             <div className="min-w-[600px]">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#F7F7F7] text-left text-text-black font-semibold">
+                  <tr className="bg-support1 text-left text-text-black font-semibold">
                     <th className="px-6 py-4 font-medium">Name</th>
                     <th className="px-6 py-4 font-medium">Email</th>
                     <th className="px-6 py-4 font-medium">Role</th>
@@ -339,6 +339,9 @@ const UserManagement: React.FC = () => {
           </div>
         </div>
       </div>
+        <footer className="flex items-center justify-center py-[20px] text-[14px] font-normal mt-auto bg-bg-light">
+        © 2025 Schedio. All rights reserved.
+      </footer>
 
       {/* Confirm Modal */}
       {confirmUserId && confirmAction && (

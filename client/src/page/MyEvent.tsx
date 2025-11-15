@@ -28,9 +28,9 @@ const MyEventsList: React.FC = () => {
 
   if (myEvents.length === 0) {
     return (
-      <div className="font-sans bg-bg-light min-h-screen flex flex-col pt-[50px]">
+      <div className="font-sans bg-bg-light min-h-screen flex flex-col ">
 		{/* Top section with Navbar and Back button */}
-		<div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
+    <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] lg:top-[50px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
       {/* Back Button */}
       <div className="flex justify-start mb-4 lg:mb-0">
         <button
@@ -58,7 +58,7 @@ const MyEventsList: React.FC = () => {
     </div>
 
 		{/* Center message section */}
-		<div className="flex flex-col justify-center items-center flex-1 gap-[30px] pb-[60px]">
+		<div className="flex flex-col justify-center items-center flex-1 gap-[30px] pb-[60px] pt-[80px]">
 		<p className="text-[26px] sm:text-[30px] font-semibold text-text-black text-center px-4">
 			No events joined yet. <br />Explore and join some!
 		</p>
@@ -84,8 +84,8 @@ const MyEventsList: React.FC = () => {
   }
 
   return (
-    <div className="font-sans bg-bg-light min-h-screen pt-[50px] ">
-      <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
+<div className="font-sans bg-bg-light min-h-screen flex flex-col">
+  <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] lg:top-[50px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
       {/* Back Button */}
       <div className="flex justify-start mb-4 lg:mb-0">
         <button
@@ -113,7 +113,7 @@ const MyEventsList: React.FC = () => {
     </div>
 
       {/* Joined Events List */}
-      <div className="flex justify-center items-center pt-[80px]">
+<div className="flex-1 flex flex-col justify-start mt-[30px] lg:mt-[150px]">
       <div className="px-4 sm:px-6 w-full">
         <div className="max-w-[1200px] mx-auto bg-white p-[25px] rounded-2xl shadow-sm ">
           {/* Title */}
@@ -144,7 +144,7 @@ const MyEventsList: React.FC = () => {
         </div>
         </div>
       </div>
-      <div className="flex items-center justify-center py-[10px] pt-[50px] text-[14px] font-normal">
+      <div className="flex items-center  justify-center py-[20px] text-[14px] font-normal bg-bg-light">
         © 2025 Schedio. All rights reserved.
       </div>
     </div>
