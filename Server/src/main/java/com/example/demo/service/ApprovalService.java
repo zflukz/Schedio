@@ -51,8 +51,8 @@ public class ApprovalService {
     public List<Approval> getFilteredApprovals(String search, List<E_EventStatus> decisions, Instant startDate, Instant endDate) {
         return approvalRepository.findAll().stream()
                 .filter(a -> decisions == null || decisions.isEmpty() || decisions.contains(a.getDecision()))
-                .filter(a -> startDate == null || !a.getDecidedAt().isBefore(startDate))
-                .filter(a -> endDate == null || !a.getDecidedAt().isAfter(endDate))
+                .filter(a -> startDate == null || !a.getEvent().getStartsAt().isBefore(startDate))
+                .filter(a -> endDate == null || !a.getEvent().getStartsAt().isAfter(endDate))
                 .filter(a -> search == null || search.trim().isEmpty() || matchesSearch(a, search.toLowerCase()))
                 .toList();
     }
@@ -60,8 +60,8 @@ public class ApprovalService {
     public List<Approval> getFilteredApprovalsByOrganizer(UUID organizerId, String search, List<E_EventStatus> decisions, Instant startDate, Instant endDate) {
         return approvalRepository.findByOrganizer(organizerId).stream()
                 .filter(a -> decisions == null || decisions.isEmpty() || decisions.contains(a.getDecision()))
-                .filter(a -> startDate == null || !a.getDecidedAt().isBefore(startDate))
-                .filter(a -> endDate == null || !a.getDecidedAt().isAfter(endDate))
+                .filter(a -> startDate == null || !a.getEvent().getStartsAt().isBefore(startDate))
+                .filter(a -> endDate == null || !a.getEvent().getStartsAt().isAfter(endDate))
                 .filter(a -> search == null || search.trim().isEmpty() || matchesOrganizerSearch(a, search.toLowerCase()))
                 .toList();
     }

@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/public/**",
+                                "/api/events/filter", // public event filtering
                                 "/login", // endpoint ที่ออก JWT
                                 "/register" // registration endpoint
                         ).permitAll()
