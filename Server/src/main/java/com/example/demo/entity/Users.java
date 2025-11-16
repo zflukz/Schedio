@@ -13,21 +13,32 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users",
-        indexes = @Index(name = "idx_users_role", columnList = "role"),
-        uniqueConstraints = @UniqueConstraint(name = "uk_users_email", columnNames = "email"))
+@Builder
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_users_role", columnList = "role"),
+                @Index(name = "idx_users_googleid", columnList = "GoogleID")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_users_googleid", columnNames = "GoogleID")
+        }
+)
+
 public class Users {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="user_id", updatable = false)
     private UUID userID;
 
-    @Column(name="username", length = 100, nullable = false)
+    @Column(name="username", length = 100) // nullable = true
     private String userName;
 
-    @JsonIgnore // ป้องกันรั่วใน Response
-    @Column(name="password", length = 100, nullable = false)
+    @JsonIgnore
+    @Column(name="password", length = 100) // nullable = true
     private String userPassword;
 
     @Column(name="firstname", length = 100)
@@ -46,6 +57,20 @@ public class Users {
     @Column(name ="phone", length = 20)
     private String userPhone;
 
+    @Column(name = "GoogleID")
+    private String googleID;
+
+
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_event",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    private Set<Events> events = new HashSet<>();
+
 
     public Users(String userName, String userPassword, String userEmail){
         this.userName = userName;
@@ -54,17 +79,19 @@ public class Users {
     }
 
 
-//    // ผู้ใช้เป็นผู้สร้างอีเวนต์ (1:N)
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "organizer", fetch = FetchType.LAZY)
-//    private Set<Events> createdEvents = new HashSet<>();
-//
-//    // การลงทะเบียนของผู้ใช้ (1:N) ผ่าน entity กลาง
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<EventRegisters> registrations = new HashSet<>();
-//
-//
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
 
 
 }

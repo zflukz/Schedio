@@ -1,21 +1,51 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useUser } from "../App";
 
-interface User {
-  name: string;
-  role: "admin" | "organizer" | "user";
-  image?: string;
-}
+const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, setUser } = useUser();
+  const isMyEventsPage = location.pathname === "/myevent";
+  
+  const getUserRole = () => {
+    if (!user?.userRole) return "attendee";
+    const role = user.userRole.toLowerCase();
+    return role === "admin" || role === "organizer" ? role : "attendee";
+  };
+  
+  const getUserName = () => {
+    return user?.firstName || user?.userName || "User";
+  };
 
-interface NavbarProps {
-  user?: User | null;
-}
+  const handleLogoClick = () => {
+    const role = getUserRole();
+    if (!user) {
+      navigate("/"); // ถ้ายังไม่ login ให้ไปหน้า home ธรรมดา
+      return;
+    }
+    switch (role) {
+      case "admin":
+        navigate("/admin/dashboard"); // หน้า home ของ admin
+        break;
+      case "organizer":
+        navigate("/organizer/dashboard"); // หน้า home ของ organizer
+        break;
+      case "attendee":
+        navigate("/home"); // หน้า home ของ user
+        break;
+      default:
+        navigate("/home"); // fallback
+    }
+  };
 
-const Navbar: React.FC<NavbarProps> = ({ user }) => {
   return (
-    <nav className="bg-white w-full max-w-[960px] min-w-[600px] shadow-md rounded-full mx-auto">
+    <nav className="bg-white w-full max-w-[960px] min-w-[300px] shadow-md rounded-full mx-auto">
       <div className="font-sans flex items-center justify-between px-[50px] py-[24px] w-full">
         {/* Left: Logo with hover */}
-        <div className="relative flex items-center cursor-pointer group">
+        <div className="relative flex items-center cursor-pointer group"
+        onClick={handleLogoClick}
+        >
           <img src="/Logo-25.svg" alt="Logo" className="max-h-[25px]" />
           <img
             src="/Logo-25.svg"
@@ -31,43 +61,51 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
 
         {/* Right: User section */}
         {!user ? (
-          <button className="text-[18px] bg-primary hover:bg-primaryhover text-white font-bold px-4 py-2 rounded-full transition">
+          <button 
+          className="text-[18px] bg-primary hover:bg-primaryhover text-white font-bold px-4 py-2 rounded-full transition"
+          onClick={() => navigate("/signin")}
+          >
             Sign In
           </button>
         ) : (
           <div className="flex items-center space-x-5">
             {/* Dynamic menu by role */}
-            {user.role === "admin" && (
+            {getUserRole() === "admin" && (
               <>
-                <button className="text-[18px] font-bold text-black hover:text-primary transition">
+                <button 
+                  className="text-[18px] font-bold text-black hover:text-primary transition"
+                  onClick={() => navigate("/admin/usermanagement")}
+                >
                  User Management
                 </button>
                 
               </>
             )}
 
-            {user.role === "organizer" && (
+            {getUserRole() === "organizer" && (
               <>
-                
+               
               </>
             )}
 
-            {user.role === "user" && (
-              <button className="text-[18px] font-bold text-black hover:text-primary transition">
+            {getUserRole() === "attendee" && (
+              <button 
+                onClick={() => navigate("/myevent")}
+                className={`text-[18px] font-bold transition ${
+                  isMyEventsPage ? "text-primary" : "text-black hover:text-primary"
+                }`}
+              >
                 My Events
               </button>
             )}
 
             {/* User info */}
-            <div className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full">
-              {user.image && (
-                <img
-                  src={user.image}
-                  alt="Profile"
-                  className="h-6 w-6 rounded-full"
-                />
-              )}
-              <span className="text-[18px] font-bold text-black">{user.name}</span>
+            <div 
+              className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full cursor-pointer"
+              onClick={() => navigate("/myaccount")}
+            >
+              <span className="text-[18px] font-bold text-white">{getUserName()}
+              </span>
             </div>
           </div>
         )}
