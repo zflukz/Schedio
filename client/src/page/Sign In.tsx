@@ -20,7 +20,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
               userEmail: data.email,
             }
           : {
-              userName: data.username,
+              usernameOrEmail: data.username,
               userPassword: data.password,
             };
 

@@ -36,5 +36,7 @@ public class EventController {
                         .data(events)
                         .build()
         );
+
+        
     }
 }
