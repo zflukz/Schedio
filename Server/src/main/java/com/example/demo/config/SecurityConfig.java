@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/public/**",
+                                "/api/events/filter", // public event filtering
                                 "/login", // endpoint ที่ออก JWT
                                 "/register" // registration endpoint
                         ).permitAll()
@@ -82,12 +83,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/public/**","/error",
-                                "/oauth2/**","/login/**",
-                                "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html",
+                                "/oauth2/**","/login/**","/login","/register",
+                                "/v3/api-docs/**","/swagger-ui/**",
                                 "/favicon.ico","/assets/**","/static/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(o -> o
+                        .authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
                         .successHandler(oauth2SuccessHandler)
                         .failureHandler(oauth2FailureHandler)
                 );
