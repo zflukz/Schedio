@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.common.ApiResponse;
 import com.example.demo.controller.dto.AdminDto;
+import com.example.demo.controller.dto.ChangeRoleDto;
 import com.example.demo.controller.dto.CreateUserDto;
 import com.example.demo.controller.dto.EditUserDto;
 import com.example.demo.entity.Users;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
 
@@ -39,8 +41,7 @@ public class AdminController {
 
 
     // GET /users  — ดึงผู้ใช้ทั้งหมด
-    @GetMapping({"/getAll"})
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping({"/getAll", "/users"})
     public ResponseEntity<ApiResponse<List<Users>>> getAll() {
         List<Users> users = _userService.getAll();
         return ResponseEntity.ok(
@@ -50,6 +51,26 @@ public class AdminController {
                         .data(users)
                         .build()
         );
+    }
+
+    // GET /users/{userId} — ดึงผู้ใช้ตาม ID
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ApiResponse<Users>> getUserById(@PathVariable UUID userId) {
+        return _userRepository.findById(userId)
+                .map(user -> ResponseEntity.ok(
+                        ApiResponse.<Users>builder()
+                                .success(true)
+                                .message("User found")
+                                .data(user)
+                                .build()
+                ))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        ApiResponse.<Users>builder()
+                                .success(false)
+                                .message("User not found")
+                                .data(null)
+                                .build()
+                ));
     }
 
 
@@ -108,10 +129,56 @@ public class AdminController {
                             .data(null)
                             .build()
             ));
+    }
 
+    // POST /users/role — เปลี่ยน role ของผู้ใช้
+    @PostMapping("/users/role")
+    public ResponseEntity<ApiResponse<Users>> changeUserRole(@Valid @RequestBody ChangeRoleDto dto) {
+        return _userRepository.findById(dto.getUserId())
+                .map(user -> {
+                    user.setUserRole(dto.getRole());
+                    Users updatedUser = _userRepository.save(user);
+                    
+                    return ResponseEntity.ok(
+                            ApiResponse.<Users>builder()
+                                    .success(true)
+                                    .message("User role updated successfully to " + dto.getRole())
+                                    .data(updatedUser)
+                                    .build()
+                    );
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        ApiResponse.<Users>builder()
+                                .success(false)
+                                .message("User not found")
+                                .data(null)
+                                .build()
+                ));
+    }
 
-
-
-
+    // DELETE /users/{userId} — ลบหรือ ban ผู้ใช้ (soft delete)
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable UUID userId) {
+        return _userRepository.findById(userId)
+                .map(user -> {
+                    // Soft delete - could add isBanned or isDeleted field to Users entity
+                    // For now, we'll actually delete
+                    _userRepository.delete(user);
+                    
+                    return ResponseEntity.ok(
+                            ApiResponse.<Void>builder()
+                                    .success(true)
+                                    .message("User deleted successfully")
+                                    .data(null)
+                                    .build()
+                    );
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        ApiResponse.<Void>builder()
+                                .success(false)
+                                .message("User not found")
+                                .data(null)
+                                .build()
+                ));
     }
 }

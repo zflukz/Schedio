@@ -1,55 +1,58 @@
 package com.example.demo.controller.dto;
 
 import com.example.demo.entity.enums.E_EventCategory;
-import com.example.demo.entity.enums.E_EventStatus;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateEventDto {
     
     @NotBlank(message = "Title is required")
+    @Size(max = 500, message = "Title cannot exceed 500 characters")
     private String title;
-
-     @NotBlank(message = "Location is required")
-     private String location;
-
-    private Integer activityHour;
-
-    @NotBlank(message = "Organizer name is required")
-    private String eventBy;
-
-    @NotBlank(message = "Contact email is required")
-    private String eventContactEmail;
-
-    @NotBlank(message = "Contact phone number is required")
-    private String eventContactPhone;
-
-    @NotBlank(message = "Description is required")
+    
+    @Size(max = 5000, message = "Description cannot exceed 5000 characters")
     private String description;
-
-    @NotNull(message = "Start date/time is required")
+    
+    @NotNull(message = "Start time is required")
     private Instant startsAt;
-
-    @NotNull(message = "End date/time is required")
+    
+    @NotNull(message = "End time is required")
     private Instant endsAt;
-
-    @NotNull(message = "Event category is required")
-    private E_EventCategory eventCategory;
-
-//    @NotNull(message = "Capacity is required")
-    private Integer capacity;
-
+    
+    @Min(value = 0, message = "Capacity must be at least 0")
+    private Integer capacity; // 0 or null = unlimited
+    
+    @NotBlank(message = "Location is required")
+    @Size(max = 500, message = "Location cannot exceed 500 characters")
+    private String location;
+    
     @NotNull(message = "Walk-in status is required")
     private Boolean walkIn;
-
-    private String Poster;
-
-    @NotBlank(message = "Event Proposal is required")
-    private String filePdf;
-
-    private E_EventStatus status = E_EventStatus.PENDING;
+    
+    @Min(value = 0, message = "Activity hours must be at least 0")
+    private Integer activityHour;
+    
+    @NotEmpty(message = "At least one category is required")
+    private Set<E_EventCategory> categories;
+    
+    @Size(max = 100, message = "Event organizer name cannot exceed 100 characters")
+    private String eventBy;
+    
+    @Email(message = "Invalid email format")
+    @Size(max = 100, message = "Contact email cannot exceed 100 characters")
+    private String eventContactEmail;
+    
+    @Size(max = 20, message = "Contact phone cannot exceed 20 characters")
+    private String eventContactPhone;
+    
+    private String poster; // URL or base64
+    
+    private String filePdf; // URL or base64
 }
