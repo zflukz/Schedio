@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 "/api/public/**",
                                 "/api/events/filter", // public event filtering
                                 "/login", // endpoint ที่ออก JWT
-                                "/register" // registration endpoint
+                                "/register", // registration endpoint
+                                "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html" // swagger
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

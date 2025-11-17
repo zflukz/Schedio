@@ -12,4 +12,6 @@ import java.util.UUID;
 public interface EventRepository extends JpaRepository<Events, UUID> {
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Events e WHERE e.organizer.userID = :userId AND e.eventId = :eventId")
     boolean isUserOrganizerOfEvent(UUID userId, UUID eventId);
+    
+    boolean existsByTitle(String title);
 }

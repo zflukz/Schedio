@@ -1,5 +1,5 @@
 // src/context/EventContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 // Status สำหรับ user / organizer/admin
 export type UserEventStatus = "upcoming" | "joined" | "full";
@@ -41,14 +41,13 @@ export interface Event {
 
 interface EventContextType {
   events: Event[];
-  joinedEvents: string[]; // สำหรับ user
+  joinedEvents: string[];
   joinEvent: (eventId: string) => void;
   cancelJoinEvent: (eventId: string) => void;
-  // สำหรับ organizer/admin
   approveEvent: (eventId: string, approver: string) => void;
   rejectEvent: (eventId: string, rejecter: string, reason: string) => void;
-  addEvent: (e: Event) => void; 
-
+  addEvent: (e: Event) => void;
+  filterEvents: (filters?: { search?: string; category?: string[]; startDate?: string; endDate?: string }) => void;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -134,9 +133,55 @@ const mockEvents: Event[] = [
 
 
 export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [events, setEvents] = useState<Event[]>(mockEvents);
+  const [events, setEvents] = useState<Event[]>([]);
   const [joinedEvents, setJoinedEvents] = useState<string[]>([]);
   const addEvent = (e: Event) => setEvents((prev) => [...prev, e]);
+
+  const filterEvents = (filters?: { search?: string; category?: string[]; startDate?: string; endDate?: string }) => {
+    const token = localStorage.getItem("token");
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/events/filter`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        ...(token && { "Authorization": `Bearer ${token}` }),
+      },
+      body: JSON.stringify(filters || {}),
+    })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success && response.data) {
+          const mappedEvents: Event[] = response.data.map((item: any) => {
+            const startDate = new Date(item.startsAt);
+            const endDate = new Date(item.endsAt);
+            return {
+              id: item.eventId,
+              title: item.title,
+              duration: `${item.activityHour} hr.`,
+              date: startDate.toISOString().split('T')[0],
+              time: `${startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`,
+              location: item.location,
+              totalseats: item.capacity,
+              currentParticipants: 0,
+              adminStatus: "Approved",
+              phone: item.eventContactPhone || item.organizer.userPhone,
+              tags: item.categorySet || [],
+              imageUrl: item.poster || "",
+              description: item.description,
+              organizer: item.eventBy,
+              walkInAvailable: item.walkIn,
+              posterUrl: item.poster,
+              proposalUrl: item.filePdf,
+            };
+          });
+          setEvents(mappedEvents);
+        }
+      })
+      .catch(err => console.error("Failed to fetch events:", err));
+  };
+
+  useEffect(() => {
+    filterEvents();
+  }, []);
 
   // Update user status
   const updateUserStatus = (ev: Event, joined: boolean) => {
@@ -209,6 +254,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         approveEvent,
         rejectEvent,
         addEvent,
+        filterEvents,
       }}
     >
       {children}

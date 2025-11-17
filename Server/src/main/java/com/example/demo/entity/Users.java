@@ -73,7 +73,9 @@ public class Users {
         this.userPassword = userPassword;
         this.userEmail = userEmail;
     }
-
+    public getUSerID(){
+        return  user_id;
+    }
 
 
     public String getUserEmail() {
