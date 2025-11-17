@@ -3,6 +3,8 @@ import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import EventDetailedcard from "../component/EventDetailedcard";
 import { useLocation, useNavigate,useParams } from "react-router-dom"; 
 import { useEventContext, Event } from "../context/EventContext";
+import { useUser } from "../App";
+import { useEffect, useState } from "react";
 
 interface User {
   name: string;
@@ -18,14 +20,52 @@ interface Category {
 function EventDetailedPage() {
 
   const navigate = useNavigate();
-  const user: User | null = {
-  name: "Thanrada",
-  role: "user",
-};
+  const { user } = useUser();
   const location = useLocation();
-  const { event } = location.state as { event: Event };
   const { eventId } = useParams<{ eventId: string }>();
-  const { events } = useEventContext();
+  const { events, fetchHomeEvents, fetchOrganizerEvents } = useEventContext();
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+  const [isMyEvent, setIsMyEvent] = useState(false);
+  
+  useEffect(() => {
+    if (eventId && user) {
+      // Check if this is user's event by checking if user is organizer
+      const checkIfMyEvent = async () => {
+        if (user.userRole === "organizer") {
+          await fetchOrganizerEvents(user.userID);
+          const myEvent = events.find(e => e.id === eventId);
+          if (myEvent) {
+            setIsMyEvent(true);
+            setCurrentEvent(myEvent);
+            return;
+          }
+        }
+        
+        // If not organizer's event, fetch from home events
+        await fetchHomeEvents();
+        const homeEvent = events.find(e => e.id === eventId);
+        if (homeEvent) {
+          setIsMyEvent(false);
+          setCurrentEvent(homeEvent);
+        }
+      };
+      
+      checkIfMyEvent();
+    } else if (location.state?.event) {
+      // Fallback to location state if available
+      setCurrentEvent(location.state.event);
+    }
+  }, [eventId, user, fetchHomeEvents, fetchOrganizerEvents]);
+  
+  useEffect(() => {
+    // Update current event when events change
+    if (eventId) {
+      const foundEvent = events.find(e => e.id === eventId);
+      if (foundEvent) {
+        setCurrentEvent(foundEvent);
+      }
+    }
+  }, [events, eventId]);
 
   const handleViewDetails = (event: Event) => {
   navigate(`/event/${event.id}`, { state: { event } });
@@ -63,7 +103,16 @@ function EventDetailedPage() {
     </div>
 
       <div className="my-[30px] lg:mt-[150px] px-4 sm:px-6">
-        <EventDetailedcard event={event} user={user}/>
+        {currentEvent ? (
+          <EventDetailedcard event={currentEvent} user={user ? {
+            name: user.userName || user.firstName || "User",
+            role: user.userRole?.toLowerCase() === "admin" ? "admin" : user.userRole?.toLowerCase() === "organizer" ? "organizer" : "user"
+          } : null}/>
+        ) : (
+          <div className="flex justify-center items-center h-64">
+            <p className="text-gray-500 text-xl">Loading event details...</p>
+          </div>
+        )}
       </div>
       <div className="pb-[80px]">
       <HorizontalScrollCards

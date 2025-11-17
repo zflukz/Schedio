@@ -34,6 +34,9 @@ public class SecurityHandlers {
     /** เปลี่ยนเป็นโดเมน Frontend ของคุณได้ผ่าน application.yml */
     @Value("${app.frontend.home-url:http://localhost:3000/home}")
     private String frontendHomeUrl;
+    
+    @Value("${app.frontend.base-url:http://localhost:3000}")
+    private String frontendBaseUrl;
 
     /** 401 JSON สำหรับ API */
     @Bean
@@ -50,7 +53,7 @@ public class SecurityHandlers {
     /** OAuth2 success → ออก JWT แล้ว redirect กลับ FE */
     @Bean
     public AuthenticationSuccessHandler oauth2SuccessHandler() {
-        return new OAuth2SuccessHandler(jwtIssuer, userRepository, frontendHomeUrl);
+        return new OAuth2SuccessHandler(jwtIssuer, userRepository, frontendHomeUrl, frontendBaseUrl);
     }
 
     /** OAuth2 failure → ส่ง JSON กลับ */
@@ -93,11 +96,13 @@ public class SecurityHandlers {
         private final JwtIssuer jwtIssuer;
         private final UserRepository userRepository;
         private final String frontendHomeUrl;
+        private final String frontendBaseUrl;
 
-        OAuth2SuccessHandler(JwtIssuer jwtIssuer, UserRepository userRepository, String frontendHomeUrl) {
+        OAuth2SuccessHandler(JwtIssuer jwtIssuer, UserRepository userRepository, String frontendHomeUrl, String frontendBaseUrl) {
             this.jwtIssuer = jwtIssuer;
             this.userRepository = userRepository;
             this.frontendHomeUrl = frontendHomeUrl;
+            this.frontendBaseUrl = frontendBaseUrl;
         }
 
         @Override
@@ -132,7 +137,7 @@ public class SecurityHandlers {
             System.out.println("Generated JWT: " + jwt.substring(0, Math.min(50, jwt.length())));
 
             // Redirect to callback instead of home
-            String redirect = "http://localhost:3000/oauth2/callback?token=" + URLEncoder.encode(jwt, StandardCharsets.UTF_8);
+            String redirect = frontendBaseUrl + "/oauth2/callback?token=" + URLEncoder.encode(jwt, StandardCharsets.UTF_8);
             System.out.println("Redirecting to: " + redirect);
             resp.sendRedirect(redirect);
 

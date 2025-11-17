@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import  { useState, useEffect } from "react";
 import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import Eventcard from "../component/Eventcard";
@@ -6,6 +6,7 @@ import EventFilterbar from "../component/EventFilterbar";
 import { Pagination } from "antd";
 import { useNavigate } from "react-router-dom"; 
 import { useEventContext,Event } from "../context/EventContext";
+import { useUser } from "../App";
 
 
 interface Category {
@@ -27,7 +28,19 @@ function Home() {
     { id: 7, name: "Workshop" },
     { id: 8, name: "Volunteer" },
   ];
-  const { events } = useEventContext();
+  const { events, fetchHomeEvents, fetchMyRegistrations } = useEventContext();
+  const { user } = useUser();
+  const [hasFetched, setHasFetched] = useState(false);
+  
+  useEffect(() => {
+    if (!hasFetched) {
+      fetchHomeEvents();
+      if (user) {
+        fetchMyRegistrations();
+      }
+      setHasFetched(true);
+    }
+  }, [user, fetchHomeEvents, fetchMyRegistrations, hasFetched]);
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);

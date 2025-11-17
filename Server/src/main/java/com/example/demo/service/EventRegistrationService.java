@@ -86,6 +86,7 @@ public class EventRegistrationService {
     }
 
     private EventRegistrationResponseDto toDto(EventRegisters registration) {
+        Events event = registration.getEvent();
         return EventRegistrationResponseDto.builder()
                 .regId(registration.getRegId())
                 .userName(registration.getUser().getUserName())
@@ -93,6 +94,25 @@ public class EventRegistrationService {
                 .lastName(registration.getUser().getLastName())
                 .email(registration.getUser().getUserEmail())
                 .registeredAt(registration.getRegisteredAt())
+                .event(EventRegistrationResponseDto.EventInfo.builder()
+                        .eventId(event.getEventId())
+                        .title(event.getTitle())
+                        .description(event.getDescription())
+                        .location(event.getLocation())
+                        .startsAt(event.getStartsAt())
+                        .endsAt(event.getEndsAt())
+                        .capacity(event.getCapacity())
+                        .activityHour(event.getActivityHour())
+                        .poster(event.getPoster())
+                        .filePdf(event.getFilePdf())
+                        .walkIn(event.getWalkIn())
+                        .eventBy(event.getEventBy())
+                        .eventContactPhone(event.getEventContactPhone())
+                        .categorySet(event.getCategorySet() != null ? 
+                                event.getCategorySet().stream()
+                                        .map(Enum::name)
+                                        .collect(java.util.stream.Collectors.toSet()) : null)
+                        .build())
                 .build();
     }
 }

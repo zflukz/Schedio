@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiEndpoints } from '../config/api';
 
 interface AuthFormProps {
   mode: "signin" | "register";
@@ -202,7 +203,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
               </div>
               <button
                 type="button"
-                onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+                onClick={() => window.location.href = apiEndpoints.oauth2Google}
                 className="w-full font-semibold mt-[20px] text-[20px] border border-dashed  border-text-black bg-white text-text-black py-2 rounded-[12px] flex items-center justify-center hover:shadow-md transition"
               >
                 <img

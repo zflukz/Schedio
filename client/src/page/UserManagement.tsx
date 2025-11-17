@@ -1,20 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar";
 import { useUser } from "../App";
 import PopupModal from "../component/PopupAlert";
 import { Pagination, Dropdown, Button, Checkbox } from "antd";
+import { API_BASE_URL } from '../config/api';
 import "../App.css";
 
 type Role = "Admin" | "Organizer" | "User";
 type Status = "active" | "banned";
 
 interface UMUser {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-  status: Status;
+  userID: string;
+  userName: string;
+  firstName: string | null;
+  lastName: string | null;
+  userEmail: string;
+  userRole: string;
+  userPhone: string | null;
+  googleID: string | null;
 }
 
 const rolePill = (role: Role) => {
@@ -36,12 +40,32 @@ const UserManagement: React.FC = () => {
   const [pageSize, setPageSize] = useState<number>(6);
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const [users, setUsers] = useState<UMUser[]>([
-    { id: "u1", name: "Wongsakorn", email: "wongsakorn.yuc@gmail.com", role: "Admin", status: "active" },
-    { id: "u2", name: "Thanaphat", email: "thanaphat.pom@gmail.com", role: "Organizer", status: "active" },
-    { id: "u3", name: "Woramate", email: "woramate.sir@gmail.com", role: "User", status: "banned" },
-    { id: "u4", name: "Thanrada", email: "thanrada.fai@gmail.com", role: "User", status: "active" },
-  ]);
+  const [users, setUsers] = useState<UMUser[]>([]);
+
+  const fetchUsers = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/users`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        setUsers(result.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const [confirmUserId, setConfirmUserId] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<"ban" | "unban" | null>(null);
@@ -49,29 +73,53 @@ const UserManagement: React.FC = () => {
   const roles: Role[] = ["Admin", "Organizer", "User"];
 
 
-  const handleChangeRole = (id: string, role: Role) => {
-    setUsers(prev => prev.map(u => (u.id === id ? { ...u, role } : u)));
+  const handleChangeRole = async (userID: string, role: Role) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/users/role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          userId: userID,
+          role: role === "User" ? "ATTENDEE" : role.toUpperCase()
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setUsers(prev => prev.map(u => (u.userID === userID ? { ...u, userRole: role === "User" ? "ATTENDEE" : role.toUpperCase() } : u)));
+      }
+    } catch (error) {
+      console.error("Failed to change user role:", error);
+    }
   };
 
-  const handleBan = (id: string) => {
-    setConfirmUserId(id);
+  const handleBan = (userID: string) => {
+    setConfirmUserId(userID);
     setConfirmAction("ban");
   };
 
-  const handleUnban = (id: string) => {
-    setConfirmUserId(id);
+  const handleUnban = (userID: string) => {
+    setConfirmUserId(userID);
     setConfirmAction("unban");
   };
 
   const performConfirm = () => {
     if (!confirmUserId || !confirmAction) return;
-    setUsers(prev =>
-      prev.map(u =>
-        u.id === confirmUserId
-          ? { ...u, status: confirmAction === "ban" ? "banned" : "active" }
-          : u
-      )
-    );
+    // TODO: Implement API call for ban/unban
+    // setUsers(prev =>
+    //   prev.map(u =>
+    //     u.userID === confirmUserId
+    //       ? { ...u, status: confirmAction === "ban" ? "banned" : "active" }
+    //       : u
+    //   )
+    // );
     setConfirmUserId(null);
     setConfirmAction(null);
   };
@@ -102,8 +150,10 @@ const UserManagement: React.FC = () => {
 
 
   const filteredUsers = users.filter(u =>
-    u.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-    u.email.toLowerCase().includes(searchKeyword.toLowerCase())
+    u.userName.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    u.userEmail.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+    (u.firstName && u.firstName.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+    (u.lastName && u.lastName.toLowerCase().includes(searchKeyword.toLowerCase()))
   );
 
   const pagedUsers = filteredUsers.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -253,34 +303,27 @@ const UserManagement: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="text-[#1F1F1F]">
-                  {pagedUsers.map(u => (
-                    <tr key={u.id} className="border-t border-support2">
-                      <td className="px-6 py-5">{u.name}</td>
-                      <td className="px-6 py-5">{u.email}</td>
+                  {pagedUsers.map(u => {
+                    const displayName = u.firstName && u.lastName ? `${u.firstName} ${u.lastName}` : u.userName;
+                    const displayRole = u.userRole === 'ATTENDEE' ? 'User' : u.userRole.charAt(0) + u.userRole.slice(1).toLowerCase();
+                    return (
+                    <tr key={u.userID} className="border-t border-support2">
+                      <td className="px-6 py-5">{displayName}</td>
+                      <td className="px-6 py-5">{u.userEmail}</td>
                       <td className="px-6 py-5">
-                        <span className={`inline-flex rounded-full px-3 py-1 text-[14px] font-semibold ${rolePill(u.role)}`}>
-                          {u.role}
+                        <span className={`inline-flex rounded-full px-3 py-1 text-[14px] font-semibold ${rolePill(displayRole as Role)}`}>
+                          {displayRole}
                         </span>
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
-                          {u.status === "active" ? (
-                            <button
-                              onClick={() => handleBan(u.id)}
-                              className="rounded-[10px] bg-[#FFE5E5] px-6 py-2 text-[14px] font-semibold text-[#E25A5A] hover:bg-[#FFD9D9] transition"
-                            >
-                              Ban
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => handleUnban(u.id)}
-                              className="rounded-[10px] bg-[#F2F2F2] px-4 py-2 text-[14px] font-semibold text-[#9B9B9B]"
-                            >
-                              Unban
-                            </button>
-                          )}
+                          <button
+                            onClick={() => handleBan(u.userID)}
+                            className="rounded-[10px] bg-[#FFE5E5] px-6 py-2 text-[14px] font-semibold text-[#E25A5A] hover:bg-[#FFD9D9] transition"
+                          >
+                            Ban
+                          </button>
 
-                          {/* Change Role Dropdown */}
                           <Dropdown
                             dropdownRender={() => (
                               <div className="bg-white rounded-[12px] shadow-md p-2 min-w-[140px]">
@@ -288,11 +331,11 @@ const UserManagement: React.FC = () => {
                                   <div
                                     key={role}
                                     className="cursor-pointer hover:bg-[#3EBAD080] px-2 py-1 rounded dropdown-item"
-                                    onClick={() => handleChangeRole(u.id, role)}
+                                    onClick={() => handleChangeRole(u.userID, role)}
                                   >
                                     <Checkbox
                                       className="custom-checkbox"
-                                      checked={u.role === role}
+                                      checked={displayRole === role}
                                     >
                                       {role}
                                     </Checkbox>
@@ -306,7 +349,7 @@ const UserManagement: React.FC = () => {
                               style={{ fontWeight: 600 }}
                               className="font-sans text-[16px] px-[20px] py-[8px] border-none rounded-[12px] w-[140px] flex justify-between items-center my-role-button"
                               >
-                                {u.role} 
+                                {displayRole} 
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-5">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                 </svg>
@@ -315,7 +358,8 @@ const UserManagement: React.FC = () => {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

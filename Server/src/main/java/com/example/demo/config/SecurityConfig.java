@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/public/**",
                                 "/api/events/filter", // public event filtering
+                                "/api/events/create", // public event creation
                                 "/login", // endpoint ที่ออก JWT
                                 "/register", // registration endpoint
                                 "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html" // swagger
@@ -86,7 +87,7 @@ public class SecurityConfig {
                         .requestMatchers("/","/public/**","/error",
                                 "/oauth2/**","/login/**","/login","/register",
                                 "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html",
-                                "/swagger-resources/**","/webjars/**",
+                                "/swagger-ui/index.html","/swagger-resources/**","/webjars/**",
                                 "/favicon.ico","/assets/**","/static/**").permitAll()
                         .anyRequest().authenticated()
                 )

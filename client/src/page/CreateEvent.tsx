@@ -11,6 +11,7 @@ import Navbar from "../component/Navbar";
 import { useNavigate } from "react-router-dom";
 import PopupModal from "../component/PopupAlert";
 import { useEventContext } from "../context/EventContext";
+import { API_BASE_URL } from '../config/api';
 import dayjs from "dayjs";
 
 const { Dragger } = Upload;
@@ -49,6 +50,8 @@ const { addEvent } = useEventContext();
     proposal: null as File | null,
     categories: [] as string[],
   });
+  
+  const [loading, setLoading] = useState(false);
 
 	const [modal, setModal] = useState<{
 		show: boolean;
@@ -78,8 +81,9 @@ const { addEvent } = useEventContext();
   };
 
   const handleFileChange = (key: string, info: any) => {
-    if (info.file.status === "done" || info.file.originFileObj) {
-      handleChange(key, info.file.originFileObj);
+    const file = info.file.originFileObj || info.file;
+    if (file) {
+      handleChange(key, file);
     }
   };
 
@@ -103,37 +107,82 @@ const { addEvent } = useEventContext();
 
 
 const handleSubmit = () => {
+  // Validation
+  if (!form.title || !form.location || !form.description || !form.organizer || !form.phone || !form.date || !form.time || form.categories.length === 0) {
+    alert('Please fill in all required fields');
+    return;
+  }
+  
+  if (!form.poster || !form.proposal) {
+    alert('Please upload both poster and proposal files');
+    return;
+  }
+  
   setModal({
     show: true,
     title: "Save Event?",
     message: <>Do you want to save this event?</>,
     confirmColor: "green",
-    onConfirm: () => {
-      const newEvent = {
-        id: Date.now().toString(),
-        title: form.title,
-        duration: form.hours || "TBD",
-        date: form.date ? dayjs(form.date).format("YYYY-MM-DD") : "",
-        time: form.time ? dayjs(form.time).format("HH:mm") : "",
-        location: form.location,
-        totalseats: form.maxCapacityUnlimited
-          ? 0
-          : form.maxCapacityNumber || 0,
-        currentParticipants: 0,
-        tags: form.categories,
-        imageUrl: form.poster ? URL.createObjectURL(form.poster) : "",
-        description: form.description,
-        organizer: form.organizer,
-        phone: form.phone,
-        walkInAvailable: form.walkIn,
-        reminder: form.reminder ? `${form.reminderDays} days before` : "",
-        posterUrl: form.poster ? URL.createObjectURL(form.poster) : "",
-        proposalName: form.proposal?.name || "",
-        proposalUrl: "",
-      };
-      addEvent(newEvent);
-      setModal(prev => ({ ...prev, show: false }));
-      navigate("/organizer/success");
+    onConfirm: async () => {
+      setLoading(true);
+      try {
+        const formData = new FormData();
+        
+        // Required fields
+        formData.append('title', form.title);
+        formData.append('location', form.location);
+        formData.append('description', form.description);
+        formData.append('eventBy', form.organizer);
+        formData.append('eventContactEmail', localStorage.getItem('userEmail') || form.organizer + '@example.com');
+        formData.append('eventContactPhone', form.phone);
+        formData.append('walkIn', form.walkIn.toString());
+        
+        // Date/Time - combine date and time
+        const startDateTime = dayjs(form.date)
+          .hour(dayjs(form.time).hour())
+          .minute(dayjs(form.time).minute())
+          .toISOString();
+        formData.append('startsAt', startDateTime);
+        formData.append('endsAt', startDateTime);
+        
+        // Category
+        formData.append('eventCategory', form.categories[0].toUpperCase());
+        
+        // Optional fields
+        if (form.hours) formData.append('activityHour', form.hours);
+        if (!form.maxCapacityUnlimited && form.maxCapacityNumber) {
+          formData.append('capacity', form.maxCapacityNumber.toString());
+        }
+        
+        // Files
+        if (form.poster) formData.append('poster', form.poster);
+        if (form.proposal) formData.append('filePdf', form.proposal);
+        
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/api/events/create`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          setModal(prev => ({ ...prev, show: false }));
+          navigate("/organizer/success");
+        } else {
+          setModal(prev => ({ ...prev, show: false }));
+          alert('Error: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Error creating event:', error);
+        setModal(prev => ({ ...prev, show: false }));
+        alert('Network error. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     },
   });
 };
@@ -438,9 +487,10 @@ const handleSubmit = () => {
           <label className="flex gap-1  font-medium mb-[10px]">Event Proposal <div className="text-support3"> (Optional) </div> </label>
           <Dragger
 			beforeUpload={() => false}
-			onChange={(info) => handleFileChange("poster", info)}
+			onChange={(info) => handleFileChange("proposal", info)}
 			maxCount={1}
 			className="mt-2"
+			accept=".pdf"
 		>
 			<div className="flex flex-col items-center justify-center">
 			<p className="ant-upload-drag-icon">
@@ -482,8 +532,9 @@ const handleSubmit = () => {
 			</button>
 			<button 
 			    onClick={handleSubmit}
-				className="bg-night-default hover:bg-night-hover text-white px-5 py-2 rounded-[8px] w-full sm:w-auto">
-			Submit
+				disabled={loading}
+				className="bg-night-default hover:bg-night-hover disabled:bg-gray-400 text-white px-5 py-2 rounded-[8px] w-full sm:w-auto">
+			{loading ? 'Creating...' : 'Submit'}
 			</button>
         </div>
       </div>

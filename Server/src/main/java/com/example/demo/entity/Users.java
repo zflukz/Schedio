@@ -54,6 +54,7 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
+    @Builder.Default
     private E_Role userRole = E_Role.ATTENDEE;
 
     @Column(name ="phone", length = 20)
@@ -73,8 +74,8 @@ public class Users {
         this.userPassword = userPassword;
         this.userEmail = userEmail;
     }
-    public getUSerID(){
-        return  user_id;
+    public UUID getUserID(){
+        return userID;
     }
 
 

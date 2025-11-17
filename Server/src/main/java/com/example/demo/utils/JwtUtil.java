@@ -118,4 +118,12 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String getTokenFromRequest(jakarta.servlet.http.HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
 }

@@ -7,7 +7,7 @@ import { useUser } from "../App";
 import { useEventContext, Event } from "../context/EventContext";
 
 const EventOrganizerandAdminDatailed: React.FC = () => {
-  const { events } = useEventContext();
+  const { events ,approveEvent,rejectEvent } = useEventContext();
   const { user } = useUser(); 
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
@@ -100,9 +100,11 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
           <EventOrganizerAdminDetailCard
             event={{
               ...event,
-              statusDate: event.statusDate ?? new Date().toISOString().split("T")[0],
+              statusDate: event.statusDate ?? new Date().toISOString().split("T")[0]
             }}
             role={user?.userRole}
+            onApprove={() => approveEvent(event.id, "APPROVED")}
+            onReject={() => rejectEvent(event.id, user?.userName || "Admin", "Rejected")}
           />
         )}
 

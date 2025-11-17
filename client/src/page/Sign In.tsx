@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AuthForm from "../component/Sign In";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../App";
+import { API_BASE_URL, apiEndpoints } from '../config/api';
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
               userPassword: data.password,
             };
 
-      const response = await fetch(`http://localhost:8080${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -47,7 +48,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         await refreshUser();
         
         // Get updated user data and navigate based on role
-        const profileResponse = await fetch(`http://localhost:8080/api/profile`, {
+        const profileResponse = await fetch(apiEndpoints.profile, {
           headers: { "Authorization": `Bearer ${result.token}` }
         });
         

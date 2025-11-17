@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Navbar from "../component/Navbar";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination} from "antd";
@@ -11,9 +11,17 @@ import { useEventContext, Event } from "../context/EventContext";
 
 const HomeOrganizer: React.FC = () => {
 	const { user, setUser } = useUser(); 
-  const { events } = useEventContext();
+  const { myEvents, fetchOrganizerEvents } = useEventContext();
   const navigate = useNavigate();
-const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
+  const [hasFetched, setHasFetched] = useState(false);
+  
+  useEffect(() => {
+    if (user && user.userRole === "organizer" && !hasFetched) {
+      fetchOrganizerEvents(user.userID);
+      setHasFetched(true);
+    }
+  }, [user, fetchOrganizerEvents, hasFetched]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(4);
   const eventsPerPage = 4;
@@ -25,7 +33,7 @@ const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
   });
 
   const visibleEvents = useMemo(() => {
-  return filteredEvents.filter((e) => {
+  return myEvents.filter((e) => {
     const matchesSearch =
       filters.search === "" ||
       e.title.toLowerCase().includes(filters.search.toLowerCase());
@@ -36,7 +44,7 @@ const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
 
     return matchesSearch && matchesDate;
   });
-}, [filteredEvents, filters]);
+}, [myEvents, filters]);
 
 
 
@@ -44,12 +52,12 @@ const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
   const currentEvents = visibleEvents.slice(startIndex, startIndex + pageSize);
 
   const stats = useMemo(() => {
-  const total = events.length;
-  const approved = events.filter((e) => e.adminStatus === "Approved").length;
-  const pending = events.filter((e) => e.adminStatus === "Pending").length;
-  const rejected = events.filter((e) => e.adminStatus === "Rejected").length;
+  const total = myEvents.length;
+  const approved = myEvents.filter((e) => e.adminStatus === "Approved").length;
+  const pending = myEvents.filter((e) => e.adminStatus === "Pending").length;
+  const rejected = myEvents.filter((e) => e.adminStatus === "Rejected").length;
   return { total, approved, pending, rejected };
-}, [events]);
+}, [myEvents]);
 
 
 
@@ -61,7 +69,7 @@ if (!user || user.userRole !== "organizer") {
     );
   }
  const selectedEventId = "1"; // เปลี่ยนเป็น id ที่คุณอยากโชว์
-  const selectedEvent = events.find((ev) => ev.id === selectedEventId);
+  const selectedEvent = myEvents.find((ev) => ev.id === selectedEventId);
   return (
     <div className="font-sans bg-bg-light min-h-screen pt-[50px]">
         <div className="flex-1 flex justify-center px-[15px] sm:px-[25px] lg:px-0">
@@ -95,7 +103,7 @@ if (!user || user.userRole !== "organizer") {
       <div className="pt-[30px] px-4 sm:px-6">
         <div className="max-w-[1200px] mx-auto bg-white p-[25px] rounded-2xl shadow-sm py-[20px] ">
           <div className="flex flex-row items-start justify-between mb-6 gap-4">
-            <h2 className="text-[30px] font-semibold">My Events ({events.length})</h2>
+            <h2 className="text-[30px] font-semibold">My Events ({myEvents.length})</h2>
             <button
               className="flex gap-[10px] bg-night-default hover:bg-night-hover text-white font-semibold px-[15px] py-[8px] rounded-[8px] flex-shrink-0"
               onClick={() => navigate("/organizer/create event")}
@@ -134,7 +142,7 @@ if (!user || user.userRole !== "organizer") {
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={filteredEvents.length}
+            total={visibleEvents.length}
             onChange={(page, size) => {
               setCurrentPage(page);
               if (size) setPageSize(size);

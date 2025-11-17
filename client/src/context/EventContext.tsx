@@ -1,5 +1,6 @@
 // src/context/EventContext.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { API_BASE_URL } from '../config/api';
 
 // Status สำหรับ user / organizer/admin
 export type UserEventStatus = "upcoming" | "joined" | "full";
@@ -41,13 +42,18 @@ export interface Event {
 
 interface EventContextType {
   events: Event[];
+  myEvents: Event[];
   joinedEvents: string[];
   joinEvent: (eventId: string) => void;
   cancelJoinEvent: (eventId: string) => void;
   approveEvent: (eventId: string, approver: string) => void;
   rejectEvent: (eventId: string, rejecter: string, reason: string) => void;
   addEvent: (e: Event) => void;
-  filterEvents: (filters?: { search?: string; category?: string[]; startDate?: string; endDate?: string }) => void;
+  fetchHomeEvents: (filters?: { search?: string; category?: string[]; startDate?: string; endDate?: string }) => void;
+  fetchOrganizerEvents: (userId?: string) => Promise<void>;
+  fetchAdminEvents: () => Promise<void>;
+  fetchMyRegistrations: () => Promise<void>;
+  isMyEvent: (eventId: string) => boolean;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
@@ -134,12 +140,13 @@ const mockEvents: Event[] = [
 
 export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [myEvents, setMyEvents] = useState<Event[]>([]);
   const [joinedEvents, setJoinedEvents] = useState<string[]>([]);
   const addEvent = (e: Event) => setEvents((prev) => [...prev, e]);
 
-  const filterEvents = (filters?: { search?: string; category?: string[]; startDate?: string; endDate?: string }) => {
+  const fetchHomeEvents = (filters?: { search?: string; category?: string[]; startDate?: string; endDate?: string }) => {
     const token = localStorage.getItem("token");
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/events/filter`, {
+    fetch(`${API_BASE_URL}/api/events/filter`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
@@ -179,8 +186,165 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       .catch(err => console.error("Failed to fetch events:", err));
   };
 
+  const fetchOrganizerEvents = async (userId?: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/approval/filter-organizer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({})
+      });
+      
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        const mappedEvents: Event[] = result.data.map((approval: any) => {
+          const event = approval.event;
+          const startDate = new Date(event.startsAt);
+          const endDate = new Date(event.endsAt);
+          return {
+            id: event.eventId,
+            title: event.title,
+            duration: `${event.activityHour || 0} hr.`,
+            date: startDate.toISOString().split('T')[0],
+            time: `${startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`,
+            location: event.location,
+            totalseats: event.capacity || 0,
+            currentParticipants: 0,
+            adminStatus: approval.decision === 'APPROVED' ? 'Approved' : approval.decision === 'PENDING' ? 'Pending' : 'Rejected',
+            phone: event.eventContactPhone,
+            tags: event.categorySet || [],
+            imageUrl: event.poster || "",
+            description: event.description,
+            organizer: event.eventBy,
+            walkInAvailable: event.walkIn,
+            posterUrl: event.poster,
+            proposalUrl: event.filePdf,
+          };
+        });
+        setMyEvents(mappedEvents);
+        setEvents(prev => {
+          const existingIds = prev.map(e => e.id);
+          const newEvents = mappedEvents.filter(e => !existingIds.includes(e.id));
+          return [...prev, ...newEvents];
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch organizer events:", error);
+    }
+  };
+
+  const fetchAdminEvents = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/approval/filter-admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({})
+      });
+      
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        const mappedEvents: Event[] = result.data.map((approval: any) => {
+          const event = approval.event;
+          const startDate = new Date(event.startsAt);
+          const endDate = new Date(event.endsAt);
+          return {
+            id: event.eventId,
+            title: event.title,
+            duration: `${event.activityHour || 0} hr.`,
+            date: startDate.toISOString().split('T')[0],
+            time: `${startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`,
+            location: event.location,
+            totalseats: event.capacity || 0,
+            currentParticipants: 0,
+            adminStatus: approval.decision === 'APPROVED' ? 'Approved' : approval.decision === 'PENDING' ? 'Pending' : 'Rejected',
+            phone: event.eventContactPhone,
+            tags: event.categorySet || [],
+            imageUrl: event.poster || "",
+            description: event.description,
+            organizer: event.eventBy,
+            walkInAvailable: event.walkIn,
+            posterUrl: event.poster,
+            proposalUrl: event.filePdf,
+          };
+        });
+        setMyEvents(mappedEvents);
+        setEvents(prev => {
+          const existingIds = prev.map(e => e.id);
+          const newEvents = mappedEvents.filter(e => !existingIds.includes(e.id));
+          return [...prev, ...newEvents];
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch admin events:", error);
+    }
+  };
+
+  const fetchMyRegistrations = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/registrations/my-registrations`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        const eventIds = result.data.map((registration: any) => registration.event.eventId);
+        const registeredEvents: Event[] = result.data.map((registration: any) => {
+          const event = registration.event;
+          const startDate = new Date(event.startsAt);
+          const endDate = new Date(event.endsAt);
+          return {
+            id: event.eventId,
+            title: event.title,
+            duration: `${event.activityHour || 0} hr.`,
+            date: startDate.toISOString().split('T')[0],
+            time: `${startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`,
+            location: event.location,
+            totalseats: event.capacity || 0,
+            currentParticipants: 0,
+            adminStatus: "Approved",
+            phone: event.eventContactPhone,
+            tags: event.categorySet || [],
+            imageUrl: event.poster || "",
+            description: event.description,
+            organizer: event.eventBy,
+            walkInAvailable: event.walkIn,
+            posterUrl: event.poster,
+            proposalUrl: event.filePdf,
+          };
+        });
+        setJoinedEvents(eventIds);
+        setMyEvents(prev => [...prev, ...registeredEvents]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch my registrations:", error);
+    }
+  };
+
+  const isMyEvent = (eventId: string) => {
+    return myEvents.some(event => event.id === eventId) || joinedEvents.includes(eventId);
+  };
+
   useEffect(() => {
-    filterEvents();
+    fetchHomeEvents();
   }, []);
 
   // Update user status
@@ -191,57 +355,155 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   // User joins event
-  const joinEvent = (eventId: string) => {
-    setEvents(prev =>
-      prev.map(ev => {
-        if (ev.id === eventId && ev.currentParticipants < ev.totalseats) {
-          const updated = { ...ev, currentParticipants: ev.currentParticipants + 1 };
-          updated.userStatus = updateUserStatus(updated, true);
-          return updated;
+  const joinEvent = async (eventId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/registrations/register/${eventId}`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
-        return ev;
-      })
-    );
-    setJoinedEvents(prev => [...prev, eventId]);
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setEvents(prev =>
+          prev.map(ev => {
+            if (ev.id === eventId && ev.currentParticipants < ev.totalseats) {
+              const updated = { ...ev, currentParticipants: ev.currentParticipants + 1 };
+              updated.userStatus = updateUserStatus(updated, true);
+              return updated;
+            }
+            return ev;
+          })
+        );
+        setJoinedEvents(prev => [...prev, eventId]);
+      }
+    } catch (error) {
+      console.error("Failed to join event:", error);
+    }
   };
 
   // User cancels join
-  const cancelJoinEvent = (eventId: string) => {
-    setEvents(prev =>
-      prev.map(ev => {
-        if (ev.id === eventId && ev.currentParticipants > 0) {
-          const updated = { ...ev, currentParticipants: ev.currentParticipants - 1 };
-          updated.userStatus = updateUserStatus(updated, false);
-          return updated;
+  const cancelJoinEvent = async (eventId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/registrations/unregister/${eventId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
-        return ev;
-      })
-    );
-    setJoinedEvents(prev => prev.filter(id => id !== eventId));
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setEvents(prev =>
+          prev.map(ev => {
+            if (ev.id === eventId && ev.currentParticipants > 0) {
+              const updated = { ...ev, currentParticipants: ev.currentParticipants - 1 };
+              updated.userStatus = updateUserStatus(updated, false);
+              return updated;
+            }
+            return ev;
+          })
+        );
+        setJoinedEvents(prev => prev.filter(id => id !== eventId));
+      }
+    } catch (error) {
+      console.error("Failed to cancel join event:", error);
+    }
   };
 
   // Organizer/Admin approves
-  const approveEvent = (eventId: string, approver: string) => {
-    setEvents(prev =>
-      prev.map(ev => {
-        if (ev.id === eventId) {
-          return { ...ev, adminStatus: "Approved", approvedBy: approver };
-        }
-        return ev;
-      })
-    );
+  const approveEvent = async (eventId: string, decision: string, comment?: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/approval/approve/${eventId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          decision: decision,
+          comment: comment
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setEvents(prev =>
+          prev.map(ev => {
+            if (ev.id === eventId) {
+              return { ...ev, adminStatus: decision === "APPROVED" ? "Approved" : "Rejected" };
+            }
+            return ev;
+          })
+        );
+        setMyEvents(prev =>
+          prev.map(ev => {
+            if (ev.id === eventId) {
+              return { ...ev, adminStatus: decision === "APPROVED" ? "Approved" : "Rejected" };
+            }
+            return ev;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Failed to approve/reject event:", error);
+    }
   };
 
   // Organizer/Admin rejects
-  const rejectEvent = (eventId: string, rejecter: string, reason: string) => {
-    setEvents(prev =>
-      prev.map(ev => {
-        if (ev.id === eventId) {
-          return { ...ev, adminStatus: "Rejected", rejectedBy: rejecter, rejectReason: reason };
-        }
-        return ev;
-      })
-    );
+  const rejectEvent = async (eventId: string, rejecter: string, reason: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/approval/approve/${eventId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          decision: "REJECT",
+          comment: reason
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setEvents(prev =>
+          prev.map(ev => {
+            if (ev.id === eventId) {
+              return { ...ev, adminStatus: "Rejected", rejectedBy: rejecter, rejectReason: reason };
+            }
+            return ev;
+          })
+        );
+        setMyEvents(prev =>
+          prev.map(ev => {
+            if (ev.id === eventId) {
+              return { ...ev, adminStatus: "Rejected", rejectedBy: rejecter, rejectReason: reason };
+            }
+            return ev;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Failed to reject event:", error);
+    }
   };
 
   return (
@@ -254,7 +516,12 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         approveEvent,
         rejectEvent,
         addEvent,
-        filterEvents,
+        fetchHomeEvents,
+        fetchOrganizerEvents,
+        fetchAdminEvents,
+        fetchMyRegistrations,
+        myEvents,
+        isMyEvent,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Navbar from "../component/Navbar";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination, Button } from "antd";
@@ -10,10 +10,17 @@ import { useUser } from "../App";
 import { useEventContext, Event } from "../context/EventContext";
 
 const HomeAdmin: React.FC = () => {
-	const { events } = useEventContext();
+	const { myEvents, fetchAdminEvents } = useEventContext();
 	const { user, setUser } = useUser(); 
   const navigate = useNavigate();
-	const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
+  const [hasFetched, setHasFetched] = useState(false);
+  
+  useEffect(() => {
+    if (user && user.userRole === "admin" && !hasFetched) {
+      fetchAdminEvents();
+      setHasFetched(true);
+    }
+  }, [user, fetchAdminEvents, hasFetched]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(4);
   const eventsPerPage = 4;
@@ -25,7 +32,7 @@ const HomeAdmin: React.FC = () => {
   });
 
   const visibleEvents = useMemo(() => {
-  return filteredEvents.filter((e) => {
+  return myEvents.filter((e) => {
 	const matchesSearch =
 	  filters.search === "" ||
 	  e.title.toLowerCase().includes(filters.search.toLowerCase());
@@ -36,7 +43,7 @@ const HomeAdmin: React.FC = () => {
 
 	return matchesSearch && matchesDate;
   });
-}, [filteredEvents, filters]);
+}, [myEvents, filters]);
 
 
 const startIndex = (currentPage - 1) * pageSize;
@@ -44,15 +51,15 @@ const startIndex = (currentPage - 1) * pageSize;
   
 
   const stats = useMemo(() => {
-	const total = events.length;
-	const approved = events.filter((e) => e.adminStatus === "Approved").length;
-	const pending = events.filter((e) => e.adminStatus === "Pending").length;
-	const rejected = events.filter((e) => e.adminStatus === "Rejected").length;
+	const total = myEvents.length;
+	const approved = myEvents.filter((e) => e.adminStatus === "Approved").length;
+	const pending = myEvents.filter((e) => e.adminStatus === "Pending").length;
+	const rejected = myEvents.filter((e) => e.adminStatus === "Rejected").length;
 	return { total, approved, pending, rejected };
-  }, [events]);
+  }, [myEvents]);
   
 const selectedEventId = "1"; // เปลี่ยนเป็น id ที่คุณอยากโชว์
-  const selectedEvent = events.find((ev) => ev.id === selectedEventId);
+  const selectedEvent = myEvents.find((ev) => ev.id === selectedEventId);
 if (!user || user.userRole !== "admin") {
 	return (
 	  <div className="flex justify-center items-center h-screen text-xl text-gray-500">
@@ -125,7 +132,7 @@ console.log("User in HomeAdmin:", user);
 		  <Pagination
 			current={currentPage}
 			pageSize={pageSize}
-			total={filteredEvents.length}
+			total={visibleEvents.length}
 			onChange={(page, size) => {
 			  setCurrentPage(page);
 			  if (size) setPageSize(size);
