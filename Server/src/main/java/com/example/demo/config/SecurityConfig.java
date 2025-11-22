@@ -47,25 +47,22 @@ public class SecurityConfig {
     @Order(1)
     SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         http
-                // ครอบคลุมหลาย path ได้ด้วย varargs (ไม่ต้อง OrRequestMatcher/AntPathRequestMatcher)
                 .securityMatcher("/api/**")
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(apiEntryPoint).accessDeniedHandler(apiDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // preflight
-                        // ✅ เฉพาะ ADMIN เท่านั้น
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/events/filter").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll()
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/public/**",
-                                "/api/events/filter", // public event filtering
-                                "/api/events/create", // public event creation
-                                "/login", // endpoint ที่ออก JWT
-                                "/register", // registration endpoint
-                                "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html" // swagger
+                                "/login",
+                                "/register"
                         ).permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(f -> f.disable())

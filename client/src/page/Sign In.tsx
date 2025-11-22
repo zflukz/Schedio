@@ -16,9 +16,11 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
       const payload =
         mode === "register"
           ? {
-              userName: data.name,
+              userName: data.username,
               userPassword: data.password,
               userEmail: data.email,
+              userFristname: data.name,
+              userLastname: data.name
             }
           : {
               usernameOrEmail: data.username,

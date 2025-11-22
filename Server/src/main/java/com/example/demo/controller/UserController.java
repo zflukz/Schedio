@@ -78,13 +78,12 @@ public class UserController {
                         user.setFirstName(dto.getFirstName());
                     if (dto.getLastName() != null)
                         user.setLastName(dto.getLastName());
+                    if (dto.getUserName() != null)
+                        user.setUserName(dto.getUserName());
                     if (dto.getUserEmail() != null)
                         user.setUserEmail(dto.getUserEmail());
                     if (dto.getUserPhone() != null)
                         user.setUserPhone(dto.getUserPhone());
-                    if (dto.getUserRole() != null)
-                        user.setUserRole(dto.getUserRole());
-
 
                     Users updatedUser = _userRepository.save(user);
 

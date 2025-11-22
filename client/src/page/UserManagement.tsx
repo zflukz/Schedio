@@ -110,16 +110,30 @@ const UserManagement: React.FC = () => {
     setConfirmAction("unban");
   };
 
-  const performConfirm = () => {
+  const performConfirm = async () => {
     if (!confirmUserId || !confirmAction) return;
-    // TODO: Implement API call for ban/unban
-    // setUsers(prev =>
-    //   prev.map(u =>
-    //     u.userID === confirmUserId
-    //       ? { ...u, status: confirmAction === "ban" ? "banned" : "active" }
-    //       : u
-    //   )
-    // );
+    
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/users/${confirmUserId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Refresh user list after ban
+        fetchUsers();
+      }
+    } catch (error) {
+      console.error("Failed to ban user:", error);
+    }
+    
     setConfirmUserId(null);
     setConfirmAction(null);
   };

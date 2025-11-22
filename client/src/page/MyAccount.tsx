@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import Navbar from "../component/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import PopupModal from "../component/PopupAlert";
 import { useUser } from "../App";
+import { API_BASE_URL } from '../config/api';
 const MyAccount: React.FC = () => {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
@@ -23,9 +24,33 @@ const MyAccount: React.FC = () => {
     setShowSavePopupPhone(true);
   };
 
-  const confirmSavePhone = () => {
-    setIsEditingPhone(false);
-    setShowSavePopupPhone(false);
+  const confirmSavePhone = async () => {
+    const token = localStorage.getItem("token");
+    if (!token || !user) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/attendee/edit/${user.userID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          userPhone: user.userPhone
+        })
+      });
+      
+      const result = await response.json();
+       
+      if (result.success && result.data) {
+        setUser(result.data);
+        localStorage.setItem("userData", JSON.stringify(result.data));
+        setIsEditingPhone(false);
+        setShowSavePopupPhone(false);
+      }
+    } catch (error) {
+      console.error("Failed to update phone:", error);
+    }
   };
 
 const [isEditingName, setIsEditingName] = useState(false);
@@ -44,10 +69,33 @@ const handleSaveName = () => {
   setShowSavePopupName(true);
 };
 
-const confirmSaveName = () => {
-  // เมื่อผู้ใช้กดยืนยันใน popup
-  setIsEditingName(false);
-  setShowSavePopupName(false);
+const confirmSaveName = async () => {
+  const token = localStorage.getItem("token");
+  if (!token || !user) return;
+  
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/attendee/edit/${user.userID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        userName: user.userName
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success && result.data) {
+      setUser(result.data);
+      localStorage.setItem("userData", JSON.stringify(result.data));
+      setIsEditingName(false);
+      setShowSavePopupName(false);
+    }
+  } catch (error) {
+    console.error("Failed to update name:", error);
+  }
 };
   return (
 <div className="flex flex-col min-h-screen bg-bg-light">
@@ -113,7 +161,7 @@ const confirmSaveName = () => {
           <h1 className="text-[30px] font-semibold mb-[20px]">My Account</h1>
 
           <div className="flex flex-col gap-4">
-            {/* Name, Role */}
+            {/* Name, Role */} 
             <div className="flex items-center gap-6">
               <img src="/MyuserProfile.svg" alt="Avatar" className="w-16 h-16 rounded-full" />
               <div>
@@ -137,9 +185,9 @@ const confirmSaveName = () => {
                        fill="none" className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
                        onClick={handleSaveName}
                       >
-                          <path d="M16.9017 6.12874C18 7.25748 18 9.07416 18 12.7075V14.2925C18 17.9258 18 19.7425 16.9017 20.8713C15.8033 22 14.0355 22 10.5 22C6.96447 22 5.1967 22 4.09835 20.8713C3 19.7425 3 17.9258 3 14.2925V12.7075C3 9.07416 3 7.25748 4.09835 6.12874C5.1967 5 6.96447 5 10.5 5C14.0355 5 15.8033 5 16.9017 6.12874Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M7.5 5.5V10.3693C7.5 11.3046 7.5 11.7722 7.78982 11.9396C8.35105 12.2638 9.4038 11.1823 9.90375 10.8567C10.1937 10.6678 10.3387 10.5734 10.5 10.5734C10.6613 10.5734 10.8063 10.6678 11.0962 10.8567C11.5962 11.1823 12.6489 12.2638 13.2102 11.9396C13.5 11.7722 13.5 11.3046 13.5 10.3693V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M9 2H11C15.714 2 18.0711 2 19.5355 3.46447C21 4.92893 21 7.28595 21 12V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M16.9017 6.12874C18 7.25748 18 9.07416 18 12.7075V14.2925C18 17.9258 18 19.7425 16.9017 20.8713C15.8033 22 14.0355 22 10.5 22C6.96447 22 5.1967 22 4.09835 20.8713C3 19.7425 3 17.9258 3 14.2925V12.7075C3 9.07416 3 7.25748 4.09835 6.12874C5.1967 5 6.96447 5 10.5 5C14.0355 5 15.8033 5 16.9017 6.12874Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M7.5 5.5V10.3693C7.5 11.3046 7.5 11.7722 7.78982 11.9396C8.35105 12.2638 9.4038 11.1823 9.90375 10.8567C10.1937 10.6678 10.3387 10.5734 10.5 10.5734C10.6613 10.5734 10.8063 10.6678 11.0962 10.8567C11.5962 11.1823 12.6489 12.2638 13.2102 11.9396C13.5 11.7722 13.5 11.3046 13.5 10.3693V5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M9 2H11C15.714 2 18.0711 2 19.5355 3.46447C21 4.92893 21 7.28595 21 12V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </>
                   ) : (
@@ -212,9 +260,9 @@ const confirmSaveName = () => {
                        fill="none" className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
                        onClick={handleSavePhone}
                       >
-                          <path d="M16.9017 6.12874C18 7.25748 18 9.07416 18 12.7075V14.2925C18 17.9258 18 19.7425 16.9017 20.8713C15.8033 22 14.0355 22 10.5 22C6.96447 22 5.1967 22 4.09835 20.8713C3 19.7425 3 17.9258 3 14.2925V12.7075C3 9.07416 3 7.25748 4.09835 6.12874C5.1967 5 6.96447 5 10.5 5C14.0355 5 15.8033 5 16.9017 6.12874Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M7.5 5.5V10.3693C7.5 11.3046 7.5 11.7722 7.78982 11.9396C8.35105 12.2638 9.4038 11.1823 9.90375 10.8567C10.1937 10.6678 10.3387 10.5734 10.5 10.5734C10.6613 10.5734 10.8063 10.6678 11.0962 10.8567C11.5962 11.1823 12.6489 12.2638 13.2102 11.9396C13.5 11.7722 13.5 11.3046 13.5 10.3693V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M9 2H11C15.714 2 18.0711 2 19.5355 3.46447C21 4.92893 21 7.28595 21 12V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M16.9017 6.12874C18 7.25748 18 9.07416 18 12.7075V14.2925C18 17.9258 18 19.7425 16.9017 20.8713C15.8033 22 14.0355 22 10.5 22C6.96447 22 5.1967 22 4.09835 20.8713C3 19.7425 3 17.9258 3 14.2925V12.7075C3 9.07416 3 7.25748 4.09835 6.12874C5.1967 5 6.96447 5 10.5 5C14.0355 5 15.8033 5 16.9017 6.12874Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M7.5 5.5V10.3693C7.5 11.3046 7.5 11.7722 7.78982 11.9396C8.35105 12.2638 9.4038 11.1823 9.90375 10.8567C10.1937 10.6678 10.3387 10.5734 10.5 10.5734C10.6613 10.5734 10.8063 10.6678 11.0962 10.8567C11.5962 11.1823 12.6489 12.2638 13.2102 11.9396C13.5 11.7722 13.5 11.3046 13.5 10.3693V5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M9 2H11C15.714 2 18.0711 2 19.5355 3.46447C21 4.92893 21 7.28595 21 12V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                   </>
                 ) : (

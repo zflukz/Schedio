@@ -28,12 +28,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
 
     setError("");
     onSubmit({ 
-      username: mode === "signin" ? username : undefined,
-      email: mode === "register" ? email : undefined,
+      username: username,
+      email: email,
       password, 
-      firstname: mode === "register" ? firstname : undefined ,
-      lastname: mode === "register" ? lastname : undefined 
-
+      firstname: firstname,
+      lastname: lastname 
     });
   };
 
@@ -118,9 +117,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
             <div className="mb-[20px]">
             <label className="block mb-[5px] text-[18px] font-semibold">Username</label>
             <input
-              type="username"
+              type="text"
               value={username}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full border border-support4 rounded-[8px] px-[11px] py-[8px] bg-white focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="user12345"
               required

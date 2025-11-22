@@ -18,6 +18,7 @@ interface EventFilterbarProps {
   onStatusChange?: (statuses: string[]) => void;
   onDateRangeChange?: (dates: [string, string] | null) => void;
   onSearchChange?: (keyword: string) => void;
+  forceMode?: "category" | "status";
 }
 
 const EventFilterbar: React.FC<EventFilterbarProps> = ({
@@ -27,9 +28,10 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
   onStatusChange,
   onDateRangeChange,
   onSearchChange,
+  forceMode,
 }) => {
   const { user } = useUser();
-  const role = user?.userRole?.toLowerCase() || "user";
+  const role = forceMode === "category" ? "user" : forceMode === "status" ? "admin" : (user?.userRole?.toLowerCase() || "user");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<[string, string] | null>(null);

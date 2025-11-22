@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useEventContext } from "../context/EventContext";
 import MyEventCard from "../component/MyEventcard";
 import Navbar from "../component/Navbar";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 import { Pagination } from "antd";
 
 const MyEventsList: React.FC = () => {
-  const { events, joinedEvents } = useEventContext();
+  const { events, joinedEvents, fetchMyRegistrations } = useEventContext();
   const navigate = useNavigate();
 
   // กรองเฉพาะ event ที่ user join
@@ -20,6 +20,10 @@ const MyEventsList: React.FC = () => {
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
+
+  useEffect(() => {
+    fetchMyRegistrations();
+  }, []);
 
   if (myEvents.length === 0) {
     return (

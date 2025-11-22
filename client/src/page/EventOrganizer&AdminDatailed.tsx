@@ -5,7 +5,7 @@ import "../App.css";
 import EventOrganizerAdminDetailCard from "../component/EventOrganizer&AdminDetailcard";
 import { useUser } from "../App";
 import { useEventContext, Event } from "../context/EventContext";
-
+import { API_BASE_URL } from '../config/api';
 const EventOrganizerandAdminDatailed: React.FC = () => {
   const { events ,approveEvent,rejectEvent } = useEventContext();
   const { user } = useUser(); 
@@ -15,11 +15,42 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
   const event = events.find((e) => e.id === eventId);
 
   const [viewSection, setViewSection] = useState<"detail" | "users">("detail");
+  const [joinedUsers, setJoinedUsers] = useState<Array<{id: string, name: string, email: string, registeredAt: string}>>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  // Fetch joined users when switching to users section
+  React.useEffect(() => {
+    if (viewSection === "users" && eventId) {
+      setLoadingUsers(true);
+      const token = localStorage.getItem('token');
+      fetch(`${API_BASE_URL}/api/registrations/event/${eventId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success && result.data) {
+            const users = result.data.map((reg: any) => ({
+              id: reg.regId,
+              name: reg.firstName && reg.lastName 
+                ? `${reg.firstName} ${reg.lastName}` 
+                : reg.userName,
+              email: reg.email,
+              registeredAt: reg.registeredAt
+            }));
+            setJoinedUsers(users);
+          }
+        })
+        .catch(err => console.error('Failed to fetch joined users:', err))
+        .finally(() => setLoadingUsers(false));
+    }
+  }, [viewSection, eventId]);
 
   if (!user || (user.userRole !== "admin" && user.userRole !== "organizer")) {
     return (
       <div className="flex justify-center items-center h-screen text-xl text-gray-500">
-        You don’t have permission to access this page.
+        You don't have permission to access this page.
       </div>
     );
   }
@@ -108,9 +139,13 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
           />
         )}
 
-        {viewSection === "users" && event.joinedUsers && event.joinedUsers.length > 0 && (
+        {viewSection === "users" && loadingUsers && (
+          <p className="mt-4 text-center">Loading users...</p>
+        )}
+
+        {viewSection === "users" && !loadingUsers && joinedUsers.length > 0 && (
           <div className="max-w-[770px] mx-auto bg-white p-[25px] rounded-2xl shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Users Joined</h2>
+            <h2 className="text-xl font-semibold mb-4">Users Joined ({joinedUsers.length})</h2>
             <div className="overflow-x-auto rounded-[8px] border border-support2">
               <table className="w-full table-auto border-collapse">
                 <thead>
@@ -120,7 +155,7 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="text-text-black bg-white">
-                  {event.joinedUsers.map(u => (
+                  {joinedUsers.map(u => (
                     <tr key={u.id} className="border-t border-support2 hover:bg-gray-50">
                       <td className="px-4 py-3">{u.name}</td>
                       <td className="px-4 py-3">{u.email}</td>
@@ -132,7 +167,7 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
           </div>
         )}
 
-        {viewSection === "users" && (!event.joinedUsers || event.joinedUsers.length === 0) && (
+        {viewSection === "users" && !loadingUsers && joinedUsers.length === 0 && (
           <p className="mt-4 text-support3 text-center">No users have joined this event yet.</p>
         )}
       </div>

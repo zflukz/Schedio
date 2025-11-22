@@ -26,7 +26,7 @@ const HomeAdmin: React.FC = () => {
   const eventsPerPage = 4;
 
   const [filters, setFilters] = useState({
-	categories: [] as string[],
+	statuses: [] as string[],
 	dateRange: null as [string, string] | null,
 	search: "",
   });
@@ -39,9 +39,13 @@ const HomeAdmin: React.FC = () => {
 
 	const matchesDate =
 	  !filters.dateRange ||
-	  (e.date >= filters.dateRange[0] && e.date <= filters.dateRange[1]);
+	  (new Date(e.date) >= new Date(filters.dateRange[0]) && new Date(e.date) <= new Date(filters.dateRange[1]));
 
-	return matchesSearch && matchesDate;
+	const matchesStatus =
+	  filters.statuses.length === 0 ||
+	  (e.adminStatus && filters.statuses.includes(e.adminStatus));
+
+	return matchesSearch && matchesDate && matchesStatus;
   });
 }, [myEvents, filters]);
 
@@ -106,13 +110,10 @@ console.log("User in HomeAdmin:", user);
 		  </div>
 
 		<EventFilterbar
-		  categories={[
-			{ id: 1, name: "Paranormal" },
-			{ id: 2, name: "Art" },
-			{ id: 3, name: "Culture" },
-			{ id: 4, name: "Contest" },
-		  ]}
-		  onCategoriesChange={(c) => setFilters((prev) => ({ ...prev, categories: c }))}
+		  categories={[]}
+		  statuses={["Pending", "Approved", "Rejected"]}
+		  forceMode="status"
+		  onStatusChange={(s) => setFilters((prev) => ({ ...prev, statuses: s }))}
 		  onDateRangeChange={(d) => setFilters((prev) => ({ ...prev, dateRange: d }))}
 		  onSearchChange={(s) => setFilters((prev) => ({ ...prev, search: s }))}
 		/>

@@ -40,9 +40,13 @@ const HomeOrganizer: React.FC = () => {
 
     const matchesDate =
       !filters.dateRange ||
-      (e.date >= filters.dateRange[0] && e.date <= filters.dateRange[1]);
+      (new Date(e.date) >= new Date(filters.dateRange[0]) && new Date(e.date) <= new Date(filters.dateRange[1]));
 
-    return matchesSearch && matchesDate;
+    const matchesCategory =
+      filters.categories.length === 0 ||
+      e.tags.some(tag => filters.categories.includes(tag));
+
+    return matchesSearch && matchesDate && matchesCategory;
   });
 }, [myEvents, filters]);
 

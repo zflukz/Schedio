@@ -59,14 +59,14 @@ public class EventController {
             @RequestParam("description") String description,
             @RequestParam("startsAt") String startsAt,
             @RequestParam("endsAt") String endsAt,
-            @RequestParam("eventCategory") String eventCategory,
+            @RequestParam("eventCategory") List<String> eventCategories,
             @RequestParam("walkIn") Boolean walkIn,
             @RequestParam(value = "capacity", required = false) Integer capacity,
             @RequestParam(value = "activityHour", required = false) Integer activityHour,
             @RequestParam("eventBy") String eventBy,
             @RequestParam("eventContactEmail") String eventContactEmail,
             @RequestParam("eventContactPhone") String eventContactPhone,
-            @RequestParam("filePdf") MultipartFile pdfFile,
+            @RequestParam(value = "filePdf", required = false) MultipartFile pdfFile,
             HttpServletRequest request) {
         try {
             Users currentUser = getCurrentUser(request);
@@ -74,11 +74,14 @@ public class EventController {
             // Upload poster to Vercel
             String posterUrl = blobService.uploadToBlob(file);
             
-            // Validate and upload PDF
-            if (!"application/pdf".equals(pdfFile.getContentType())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must be PDF");
+            // Validate and upload PDF (optional)
+            String pdfUrl = null;
+            if (pdfFile != null && !pdfFile.isEmpty()) {
+                if (!"application/pdf".equals(pdfFile.getContentType())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must be PDF");
+                }
+                pdfUrl = blobService.uploadToBlob(pdfFile);
             }
-            String pdfUrl = blobService.uploadToBlob(pdfFile);
             
             // Create DTO
             CreateEventDto dto = new CreateEventDto();
@@ -87,9 +90,12 @@ public class EventController {
             dto.setDescription(description);
             dto.setStartsAt(java.time.Instant.parse(startsAt));
             dto.setEndsAt(java.time.Instant.parse(endsAt));
-            dto.setCategories(Set.of(com.example.demo.entity.enums.E_EventCategory.valueOf(eventCategory)));
+            Set<com.example.demo.entity.enums.E_EventCategory> categories = eventCategories.stream()
+                    .map(com.example.demo.entity.enums.E_EventCategory::valueOf)
+                    .collect(java.util.stream.Collectors.toSet());
+            dto.setCategories(categories);
             dto.setWalkIn(walkIn);
-            dto.setCapacity(capacity);
+            dto.setCapacity(capacity != null && capacity > 0 ? capacity : Integer.MAX_VALUE);
             dto.setActivityHour(activityHour);
             dto.setEventBy(eventBy);
             dto.setEventContactEmail(eventContactEmail);
@@ -296,4 +302,19 @@ public class EventController {
             );
         }
     }
+
+    
+    // =============== GET Upcoming EVENTS ===============
+    @GetMapping("/Upcoming-event")
+    public ResponseEntity<ApiResponse<List<EventResponseDto>>> upcomingEvents() {
+        List<EventResponseDto> events = eventService.getUpcomingEvents();
+        return ResponseEntity.ok(
+                ApiResponse.<List<EventResponseDto>>builder()
+                        .success(true)
+                        .message("Upcoming events retrieved successfully")
+                        .data(events)
+                        .build()
+        );
+    } 
+
 }

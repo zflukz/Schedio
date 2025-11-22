@@ -113,8 +113,8 @@ const handleSubmit = () => {
     return;
   }
   
-  if (!form.poster || !form.proposal) {
-    alert('Please upload both poster and proposal files');
+  if (!form.poster) {
+    alert('Please upload poster file');
     return;
   }
   
@@ -145,8 +145,10 @@ const handleSubmit = () => {
         formData.append('startsAt', startDateTime);
         formData.append('endsAt', startDateTime);
         
-        // Category
-        formData.append('eventCategory', form.categories[0].toUpperCase());
+        // Categories - send all selected categories
+        form.categories.forEach(cat => {
+          formData.append('eventCategory', cat.toUpperCase());
+        });
         
         // Optional fields
         if (form.hours) formData.append('activityHour', form.hours);

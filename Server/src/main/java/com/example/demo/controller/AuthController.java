@@ -55,6 +55,7 @@ public class AuthController {
         Users user = new Users(dto.getUserName(), _passwordEncoder.encode(dto.getUserPassword()), dto.getEmail());
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
+        user.setUserRole(com.example.demo.entity.enums.E_Role.ATTENDEE);
         _userRepository.save(user);
 
 

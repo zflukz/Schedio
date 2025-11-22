@@ -292,5 +292,29 @@ public class EventService {
                (event.getEventBy() != null && event.getEventBy().toLowerCase().contains(searchLower));
     }
 
-
+    // =============== GET Upcoming Event ============
+    public List<EventResponseDto> getUpcomingEvents() {
+        Set<UUID> approvedEventIds = approvalRepository.findAll().stream()
+                .filter(a -> a.getDecision() == E_EventStatus.APPROVED)
+                .map(a -> a.getEvent().getEventId())
+                .collect(Collectors.toSet());
+        
+        Instant now = Instant.now();
+        
+        return eventRepository.findAll().stream()
+                .filter(e -> approvedEventIds.contains(e.getEventId()))
+                .filter(e -> !e.getIsDeleted() && !e.getIsCancelled())
+                .filter(e -> e.getStartsAt().isAfter(now))
+                .sorted((e1, e2) -> {
+                    long count1 = eventRegisterRepository.findAll().stream()
+                            .filter(r -> r.getEvent().getEventId().equals(e1.getEventId()))
+                            .count();
+                    long count2 = eventRegisterRepository.findAll().stream()
+                            .filter(r -> r.getEvent().getEventId().equals(e2.getEventId()))
+                            .count();
+                    return Long.compare(count2, count1);
+                })
+                .map(this::mapToResponseDto)
+                .toList();
+    }
 }
