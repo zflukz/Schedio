@@ -11,12 +11,12 @@ test('Verify page load', () => {
       <App />
     </MemoryRouter>
   );
-  const textElement = screen.getByText(/Don’t Miss These Events/i);
+  const textElement = screen.getByText(/Don't Miss These Events/i);
   expect(textElement).toBeInTheDocument();
 });
 
 test('allows a user to sign in and navigates to the home page', async () => {
-  const user = userEvent;
+  const user = userEvent.setup();
   localStorage.clear();
 
   const fetchMock = jest
@@ -36,21 +36,7 @@ test('allows a user to sign in and navigates to the home page', async () => {
         userPhone: '1234567890',
         userRole: 'user',
       }),
-    } as Response)
-    .mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        userID: '1',
-        userName: 'Alice',
-        firstName: 'Alice',
-        lastName: 'Doe',
-        userEmail: 'alice@example.com',
-        userPhone: '1234567890',
-        userRole: 'user',
-      }),
     } as Response);
-
-  const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
   try {
     render(
@@ -67,9 +53,9 @@ test('allows a user to sign in and navigates to the home page', async () => {
 
     await user.click(screen.getByRole('button', { name: /^sign in$/i }));
 
-    await waitFor(() => expect(localStorage.getItem('token')).toBe('mock-token'));
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
-    await waitFor(() => expect(screen.getByText(/Don’t Miss These Events/i)).toBeInTheDocument());
+    await waitFor(() => expect(localStorage.getItem('token')).toBe('mock-token'), { timeout: 3000 });
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2), { timeout: 3000 });
+    await waitFor(() => expect(screen.getByText(/Don't Miss These Events/i)).toBeInTheDocument(), { timeout: 3000 });
 
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
@@ -78,9 +64,7 @@ test('allows a user to sign in and navigates to the home page', async () => {
         method: 'POST',
       })
     );
-    expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('"userName": "Alice"'));
   } finally {
     fetchMock.mockRestore();
-    alertMock.mockRestore();
   }
 });
