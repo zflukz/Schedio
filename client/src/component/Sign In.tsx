@@ -62,8 +62,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
           <div className="flex flex-row gap-4 mb-[20px]">
             {/* First Name */}
             <div className="flex flex-col w-1/2">
-              <label className="block mb-[5px] text-[18px] font-semibold">First name</label>
+              <label htmlFor="firstname" className="block mb-[5px] text-[18px] font-semibold">First name</label>
               <input
+                id="firstname"
                 type="text"
                 value={firstname}
                 onChange={(e) => setfirstName(e.target.value)}
@@ -75,8 +76,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
 
             {/* Last Name (หรือ field ที่ 2) */}
             <div className="flex flex-col w-1/2">
-              <label className="block mb-[5px] text-[18px] font-semibold">Last name</label>
+              <label htmlFor="lastname" className="block mb-[5px] text-[18px] font-semibold">Last name</label>
               <input
+                id="lastname"
                 type="text"
                 value={lastname}
                 onChange={(e) => setlastName(e.target.value)}
