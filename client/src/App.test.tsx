@@ -17,7 +17,6 @@ test('Verify page load', () => {
 });
 
 test('allows a user to sign in and navigates to the home page', async () => {
-  const user = userEvent.setup();
   localStorage.clear();
 
   // -----------------------------
@@ -70,11 +69,11 @@ test('allows a user to sign in and navigates to the home page', async () => {
     const usernameInput = await screen.findByLabelText(/username/i);
     const passwordInput = screen.getByLabelText(/password/i);
 
-    await user.type(usernameInput, 'alice');
-    await user.type(passwordInput, 'password123');
+    await userEvent.type(usernameInput, 'alice');
+    await userEvent.type(passwordInput, 'password123');
 
     // Submit form
-    await user.click(screen.getByRole('button', { name: /^sign in$/i }));
+    await userEvent.click(screen.getByRole('button', { name: /^sign in$/i }));
 
     // -----------------------------
     // EXPECT Token Saved
