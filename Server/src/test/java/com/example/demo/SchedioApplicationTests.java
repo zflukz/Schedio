@@ -15,14 +15,17 @@ import org.springframework.test.context.TestPropertySource;
 	"spring.jpa.show-sql=false",
 	"spring.jpa.properties.hibernate.format_sql=false",
 	"spring.sql.init.mode=never",
-	"jwt.secret=test-secret",
-	"jwt.expiration=3600000",
-	"cors.allowed.origins=*"
+	"spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID:test-client-id}",
+	"spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET:test-client-secret}",
+	"jwt.secret=${JWT_SECRET:test-secret-key-for-testing-purposes-only-minimum-256-bits-required}",
+	"jwt.expiration=${JWT_EXPIRATION:3600000}",
+	"cors.allowed.origins=${CORS_ALLOWED_ORIGINS:*}"
 })
 class SchedioApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Test passes if context loads
 	}
 
 }

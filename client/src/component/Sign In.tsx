@@ -91,8 +91,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {/* Username for signin, Email for register */}
         {mode === "signin" ? (
           <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Username or Email</label>
+            <label htmlFor="username" className="block mb-[5px] text-[18px] font-semibold">Username or Email</label>
             <input
+              id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -104,8 +105,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         ) : (
           <div className="mb-[20px]">
             <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Email</label>
+            <label htmlFor="email" className="block mb-[5px] text-[18px] font-semibold">Email</label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -115,8 +117,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
             />
             </div>
             <div className="mb-[20px]">
-            <label className="block mb-[5px] text-[18px] font-semibold">Username</label>
+            <label htmlFor="username" className="block mb-[5px] text-[18px] font-semibold">Username</label>
             <input
+              id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -131,8 +134,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
 
         {/* Password */}
         <div className="mb-[25px]">
-          <label className="block mb-[5px] text-[18px] font-semibold">Password</label>
+          <label htmlFor="password" className="block mb-[5px] text-[18px] font-semibold">Password</label>
           <input
+            id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
