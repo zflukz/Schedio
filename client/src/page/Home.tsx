@@ -4,7 +4,7 @@ import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import Eventcard from "../component/Eventcard";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination } from "antd";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router"; 
 import { useEventContext,Event } from "../context/EventContext";
 import { useUser } from "../App";
 
@@ -41,7 +41,8 @@ function Home() {
       }
       setHasFetched(true);
     }
-  }, [user, fetchHomeEvents, fetchMyRegistrations, hasFetched]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasFetched]);
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -55,6 +56,7 @@ function Home() {
       startDate: selectedDateRange?.[0],
       endDate: selectedDateRange?.[1],
     }); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategories, selectedDateRange, searchKeyword]);
 
   // Pagination states

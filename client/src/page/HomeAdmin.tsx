@@ -1,18 +1,15 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Navbar from "../component/Navbar";
 import EventFilterbar from "../component/EventFilterbar";
-import { Pagination, Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Pagination } from "antd";
 import MyEventCard from "../component/MyEventcard"; 
 import "../App.css";
-import EventOrganizerAdminDetailCard from "../component/EventOrganizer&AdminDetailcard";
 import { useUser } from "../App";
-import { useEventContext, Event } from "../context/EventContext";
+import { useEventContext } from "../context/EventContext";
 
 const HomeAdmin: React.FC = () => {
 	const { myEvents, fetchAdminEvents } = useEventContext();
-	const { user, setUser } = useUser(); 
-  const navigate = useNavigate();
+	const { user } = useUser();
   const [hasFetched, setHasFetched] = useState(false);
   
   useEffect(() => {
@@ -23,7 +20,6 @@ const HomeAdmin: React.FC = () => {
   }, [user, fetchAdminEvents, hasFetched]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(4);
-  const eventsPerPage = 4;
 
   const [filters, setFilters] = useState({
 	statuses: [] as string[],
@@ -61,9 +57,6 @@ const startIndex = (currentPage - 1) * pageSize;
 	const rejected = myEvents.filter((e) => e.adminStatus === "Rejected").length;
 	return { total, approved, pending, rejected };
   }, [myEvents]);
-  
-const selectedEventId = "1"; // เปลี่ยนเป็น id ที่คุณอยากโชว์
-  const selectedEvent = myEvents.find((ev) => ev.id === selectedEventId);
 if (!user || user.userRole !== "admin") {
 	return (
 	  <div className="flex justify-center items-center h-screen text-xl text-gray-500">

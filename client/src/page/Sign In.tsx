@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import AuthForm from "../component/Sign In";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useUser } from "../App";
 import { API_BASE_URL, apiEndpoints } from '../config/api';
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
-  const { refreshUser, user } = useUser();
+  const { refreshUser } = useUser();
   const [backendError, setBackendError] = useState("");
 
   const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {

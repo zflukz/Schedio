@@ -1,8 +1,7 @@
 import React from "react";
 import Navbar from "../component/Navbar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useUser } from "../App";
-import { useEventContext, Event } from "../context/EventContext";
 
 const CreateSuccess: React.FC = () => {
   const navigate = useNavigate();

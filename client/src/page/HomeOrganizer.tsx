@@ -2,15 +2,14 @@ import React, { useState, useMemo, useEffect } from "react";
 import Navbar from "../component/Navbar";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination} from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import MyEventCard from "../component/MyEventcard"; 
 import "../App.css";
-import EventOrganizerAdminDetailCard from "../component/EventOrganizer&AdminDetailcard";
 import { useUser } from "../App";
-import { useEventContext, Event } from "../context/EventContext";
+import { useEventContext } from "../context/EventContext";
 
 const HomeOrganizer: React.FC = () => {
-	const { user, setUser } = useUser(); 
+	const { user } = useUser(); 
   const { myEvents, fetchOrganizerEvents } = useEventContext();
   const navigate = useNavigate();
   const [hasFetched, setHasFetched] = useState(false);
@@ -24,7 +23,6 @@ const HomeOrganizer: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(4);
-  const eventsPerPage = 4;
 
   const [filters, setFilters] = useState({
     categories: [] as string[],
@@ -72,8 +70,6 @@ if (!user || user.userRole !== "organizer") {
       </div>
     );
   }
- const selectedEventId = "1"; // เปลี่ยนเป็น id ที่คุณอยากโชว์
-  const selectedEvent = myEvents.find((ev) => ev.id === selectedEventId);
   return (
     <div className="font-sans bg-bg-light min-h-screen pt-[50px]">
         <div className="flex-1 flex justify-center px-[15px] sm:px-[25px] lg:px-0">

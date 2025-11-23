@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Event, useEventContext } from "../context/EventContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import PopupModal from "./PopupAlert";
 
 interface EventCardProps {

@@ -4,13 +4,12 @@ import {
   TimePicker,
   Switch,
   Upload,
-  Button,
   InputNumber,
 } from "antd";
 import Navbar from "../component/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import PopupModal from "../component/PopupAlert";
-import { useEventContext } from "../context/EventContext";
+
 import { API_BASE_URL } from '../config/api';
 import dayjs from "dayjs";
 
@@ -28,8 +27,7 @@ const categories = [
 ];
 
 const CreateEvent: React.FC = () => {
-const navigate = useNavigate();
-const { addEvent } = useEventContext();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     title: "",

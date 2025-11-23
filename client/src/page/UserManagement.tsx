@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Navbar from "../component/Navbar";
-import { useUser } from "../App";
 import PopupModal from "../component/PopupAlert";
 import { Pagination, Dropdown, Button, Checkbox } from "antd";
 import { API_BASE_URL } from '../config/api';
 import "../App.css";
 
 type Role = "Admin" | "Organizer" | "User";
-type Status = "active" | "banned";
 
 interface UMUser {
   userID: string;
@@ -34,7 +32,6 @@ const rolePill = (role: Role) => {
 
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useUser();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(6);
@@ -105,10 +102,7 @@ const UserManagement: React.FC = () => {
     setConfirmAction("ban");
   };
 
-  const handleUnban = (userID: string) => {
-    setConfirmUserId(userID);
-    setConfirmAction("unban");
-  };
+
 
   const performConfirm = async () => {
     if (!confirmUserId || !confirmAction) return;
@@ -140,26 +134,7 @@ const UserManagement: React.FC = () => {
 
 
 
-  
-  
-    const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
-  const dropdownContent = ["Admin", "Organizer", "User"].map((roleItem) => (
-  <div
-    key={roleItem}
-    className="flex items-center rounded-md px-2 py-1 cursor-pointer hover:bg-[#3EBAD080] whitespace-nowrap"
-    onClick={() => {
-      setSelectedRoles((prev: Role[]) =>
-        prev.includes(roleItem as Role)
-          ? prev.filter((r) => r !== roleItem)
-          : [...prev, roleItem as Role]
-      );
-    }}
-  >
-    <Checkbox checked={selectedRoles.includes(roleItem as Role)}>
-      {roleItem}
-    </Checkbox>
-  </div>
-));
+  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
 
 

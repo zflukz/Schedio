@@ -23,6 +23,7 @@ const MyEventsList: React.FC = () => {
 
   useEffect(() => {
     fetchMyRegistrations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (myEvents.length === 0) {

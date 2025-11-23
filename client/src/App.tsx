@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AuthPage from './page/Sign In';
 import { apiEndpoints } from './config/api';

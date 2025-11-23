@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Upcomingcard from "./Comingcard";
 import useEmblaCarousel from "embla-carousel-react";
-import { useNavigate } from "react-router-dom";
 import { Event } from "../context/EventContext";
 
 
@@ -11,7 +10,6 @@ interface HorizontalScrollCardsProps {
 }
 
 const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, onJoin }) => {
-  const navigate = useNavigate();
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",

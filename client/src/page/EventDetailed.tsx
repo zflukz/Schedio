@@ -1,21 +1,10 @@
 import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import EventDetailedcard from "../component/EventDetailedcard";
-import { useLocation, useNavigate,useParams } from "react-router-dom"; 
+import { useLocation, useNavigate,useParams } from "react-router"; 
 import { useEventContext, Event } from "../context/EventContext";
 import { useUser } from "../App";
 import { useEffect, useState } from "react";
-
-interface User {
-  name: string;
-  role: "admin" | "organizer" | "user";
-}
-
-
-interface Category {
-  id: number;
-  name: string;
-}
 
 function EventDetailedPage() {
 
@@ -25,7 +14,6 @@ function EventDetailedPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const { events, fetchHomeEvents, fetchOrganizerEvents } = useEventContext();
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
-  const [isMyEvent, setIsMyEvent] = useState(false);
   
   useEffect(() => {
     if (eventId && user) {
@@ -35,7 +23,6 @@ function EventDetailedPage() {
           await fetchOrganizerEvents(user.userID);
           const myEvent = events.find(e => e.id === eventId);
           if (myEvent) {
-            setIsMyEvent(true);
             setCurrentEvent(myEvent);
             return;
           }
@@ -45,7 +32,6 @@ function EventDetailedPage() {
         await fetchHomeEvents();
         const homeEvent = events.find(e => e.id === eventId);
         if (homeEvent) {
-          setIsMyEvent(false);
           setCurrentEvent(homeEvent);
         }
       };
@@ -55,16 +41,18 @@ function EventDetailedPage() {
       // Fallback to location state if available
       setCurrentEvent(location.state.event);
     }
-  }, [eventId, user, fetchHomeEvents, fetchOrganizerEvents]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventId, user]);
   
   useEffect(() => {
     // Update current event when events change
-    if (eventId) {
+    if (eventId && events.length > 0) {
       const foundEvent = events.find(e => e.id === eventId);
       if (foundEvent) {
         setCurrentEvent(foundEvent);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events, eventId]);
 
   const handleViewDetails = (event: Event) => {

@@ -34,7 +34,6 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
   const role = forceMode === "category" ? "user" : forceMode === "status" ? "admin" : (user?.userRole?.toLowerCase() || "user");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<[string, string] | null>(null);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   // Clear all selections
@@ -132,11 +131,9 @@ const EventFilterbar: React.FC<EventFilterbarProps> = ({
     dateStrings
   ) => {
     if (!dates) {
-      setDateRange(null);
       onDateRangeChange?.(null);
     } else {
       const range: [string, string] = [dateStrings[0], dateStrings[1]];
-      setDateRange(range);
       onDateRangeChange?.(range);
     }
   };

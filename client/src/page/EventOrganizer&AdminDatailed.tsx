@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import Navbar from "../component/Navbar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import "../App.css";
 import EventOrganizerAdminDetailCard from "../component/EventOrganizer&AdminDetailcard";
 import { useUser } from "../App";
-import { useEventContext, Event } from "../context/EventContext";
+import { useEventContext } from "../context/EventContext";
 import { API_BASE_URL } from '../config/api';
 const EventOrganizerandAdminDatailed: React.FC = () => {
   const { events ,approveEvent,rejectEvent } = useEventContext();
