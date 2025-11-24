@@ -40,7 +40,10 @@ export const useUser = () => {
 };
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem("userData");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const refreshUser = async () => {
     const token = localStorage.getItem("token");
@@ -79,7 +82,10 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    refreshUser();
+    const token = localStorage.getItem("token");
+    if (token && !user) {
+      refreshUser();
+    }
   }, []);
 
   return (
