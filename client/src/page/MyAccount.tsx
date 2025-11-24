@@ -54,6 +54,15 @@ const MyAccount: React.FC = () => {
   };
 
 const [isEditingName, setIsEditingName] = useState(false);
+const [firstName, setFirstName] = useState((user as any)?.firstname || '');
+const [lastName, setLastName] = useState((user as any)?.lastname || '');
+
+// Update local state when user changes
+useEffect(() => {
+  setFirstName((user as any)?.firstname || '');
+  setLastName((user as any)?.lastname || '');
+}, [(user as any)?.firstname, (user as any)?.lastname]);
+const [originalPhone, setOriginalPhone] = useState('');
 const nameInputRef = useRef<HTMLInputElement>(null);
 const [showSavePopupName, setShowSavePopupName] = useState(false);
 const [showSavePopupPhone, setShowSavePopupPhone] = useState(false);
@@ -81,12 +90,12 @@ const confirmSaveName = async () => {
         "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({
-        userName: user.userName
+        firstName: firstName || null,
+        lastName: lastName || null
       })
     });
     
     const result = await response.json();
-    
     if (result.success && result.data) {
       setUser(result.data);
       localStorage.setItem("userData", JSON.stringify(result.data));
@@ -165,59 +174,72 @@ const confirmSaveName = async () => {
             <div className="flex items-center gap-6">
               <img src="/MyuserProfile.svg" alt="Avatar" className="w-16 h-16 rounded-full" />
               <div>
-                <div className="flex items-center gap-2 font-semibold">
+                <div>
                   {isEditingName ? (
-                    <>
-                      <input
-                        ref={nameInputRef}
-                        type="text"
-                        value={user?.userName}
-                        onChange={(e) => {
-                          if (user) {
-                            setUser({ ...user, userName: e.target.value });
-                          }
-                        }}
-                        className="bg-support1 rounded-[12px] px-3 py-1 text-[16px] focus:ring-2 focus:ring-primary outline-none"
-                        style={{ width: `${(user?.userName?.length || 0) + 4}ch` }}
-                      />
-                      {/* ปุ่ม Save */}
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" 
-                       fill="none" className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
-                       onClick={handleSaveName}
-                      >
-                          <path d="M16.9017 6.12874C18 7.25748 18 9.07416 18 12.7075V14.2925C18 17.9258 18 19.7425 16.9017 20.8713C15.8033 22 14.0355 22 10.5 22C6.96447 22 5.1967 22 4.09835 20.8713C3 19.7425 3 17.9258 3 14.2925V12.7075C3 9.07416 3 7.25748 4.09835 6.12874C5.1967 5 6.96447 5 10.5 5C14.0355 5 15.8033 5 16.9017 6.12874Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M7.5 5.5V10.3693C7.5 11.3046 7.5 11.7722 7.78982 11.9396C8.35105 12.2638 9.4038 11.1823 9.90375 10.8567C10.1937 10.6678 10.3387 10.5734 10.5 10.5734C10.6613 10.5734 10.8063 10.6678 11.0962 10.8567C11.5962 11.1823 12.6489 12.2638 13.2102 11.9396C13.5 11.7722 13.5 11.3046 13.5 10.3693V5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M9 2H11C15.714 2 18.0711 2 19.5355 3.46447C21 4.92893 21 7.28595 21 12V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1 max-w-[350px]">
+                        <input
+                          ref={nameInputRef}
+                          type="text"
+                          placeholder="First Name"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          className="bg-support1 rounded-[12px] px-3 py-1 text-[16px] focus:ring-2 focus:ring-primary outline-none flex-1 min-w-0"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Last Name"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          className="bg-support1 rounded-[12px] px-3 py-1 text-[16px] focus:ring-2 focus:ring-primary outline-none flex-1 min-w-0"
+                        />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" 
+                         fill="none" className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
+                         onClick={handleSaveName}
+                        >
+                            <path d="M16.9017 6.12874C18 7.25748 18 9.07416 18 12.7075V14.2925C18 17.9258 18 19.7425 16.9017 20.8713C15.8033 22 14.0355 22 10.5 22C6.96447 22 5.1967 22 4.09835 20.8713C3 19.7425 3 17.9258 3 14.2925V12.7075C3 9.07416 3 7.25748 4.09835 6.12874C5.1967 5 6.96447 5 10.5 5C14.0355 5 15.8033 5 16.9017 6.12874Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M7.5 5.5V10.3693C7.5 11.3046 7.5 11.7722 7.78982 11.9396C8.35105 12.2638 9.4038 11.1823 9.90375 10.8567C10.1937 10.6678 10.3387 10.5734 10.5 10.5734C10.6613 10.5734 10.8063 10.6678 11.0962 10.8567C11.5962 11.1823 12.6489 12.2638 13.2102 11.9396C13.5 11.7722 13.5 11.3046 13.5 10.3693V5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M9 2H11C15.714 2 18.0711 2 19.5355 3.46447C21 4.92893 21 7.28595 21 12V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <h3 className="text-[16px] font-semibold text-support3">{user?.userName}</h3>
+                    </div>
                   ) : (
-                    <>
-                      <h2 className="text-[18px] font-semibold">{user?.userName}</h2>
-                      {/* ปุ่มแก้ไข */}
-                      <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="20"
-                      height="20"
-                      fill="none"
-                      className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
-                      onClick={() => setIsEditingName(true)}
-                    >
-                      <path
-                        d="M16.4249 4.60509L17.4149 3.6151C18.2351 2.79497 19.5648 2.79497 20.3849 3.6151C21.205 4.43524 21.205 5.76493 20.3849 6.58507L19.3949 7.57506M16.4249 4.60509L9.76558 11.2644C9.25807 11.772 8.89804 12.4078 8.72397 13.1041L8 16L10.8959 15.276C11.5922 15.102 12.228 14.7419 12.7356 14.2344L19.3949 7.57506M16.4249 4.60509L19.3949 7.57506"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M18.9999 13.5C18.9999 16.7875 18.9999 18.4312 18.092 19.5376C17.9258 19.7401 17.7401 19.9258 17.5375 20.092C16.4312 21 14.7874 21 11.4999 21H11C7.22876 21 5.34316 21 4.17159 19.8284C3.00003 18.6569 3 16.7712 3 13V12.5C3 9.21252 3 7.56879 3.90794 6.46244C4.07417 6.2599 4.2599 6.07417 4.46244 5.90794C5.56879 5 7.21252 5 10.5 5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    </>
+                    <div>
+                      <div className="flex items-center gap-2 font-semibold mb-1">
+                        <h2 className="text-[18px] font-semibold">
+                          {`${(user as any)?.firstname || ''} ${(user as any)?.lastname || ''}`.trim() || 'Add your name'}
+                        </h2>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="20"
+                          height="20"
+                          fill="none"
+                          className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
+                          onClick={() => {
+                            setFirstName((user as any)?.firstname || '');
+                            setLastName((user as any)?.lastname || '');
+                            setIsEditingName(true);
+                          }}
+                        >
+                          <path
+                            d="M16.4249 4.60509L17.4149 3.6151C18.2351 2.79497 19.5648 2.79497 20.3849 3.6151C21.205 4.43524 21.205 5.76493 20.3849 6.58507L19.3949 7.57506M16.4249 4.60509L9.76558 11.2644C9.25807 11.772 8.89804 12.4078 8.72397 13.1041L8 16L10.8959 15.276C11.5922 15.102 12.228 14.7419 12.7356 14.2344L19.3949 7.57506M16.4249 4.60509L19.3949 7.57506"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M18.9999 13.5C18.9999 16.7875 18.9999 18.4312 18.092 19.5376C17.9258 19.7401 17.7401 19.9258 17.5375 20.092C16.4312 21 14.7874 21 11.4999 21H11C7.22876 21 5.34316 21 4.17159 19.8284C3.00003 18.6569 3 16.7712 3 13V12.5C3 9.21252 3 7.56879 3.90794 6.46244C4.07417 6.2599 4.2599 6.07417 4.46244 5.90794C5.56879 5 7.21252 5 10.5 5"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    <h3 className="text-[16px] font-semibold text-support3">{user?.userName}</h3>
+                    </div>
                   )}
                 </div>
                 <p className="text-support3 text-[16px] mt-1 capitalize">{user?.userRole}</p>
@@ -235,8 +257,8 @@ const confirmSaveName = async () => {
               <span>{user?.userEmail}</span>
             </div>
 
-            {/* 📱 Phone (เฉพาะ organizer) */}
-            {user?.userRole === "organizer" && (
+            {/* 📱 Phone (เฉพาะ organizer และ admin) */}
+            {(user?.userRole === "organizer" || user?.userRole === "admin") && (
               <div className="flex items-center gap-2 text-[18px] font-semibold">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
@@ -275,7 +297,10 @@ const confirmSaveName = async () => {
                       height="20"
                       fill="none"
                       className="text-black hover:text-primary transition-colors duration-200 cursor-pointer"
-                      onClick={() => setIsEditingPhone(true)}
+                      onClick={() => {
+                        setOriginalPhone(user?.userPhone || '');
+                        setIsEditingPhone(true);
+                      }}
                     >
                       <path
                         d="M16.4249 4.60509L17.4149 3.6151C18.2351 2.79497 19.5648 2.79497 20.3849 3.6151C21.205 4.43524 21.205 5.76493 20.3849 6.58507L19.3949 7.57506M16.4249 4.60509L9.76558 11.2644C9.25807 11.772 8.89804 12.4078 8.72397 13.1041L8 16L10.8959 15.276C11.5922 15.102 12.228 14.7419 12.7356 14.2344L19.3949 7.57506M16.4249 4.60509L19.3949 7.57506"
@@ -314,7 +339,12 @@ const confirmSaveName = async () => {
           confirmText="Save"
           cancelText="Cancel"
           onConfirm={confirmSaveName}
-          onCancel={() => setShowSavePopupName(false)}
+          onCancel={() => {
+            setFirstName((user as any)?.firstname || '');
+            setLastName((user as any)?.lastname || '');
+            setIsEditingName(false);
+            setShowSavePopupName(false);
+          }}
           confirmColor="green"
         />
       )}
@@ -330,7 +360,13 @@ const confirmSaveName = async () => {
           confirmText="Save"
           cancelText="Cancel"
           onConfirm={confirmSavePhone}
-          onCancel={() => setShowSavePopupPhone(false)}
+          onCancel={() => {
+            if (user) {
+              setUser({ ...user, userPhone: originalPhone });
+            }
+            setIsEditingPhone(false);
+            setShowSavePopupPhone(false);
+          }}
           confirmColor="green"
         />
       )}
