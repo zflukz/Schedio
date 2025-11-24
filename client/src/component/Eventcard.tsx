@@ -31,9 +31,11 @@ const Eventcard: React.FC<EventCardProps> = ({
       {/* Title and Duration */}
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-[20px] font-bold text-primary">{title}</h3>
-        <span className="bg-secondary text-text-black text-[16px] font-semibold px-[15px] py-[3px] rounded-full">
-          {duration}
-        </span>
+        {duration && duration !== "0 hr." && duration !== "null hr." && (
+          <span className="bg-secondary text-text-black text-[16px] font-semibold px-[15px] py-[3px] rounded-full">
+            {duration}
+          </span>
+        )}
       </div>
 
 	<div className="mb-[15px]">

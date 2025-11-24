@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.entity.enums.E_EventCategory;
-import com.example.demo.entity.enums.E_EventStatus;
+
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -123,7 +123,6 @@ public class Events {
     void onCreate() {
         if (createdAt == null) createdAt = Instant.now();
         updatedAt = createdAt;
-        if (status == null) status = E_EventStatus.PENDING;
     }
 
     @Column(name = "is_edit_requested")
@@ -135,7 +134,5 @@ public class Events {
     @Column(name = "is_cancelled")
     private Boolean isCancelled = false;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private E_EventStatus status = E_EventStatus.PENDING;
+
 }
