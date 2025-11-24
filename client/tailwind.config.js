@@ -1,3 +1,4 @@
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -7,7 +8,7 @@ export default {
         primary: "#3EBAD0",
         primaryhover: "#33A9BC",
         secondary: "#FBDE71",
-        "bg-light": "#E0F7FA",
+        "bg-light": "#F7F7F7",
         text: {
           black: "#101010",
           white: "#FFFFFF",
@@ -24,6 +25,7 @@ export default {
         },
         success: '#10B981',
         fail: '#EF4444',
+        remind: '#CA8A04',
       },
       fontFamily: {
         sans: ['Albert Sans', 'sans-serif'],

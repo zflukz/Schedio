@@ -1,33 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Upcomingcard from "./Comingcard";
 import useEmblaCarousel from "embla-carousel-react";
+import { Event } from "../context/EventContext";
 
-interface Event {
-  id: string; // or number
-  title: string;
-  duration: string;
-  date: string;
-  time: string;
-  location: string;
-  totalseats: number;
-  currentParticipants: number;
-  phone?: number;
-  tags: string[];
-  imageUrl: string;
-  description: string;
-}
 
 interface HorizontalScrollCardsProps {
-  events: Event[]; // ไม่ optional แล้ว ให้มั่นใจว่าจะมีข้อมูล
+  events: Event[];
   onJoin?: (event: Event) => void;
 }
 
 const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, onJoin }) => {
-  // Embla Carousel hook
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "center" });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "start",
+    containScroll: "trimSnaps",
+  });
   const [cardsPerPage, setCardsPerPage] = useState(3);
 
-  // Update cards per view based on window width
   const updateCardsPerPage = () => {
     if (window.innerWidth < 640) setCardsPerPage(1);
     else if (window.innerWidth < 1024) setCardsPerPage(2);
@@ -43,8 +32,10 @@ const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, o
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
 
+  
+
   return (
-    <div className="relative max-w-[1300px] mx-auto px-[30px] sm:px-[30px]">
+    <div className="relative max-w-[1300px] mx-auto">
       {/* Left button */}
       <button
         onClick={scrollPrev}
@@ -56,15 +47,17 @@ const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, o
       </button>
 
       {/* Carousel */}
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-[30px] px-5 py-5">
+       <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex gap-[30px] py-5">
           {events.map((c, i) => (
             <div
               key={i}
               className="flex-none"
               style={{
                 width: `calc((100% - ${(cardsPerPage - 1) * 30}px) / ${cardsPerPage})`,
-              }}
+                marginLeft: i === 0 ? "10px" : "0",   
+                marginRight: i === events.length - 1 ? "10px" : "0",
+             }}
             >
               <Upcomingcard
                 id={c.id}

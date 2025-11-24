@@ -1,25 +1,11 @@
 import React from "react";
 import JoinButton from "./JoinButton";
-import { useEventContext } from "../context/EventContext";
+import { useEventContext, Event } from "../context/EventContext";
 interface User {
   name: string;
   role: "admin" | "organizer" | "user";
 }
-interface Event {
-  id: string; // or number
-  title: string;
-  duration: string;
-  date: string;
-  time: string;
-  location: string;
-  totalseats: number;
-  currentParticipants: number;
-  status?: "upcoming" | "joined" | "full"; 
-  phone?: number;
-  tags: string[];
-  imageUrl: string;
-  description: string
-}
+
 
 interface EventDetailedcardProps {
   event: Event;
@@ -39,7 +25,7 @@ const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => 
     console.log("User canceled the booking!");
   };
   return (
-    <div className="bg-white rounded-[20px] shadow-md p-[25px] max-w-[900px] mx-auto flex flex-col lg:flex-row gap-[20px]">
+    <div className="bg-white rounded-[20px] shadow-md p-[25px] w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-[20px]">
       {/* Left Image */}
       <div className="flex-shrink-0 w-full lg:w-[40%] rounded-[15px] overflow-hidden">
         <img
@@ -76,7 +62,7 @@ const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => 
 
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-[10px] mt-[10px] text-[20px] font-semibold mb-[20px]">
+          <div className="flex flex-wrap gap-[10px] mt-[10px] text-[20px] font-medium mb-[20px]">
             {event.tags.map((tag, idx) => (
               <span
                 key={idx}

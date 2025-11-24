@@ -53,6 +53,12 @@ jobs:
         run: chmod +x mvnw
 
       - name: Maven verify
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          VERCEL_BLOB_TOKEN: ${{ secrets.VERCEL_BLOB_TOKEN }}
+          CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
         run: ./mvnw -B -ntp clean verify
 
       - name: Upload test reports
@@ -61,4 +67,36 @@ jobs:
         with:
           name: backend-test-reports
           path: Server/target/surefire-reports
+          if-no-files-found: ignore
+
+  backend-integration:
+    name: Backend Integration
+    runs-on: ubuntu-latest
+    needs: backend
+    defaults:
+      run:
+        working-directory: Server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Make Maven wrapper executable
+        run: chmod +x mvnw
+
+      - name: Maven verify (integration profile)
+        run: ./mvnw -B -ntp -DskipTests -Pintegration failsafe:integration-test failsafe:verify
+
+      - name: Upload integration test reports
+        if: ${{ always() && env.ACT != 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-failsafe-reports
+          path: Server/target/failsafe-reports
           if-no-files-found: ignore

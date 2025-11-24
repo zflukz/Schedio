@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
               <>
                 <button 
                   className="text-[18px] font-bold text-black hover:text-primary transition"
-                  onClick={() => navigate("/admin-dashboard")}
+                  onClick={() => navigate("/admin/usermanagement")}
                 >
                  User Management
                 </button>
@@ -84,12 +84,7 @@ const Navbar: React.FC = () => {
 
             {getUserRole() === "organizer" && (
               <>
-                <button 
-                  className="text-[18px] font-bold text-black hover:text-primary transition"
-                  onClick={() => navigate("/organizer-dashboard")}
-                >
-                  My Events
-                </button>
+               
               </>
             )}
 
@@ -107,9 +102,10 @@ const Navbar: React.FC = () => {
             {/* User info */}
             <div 
               className="flex items-center space-x-2 bg-primary hover:bg-primaryhover px-4 py-2 rounded-full cursor-pointer"
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("/myaccount")}
             >
-              <span className="text-[18px] font-bold text-black">{getUserName()}</span>
+              <span className="text-[18px] font-bold text-white">{getUserName()}
+              </span>
             </div>
           </div>
         )}

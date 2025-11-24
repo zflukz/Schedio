@@ -29,10 +29,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.userDetailsService = uds;
     }
 
-    // ข้าม preflight CORS
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return HttpMethod.OPTIONS.matches(request.getMethod());
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+        return HttpMethod.OPTIONS.matches(method) ||
+               path.equals("/login") ||
+               path.equals("/register") ||
+               (path.equals("/api/events/filter") && HttpMethod.POST.matches(method)) ||
+               (path.startsWith("/api/events/") && HttpMethod.GET.matches(method)) ||
+               path.startsWith("/api/public/") ||
+               path.startsWith("/api/auth/") ||
+               path.startsWith("/swagger-ui") ||
+               path.startsWith("/v3/api-docs");
     }
 
     @Override

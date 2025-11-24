@@ -4,6 +4,7 @@ import com.example.demo.entity.enums.E_Role;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
 import java.util.*;
@@ -13,10 +14,22 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users",
-        indexes = @Index(name = "idx_users_role", columnList = "role"),
-        uniqueConstraints = @UniqueConstraint(name = "uk_users_email", columnNames = "email"))
+@Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_users_role", columnList = "role"),
+                @Index(name = "idx_users_googleid", columnList = "GoogleID")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_users_googleid", columnNames = "GoogleID")
+        }
+)
+
 public class Users {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,19 +54,19 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
+    @Builder.Default
     private E_Role userRole = E_Role.ATTENDEE;
 
     @Column(name ="phone", length = 20)
     private String userPhone;
 
+    @Column(name = "GoogleID")
+    private String googleID;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_event",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "created_at")
-    )
-    private Set<Events> events = new HashSet<>();
+
+
+
+
 
 
     public Users(String userName, String userPassword, String userEmail){
@@ -61,6 +74,10 @@ public class Users {
         this.userPassword = userPassword;
         this.userEmail = userEmail;
     }
+    public UUID getUserID(){
+        return userID;
+    }
+
 
     public String getUserEmail() {
         return userEmail;
@@ -74,18 +91,6 @@ public class Users {
         return userPassword;
     }
 
-
-//    // ผู้ใช้เป็นผู้สร้างอีเวนต์ (1:N)
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "organizer", fetch = FetchType.LAZY)
-//    private Set<Events> createdEvents = new HashSet<>();
-//
-//    // การลงทะเบียนของผู้ใช้ (1:N) ผ่าน entity กลาง
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<EventRegisters> registrations = new HashSet<>();
-//
-//
 
 
 }

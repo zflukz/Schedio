@@ -1,26 +1,13 @@
-import React, { useState } from "react";
+import  { useState, useEffect } from "react";
 import Navbar from "../component/Navbar";
 import HorizontalScrollCards from "../component/HorizontalScrollCards";
 import Eventcard from "../component/Eventcard";
 import EventFilterbar from "../component/EventFilterbar";
 import { Pagination } from "antd";
 import { useNavigate } from "react-router"; 
-import { useEventContext } from "../context/EventContext";
+import { useEventContext,Event } from "../context/EventContext";
+import { useUser } from "../App";
 
-interface Event {
-  id: string; 
-  title: string;
-  duration: string;
-  date: string;
-  time: string;
-  location: string;
-  totalseats: number;
-  currentParticipants: number;
-  phone?: number;
-  tags: string[];
-  imageUrl: string;
-  description: string
-}
 
 interface Category {
   id: number;
@@ -41,38 +28,42 @@ function Home() {
     { id: 7, name: "Workshop" },
     { id: 8, name: "Volunteer" },
   ];
-  const { events } = useEventContext();
+  const { events, upcoming, fetchHomeEvents, fetchMyRegistrations, fetchUpcoming } = useEventContext();
+  const { user } = useUser();
+  const [hasFetched, setHasFetched] = useState(false);
+  
+  useEffect(() => {
+    if (!hasFetched) {
+      fetchHomeEvents();
+      fetchUpcoming();
+      if (user) {
+        fetchMyRegistrations();
+      }
+      setHasFetched(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasFetched]);
 
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDateRange, setSelectedDateRange] = useState<[string, string] | null>(null);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
+  useEffect(() => {
+    fetchHomeEvents({
+      search: searchKeyword || undefined,
+      category: selectedCategories.length > 0 ? selectedCategories : undefined,
+      startDate: selectedDateRange?.[0],
+      endDate: selectedDateRange?.[1],
+    }); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategories, selectedDateRange, searchKeyword]);
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(6); // จำนวน card ต่อหน้า
 
-  // Filtered events
-  const filteredEvents = events.filter(event => {
-    const matchCategory =
-      selectedCategories.length === 0 ||
-      event.tags.some(tag =>
-        selectedCategories.includes(
-          categories.find(c => c.name.toLowerCase() === tag.toLowerCase())?.name ?? ""
-        )
-      );
-
-    const matchDate =
-      !selectedDateRange ||
-      (new Date(event.date) >= new Date(selectedDateRange[0]) &&
-        new Date(event.date) <= new Date(selectedDateRange[1]));
-
-    const matchSearch =
-      !searchKeyword ||
-      event.title.toLowerCase().includes(searchKeyword.toLowerCase());
-
-    return matchCategory && matchDate && matchSearch;
-  });
+  const filteredEvents = events;
 
   // Slice events ตามหน้าและ pageSize
   const pagedEvents = filteredEvents.slice(
@@ -103,7 +94,7 @@ function Home() {
 
       <div className="pb-[80px]">
         <HorizontalScrollCards
-          events={events}
+          events={upcoming}
           onJoin={(event) => handleViewDetails(event)}
         />
       </div>
@@ -124,9 +115,10 @@ function Home() {
         <div className="flex justify-center pb-[50px]">
           <EventFilterbar
             categories={categories}
+            forceMode="category"
             onCategoriesChange={(names: string[]) => {
               setSelectedCategories(names);
-              setCurrentPage(1); // reset page to 1
+              setCurrentPage(1);
             }}
             onDateRangeChange={(range) => {
               setSelectedDateRange(range);

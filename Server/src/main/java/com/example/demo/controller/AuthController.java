@@ -53,7 +53,10 @@ public class AuthController {
 
 
         Users user = new Users(dto.getUserName(), _passwordEncoder.encode(dto.getUserPassword()), dto.getEmail());
-         _userRepository.save(user);
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setUserRole(com.example.demo.entity.enums.E_Role.ATTENDEE);
+        _userRepository.save(user);
 
 
         return ResponseEntity.ok(
@@ -68,13 +71,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponseDto login(@Valid @RequestBody LoginRequestDto dto) {
-        Users user = _userRepository.findByUserName(dto.getUserName())
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid userName"));
+        // Try to find user by username first, then by email
+        Users user = _userRepository.findByUserName(dto.getUsernameOrEmail())
+                .or(() -> _userRepository.findByUserEmail(dto.getUsernameOrEmail()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or email"));
+        
         if(!_passwordEncoder.matches(dto.getUserPassword(), user.getUserPassword())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password(2)");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
+        
         String token = _jwtUtil.generateToken(user.getUserName());
-
         return new LoginResponseDto(token, user.getUserEmail(), "Login success" );
     }
 

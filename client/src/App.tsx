@@ -1,15 +1,20 @@
 import { Routes, Route } from "react-router";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AuthPage from './page/Sign In';
+import { apiEndpoints } from './config/api';
 import Home from './page/Home';
-import Profile from './page/Profile';
 import ProtectedRoute from './component/ProtectedRoute';
-import OAuth2Callback from './page/OAuth2Callback';
-
+import OAuth2Callback from './component/OAuth2Callback';
+import HomeOrganizer from "./page/HomeOrganizer";
 import EventDetailedPage from "./page/EventDetailed";
 import { EventProvider } from "./context/EventContext";
 import MyEventPage from "./page/MyEvent";
-
+import MyAccount from "./page/MyAccount";
+import CreateEvent from "./page/CreateEvent";
+import CreateSuccess from "./page/CreateSuccess";
+import HomeAdmin from "./page/HomeAdmin";
+import EventOrganizerandAdminDatailed from "./page/EventOrganizer&AdminDatailed";
+import UserManagement from "./page/UserManagement";
 interface User {
   userID: string;
   userName: string;
@@ -47,14 +52,18 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
     console.log('Fetching user profile with token:', token.substring(0, 50) + '...');
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/profile`, {
+      const response = await fetch(apiEndpoints.profile, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       console.log('Profile response status:', response.status);
       if (response.ok) {
         const userData = await response.json();
         console.log('User data received:', userData);
-        setUser(userData);
+        const normalizedUser = {
+          ...userData,
+          userRole: userData.userRole?.toLowerCase(),
+        };
+        setUser(normalizedUser); 
         localStorage.setItem("userData", JSON.stringify(userData));
       } else {
         const errorText = await response.text();
@@ -101,26 +110,54 @@ function App() {
                 element={<AuthPage mode="register" />}
               />
               <Route
-                path="/admin-dashboard"
+                path="/admin/dashboard"
                 element={
                   <ProtectedRoute requiredRole="admin">
-                    <div>Admin Dashboard - Only admins can see this</div>
+                    <HomeAdmin />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/organizer-dashboard"
+                path="/admin/usermanagement"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <UserManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/dashboard"
                 element={
                   <ProtectedRoute requiredRole="organizer">
-                    <div>Organizer Dashboard - Only organizers can see this</div>
+                    <HomeOrganizer />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/profile"
+                path="/organizer/create event"
+                element={
+                  <ProtectedRoute requiredRole="organizer">
+                    <CreateEvent />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/success"
+                element={
+                  <ProtectedRoute requiredRole="organizer">
+                    <CreateSuccess />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/event/:eventId"
+                element={<EventOrganizerandAdminDatailed />}
+              />
+              <Route
+                path="/myaccount"
                 element={
                   <ProtectedRoute>
-                    <Profile />
+                    <MyAccount />
                   </ProtectedRoute>
                 }
               />

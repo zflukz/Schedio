@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import AuthForm from "../component/Sign In";
 import { useNavigate } from "react-router";
 import { useUser } from "../App";
+import { API_BASE_URL, apiEndpoints } from '../config/api';
 
 const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const navigate = useNavigate();
   const { refreshUser } = useUser();
   const [backendError, setBackendError] = useState("");
 
-  const handleAuthSubmit = async (data: { username: string; email?: string; password: string }) => {
+  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
     try {
       const endpoint = mode === "register" ? "/register" : "/login";
 
@@ -18,13 +19,15 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
               userName: data.username,
               userPassword: data.password,
               userEmail: data.email,
+              userFristname: data.name,
+              userLastname: data.name
             }
           : {
-              userName: data.username,
+              usernameOrEmail: data.username,
               userPassword: data.password,
             };
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -46,17 +49,25 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
         localStorage.setItem("token", result.token);
         await refreshUser();
         
-        // Get updated user data and alert it
-        const profileResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/profile`, {
+        // Get updated user data and navigate based on role
+        const profileResponse = await fetch(apiEndpoints.profile, {
           headers: { "Authorization": `Bearer ${result.token}` }
         });
         
         if (profileResponse.ok) {
           const userData = await profileResponse.json();
-          alert("User data: " + JSON.stringify(userData, null, 2));
+          const userRole = userData.userRole?.toLowerCase();
+          
+          if (userRole === "admin") {
+            navigate("/admin/dashboard");
+          } else if (userRole === "organizer") {
+            navigate("/organizer/dashboard");
+          } else {
+            navigate("/");
+          }
+        } else {
+          navigate("/");
         }
-        
-        navigate("/");
       }
     } catch (error) {
       console.error("Network error:", error);

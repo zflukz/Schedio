@@ -17,21 +17,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
 
   if (requiredRole && userRole !== requiredRole) {
     if (!alertShown) {
-      if (requiredRole === "admin") {
-        alert("Access denied: Admin role required");
-      } else if (requiredRole === "organizer") {
-        alert("Access denied: Organizer role required");
-      }
+      alert(`Access denied: ${requiredRole} role required`);
       setAlertShown(true);
     }
-    
-    if (userRole === "admin") {
-      return <Navigate to="/admin-dashboard" />;
-    } else if (userRole === "organizer") {
-      return <Navigate to="/organizer-dashboard" />;
-    } else {
-      return <Navigate to="/" />;
-    }
+    return <Navigate to="/" />;
   }
 
   return <>{children}</>;
