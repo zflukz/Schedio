@@ -7,16 +7,28 @@ import { useUser } from "../App";
 import { useEventContext } from "../context/EventContext";
 import { API_BASE_URL } from '../config/api';
 const EventOrganizerandAdminDatailed: React.FC = () => {
-  const { events ,approveEvent,rejectEvent } = useEventContext();
+  const { events, myEvents, approveEvent, rejectEvent, fetchOrganizerEvents, fetchAdminEvents } = useEventContext();
   const { user } = useUser(); 
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
 
-  const event = events.find((e) => e.id === eventId);
+  const event = myEvents.find((e) => e.id === eventId) || events.find((e) => e.id === eventId);
+  console.log('Found event:', event?.id, 'approvedBy:', (event as any)?.approvedBy);
 
   const [viewSection, setViewSection] = useState<"detail" | "users">("detail");
   const [joinedUsers, setJoinedUsers] = useState<Array<{id: string, name: string, email: string, registeredAt: string}>>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
+
+  // Fetch events if not loaded
+  React.useEffect(() => {
+    if (user && events.length === 0) {
+      if (user.userRole === "admin") {
+        fetchAdminEvents();
+      } else if (user.userRole === "organizer") {
+        fetchOrganizerEvents();
+      }
+    }
+  }, [user, events.length, fetchAdminEvents, fetchOrganizerEvents]);
 
   // Fetch joined users when switching to users section
   React.useEffect(() => {

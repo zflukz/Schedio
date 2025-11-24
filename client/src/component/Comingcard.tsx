@@ -24,7 +24,8 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
   totalseats,
   onJoin,
 }) => {
-  const percentage = Math.round((currentParticipants / totalseats) * 100);
+  const isUnlimited = totalseats === 2147483647;
+  const percentage = isUnlimited ? 100 : Math.round((currentParticipants / totalseats) * 100);
 
   return (
     <div className="font-sans p-[30px] bg-white rounded-[20px] shadow-md w-full max-w-sm md:max-w-sm min-w-[380px] mx-auto">
@@ -57,7 +58,7 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
         {place}
       </div>
       </div>
-        <div className="mb-[15px] font-semibold text-[16px]">
+        <div className={`font-semibold text-[16px] ${isUnlimited ? 'mb-[70px]' : 'mb-[16px]'}`}>
           <div className="flex justify-between items-center text-support3 mb-2">
             <div className="flex items-center gap-[10px] text-text-black">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
@@ -66,15 +67,19 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
               </svg>
               <span>{currentParticipants} Joined</span>
             </div>
-            <span className="text-support3">{totalseats} seats</span>
+            <span className="text-support3">{totalseats === 2147483647 ? 'Unlimited seats' : `${totalseats} seats`}</span>
           </div>
-          <div className="w-full bg-support1 rounded-full h-3 overflow-hidden">
-            <div
-              className="bg-yellow-300 h-3 rounded-full transition-all"
-              style={{ width: `${percentage}%` }}
-            ></div>
-          </div>
-          <p className="text-support3 mt-1">{percentage}% Full</p>
+          {!isUnlimited && (
+            <>
+              <div className="w-full bg-support1 rounded-full h-3 overflow-hidden">
+                <div
+                  className="bg-yellow-300 h-3 rounded-full transition-all"
+                  style={{ width: `${percentage}%` }}
+                ></div>
+              </div>
+              <p className="text-support3 mt-1">{percentage}% Full</p>
+            </>
+          )}
         </div>
 
       {/* Button */}

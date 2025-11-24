@@ -8,6 +8,7 @@ interface EventCardProps {
   location: string;
   tags: string[];
   imageUrl: string;
+  organizer?: string;
   onViewMore?: () => void;
 }
 
@@ -19,13 +20,20 @@ const Eventcard: React.FC<EventCardProps> = ({
   location,
   tags,
   imageUrl,
+  organizer,
   onViewMore,
 }) => {
   return (
     <div className="font-sans bg-white p-[30px] rounded-[20px] max-w-md min-w-[380px] shadow-sm">
       {/* Image */}
       <div className="rounded-[12px] overflow-hidden mb-3">
-        <img src={imageUrl} alt={title} className="w-full h-[200px] object-cover " />
+        {imageUrl ? (
+          <img src={imageUrl} alt={title} className="w-full h-[200px] object-cover" />
+        ) : (
+          <div className="w-full h-[200px] px-2 py-2 text-support3 italic flex text-center items-center justify-center border border-support4 rounded-lg bg-gray-50">
+            No poster available
+          </div>
+        )}
       </div>
 
       {/* Title and Duration */}
@@ -64,26 +72,36 @@ const Eventcard: React.FC<EventCardProps> = ({
 		{location}
 	</div>
 
-      {/* Tags + View more */}
-      <div className="flex items-center justify-between mt-2">
-        {/* Tags list */}
-        <div className="flex flex-wrap gap-2 text-[16px] font-medium">
-          {tags.map((tag, index) => (
-            <span
-              key={index}
-              className="bg-support2 text-text-black px-[15px] py-[3px] rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 text-[16px] font-medium mb-[15px]">
+        {tags.map((tag, index) => (
+          <span
+            key={index}
+            className="bg-support2 text-text-black px-[15px] py-[3px] rounded-full"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
 
-        {/* View more button */}
+      <hr className="border-support1 mb-[15px]" />
+
+      {/* Organizer & Button */}
+      <div className="flex items-center justify-between">
+        {/* Organizer */}
+        {organizer && (
+          <div className="text-text-black font-semibold text-[14px] sm:text-[16px]">
+            <div>Organized by:</div>
+            <div className="text-support3">{organizer}</div>
+          </div>
+        )}
+        
+        {/* View Details button */}
         <button
           onClick={onViewMore}
-          className="text-text-black text-[14px] font-semibold hover:underline ml-[10px] whitespace-nowrap"
+          className="text-[14px] font-semibold px-3 py-2 rounded-[8px] transition bg-[#3EBAD0]/30 text-primary hover:bg-[#3EBAD0]/45"
         >
-          View more
+          View Details
         </button>
       </div>
 

@@ -25,14 +25,20 @@ const EventDetailedcard: React.FC<EventDetailedcardProps> = ({ event ,user}) => 
     console.log("User canceled the booking!");
   };
   return (
-    <div className="bg-white rounded-[20px] shadow-md p-[25px] w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-[20px]">
+    <div className="bg-white rounded-[20px] shadow-md p-[25px] w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-[40px]">
       {/* Left Image */}
       <div className="flex-shrink-0 w-full lg:w-[40%] rounded-[15px] overflow-hidden">
-        <img
-          src={event.imageUrl}
-          alt={event.title}
-          className="object-cover w-full h-full"
-        />
+        {event.imageUrl ? (
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="object-cover w-full h-full"
+          />
+        ) : (
+          <div className="w-full h-full min-h-[300px] px-2 py-2 text-support3 italic flex text-center items-center justify-center border border-support4 rounded-lg bg-gray-50">
+            No poster available
+          </div>
+        )}
       </div>
 
       {/* Right Content */}

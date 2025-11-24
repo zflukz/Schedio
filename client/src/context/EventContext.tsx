@@ -178,6 +178,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           const event = approval.event;
           const startDate = new Date(event.startsAt);
           const endDate = new Date(event.endsAt);
+          const approvedBy = approval.decision === 'APPROVED' ? approval.admin?.userName : undefined;
+          const rejectedBy = approval.decision === 'REJECT' ? approval.admin?.userName : undefined;
+          console.log('Event:', event.eventId, 'Decision:', approval.decision, 'ApprovedBy:', approvedBy, 'RejectedBy:', rejectedBy);
           return {
             id: event.eventId,
             title: event.title,
@@ -188,6 +191,10 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             totalseats: event.capacity || 0,
             currentParticipants: 0,
             adminStatus: approval.decision === 'APPROVED' ? 'Approved' : approval.decision === 'PENDING' ? 'Pending' : 'Rejected',
+            approvedBy: approvedBy,
+            rejectedBy: rejectedBy,
+            rejectReason: approval.decision === 'REJECT' ? approval.comment : undefined,
+            statusDate: approval.decidedAt ? new Date(approval.decidedAt).toISOString().split('T')[0] : undefined,
             phone: event.eventContactPhone,
             tags: event.categorySet || [],
             imageUrl: event.poster || "",
@@ -231,6 +238,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           const event = approval.event;
           const startDate = new Date(event.startsAt);
           const endDate = new Date(event.endsAt);
+          console.log('Admin event:', event.eventId, 'Admin:', approval.admin, 'Decision:', approval.decision);
           return {
             id: event.eventId,
             title: event.title,
@@ -241,6 +249,10 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             totalseats: event.capacity || 0,
             currentParticipants: 0,
             adminStatus: approval.decision === 'APPROVED' ? 'Approved' : approval.decision === 'PENDING' ? 'Pending' : 'Rejected',
+            approvedBy: approval.decision === 'APPROVED' ? approval.admin?.userName : undefined,
+            rejectedBy: approval.decision === 'REJECT' ? approval.admin?.userName : undefined,
+            rejectReason: approval.decision === 'REJECT' ? approval.comment : undefined,
+            statusDate: approval.decidedAt ? new Date(approval.decidedAt).toISOString().split('T')[0] : undefined,
             phone: event.eventContactPhone,
             tags: event.categorySet || [],
             imageUrl: event.poster || "",

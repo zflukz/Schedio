@@ -67,7 +67,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
           userRole: userData.userRole?.toLowerCase(),
         };
         setUser(normalizedUser); 
-        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("userData", JSON.stringify(normalizedUser));
       } else {
         const errorText = await response.text();
         console.log('Profile fetch failed:', errorText);

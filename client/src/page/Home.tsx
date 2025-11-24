@@ -144,6 +144,7 @@ function Home() {
                 location={event.location}
                 tags={event.tags}
                 imageUrl={event.imageUrl}
+                organizer={event.organizer}
                 onViewMore={() => handleViewDetails(event)} 
               />
             ))}
