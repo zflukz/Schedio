@@ -134,20 +134,24 @@ function Home() {
         {/* Event cards */}
         <div className="flex justify-center pb-[30px]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[30px] max-w-[1200px]">
-            {pagedEvents.map((event, index) => (
-              <Eventcard
-                key={index}
-                title={event.title}
-                duration={event.duration}
-                date={event.date}
-                time={event.time}
-                location={event.location}
-                tags={event.tags}
-                imageUrl={event.imageUrl}
-                organizer={event.organizer}
-                onViewMore={() => handleViewDetails(event)} 
-              />
-            ))}
+            {pagedEvents.map((event, index) => {
+              const isPast = new Date(event.date) < new Date();
+              return (
+                <Eventcard
+                  key={index}
+                  title={event.title}
+                  duration={event.duration}
+                  date={event.date}
+                  time={event.time}
+                  location={event.location}
+                  tags={event.tags}
+                  imageUrl={event.imageUrl}
+                  organizer={event.organizer}
+                  onViewMore={() => handleViewDetails(event)}
+                  isPast={isPast}
+                />
+              );
+            })}
           </div>
         </div>
 

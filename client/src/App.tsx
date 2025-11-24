@@ -86,7 +86,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     if (token && !user) {
       refreshUser();
     }
-  }, []);
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser, refreshUser }}>

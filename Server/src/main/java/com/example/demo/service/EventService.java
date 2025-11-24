@@ -230,6 +230,8 @@ public class EventService {
                 .map(a -> a.getEvent().getEventId().toString())
                 .collect(Collectors.toSet());
         
+        Instant now = Instant.now();
+        
         return eventRepository.findAll().stream()
                 .filter(e -> approvedEventIds.contains(e.getEventId().toString())) // Only approved events
                 .filter(e -> !e.getIsDeleted() && !e.getIsCancelled()) // Not deleted or cancelled
@@ -237,6 +239,19 @@ public class EventService {
                 .filter(e -> endDate == null || !e.getStartsAt().isAfter(endDate))
                 .filter(e -> category == null || category.isEmpty() || matchesCategory(e, category))
                 .filter(e -> search == null || search.trim().isEmpty() || matchesSearch(e, search.toLowerCase()))
+                .sorted((e1, e2) -> {
+                    boolean e1Past = e1.getStartsAt().isBefore(now);
+                    boolean e2Past = e2.getStartsAt().isBefore(now);
+                    
+                    // Future events first, then past events
+                    if (!e1Past && e2Past) return -1;
+                    if (e1Past && !e2Past) return 1;
+                    
+                    // Within same group, closest to now first
+                    long diff1 = Math.abs(e1.getStartsAt().toEpochMilli() - now.toEpochMilli());
+                    long diff2 = Math.abs(e2.getStartsAt().toEpochMilli() - now.toEpochMilli());
+                    return Long.compare(diff1, diff2);
+                })
                 .toList();
     }
 

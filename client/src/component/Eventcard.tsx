@@ -10,6 +10,7 @@ interface EventCardProps {
   imageUrl: string;
   organizer?: string;
   onViewMore?: () => void;
+  isPast?: boolean;
 }
 
 const Eventcard: React.FC<EventCardProps> = ({
@@ -22,9 +23,10 @@ const Eventcard: React.FC<EventCardProps> = ({
   imageUrl,
   organizer,
   onViewMore,
+  isPast = false,
 }) => {
   return (
-    <div className="font-sans bg-white p-[30px] rounded-[20px] max-w-md min-w-[380px] shadow-sm">
+    <div className="font-sans bg-white p-[30px] rounded-[20px] max-w-md min-w-[380px] shadow-sm flex flex-col h-full">
       {/* Image */}
       <div className="rounded-[12px] overflow-hidden mb-3">
         {imageUrl ? (
@@ -38,7 +40,7 @@ const Eventcard: React.FC<EventCardProps> = ({
 
       {/* Title and Duration */}
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-[20px] font-bold text-primary">{title}</h3>
+        <h3 className={`text-[20px] font-bold ${isPast ? 'text-gray-400' : 'text-primary'}`}>{title}</h3>
         {duration && duration !== "0 hr." && duration !== "null hr." && (
           <span className="bg-secondary text-text-black text-[16px] font-semibold px-[15px] py-[3px] rounded-full">
             {duration}
@@ -46,8 +48,8 @@ const Eventcard: React.FC<EventCardProps> = ({
         )}
       </div>
 
-	<div className="mb-[15px]">
-		<div className="flex items-center text-text-black font-semibold mb-[10px]">
+	<div className="mb-[10px]">
+		<div className="flex items-center text-text-black font-semibold mb-[2px]">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 mr-[10px]">
 			<path fillRule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z" clipRule="evenodd" />
 		</svg>
@@ -64,7 +66,7 @@ const Eventcard: React.FC<EventCardProps> = ({
 		{time}
 		</div>
 	</div>
-	<div className="flex items-center text-text-black font-semibold mb-[15px]">
+	<div className="flex items-center text-text-black font-semibold mb-[10px]">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 mr-[10px]">
 		<path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
 		<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
@@ -83,6 +85,8 @@ const Eventcard: React.FC<EventCardProps> = ({
           </span>
         ))}
       </div>
+      
+      <div className="flex-grow"></div>
 
       <hr className="border-support1 mb-[15px]" />
 
@@ -99,7 +103,11 @@ const Eventcard: React.FC<EventCardProps> = ({
         {/* View Details button */}
         <button
           onClick={onViewMore}
-          className="text-[14px] font-semibold px-3 py-2 rounded-[8px] transition bg-[#3EBAD0]/30 text-primary hover:bg-[#3EBAD0]/45"
+          className={`text-[14px] font-semibold px-3 py-2 rounded-[8px] transition ${
+            isPast 
+              ? 'bg-gray-200 text-gray-400 hover:bg-gray-300' 
+              : 'bg-[#3EBAD0]/30 text-primary hover:bg-[#3EBAD0]/45'
+          }`}
         >
           View Details
         </button>
