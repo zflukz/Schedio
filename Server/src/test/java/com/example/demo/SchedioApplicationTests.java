@@ -15,11 +15,18 @@ import org.springframework.test.context.TestPropertySource;
 	"spring.jpa.show-sql=false",
 	"spring.jpa.properties.hibernate.format_sql=false",
 	"spring.sql.init.mode=never",
-	"spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID:test-client-id}",
-	"spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET:test-client-secret}",
-	"jwt.secret=${JWT_SECRET:test-secret-key-for-testing-purposes-only-minimum-256-bits-required}",
-	"jwt.expiration=${JWT_EXPIRATION:3600000}",
-	"cors.allowed.origins=${CORS_ALLOWED_ORIGINS:*}"
+	"spring.security.oauth2.client.registration.google.client-id=test-client-id",
+	"spring.security.oauth2.client.registration.google.client-secret=test-client-secret",
+	"spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:8080/test",
+	"spring.security.oauth2.client.registration.google.scope=openid,profile,email",
+	"spring.security.oauth2.client.provider.google.authorization-uri=https://accounts.google.com/o/oauth2/v2/auth",
+	"spring.security.oauth2.client.provider.google.token-uri=https://oauth2.googleapis.com/token",
+	"spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleapis.com/oauth2/v3/userinfo",
+	"spring.security.oauth2.client.provider.google.user-name-attribute=sub",
+	"jwt.secret=test-secret-key-for-testing-purposes-only-minimum-256-bits-required",
+	"jwt.expiration=3600000",
+	"cors.allowed.origins=*",
+	"vercel.blob.token=test-blob-token"
 })
 class SchedioApplicationTests {
 
