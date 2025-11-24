@@ -91,7 +91,7 @@ jobs:
         run: chmod +x mvnw
 
       - name: Maven verify (integration profile)
-        run: ./mvnw -B -ntp -DskipTests -Pintegration failsafe:integration-test failsafe:verify
+        run: ./mvnw -B -ntp -Pintegration test-compile failsafe:integration-test failsafe:verify
 
       - name: Upload integration test reports
         if: ${{ always() && env.ACT != 'true' }}
