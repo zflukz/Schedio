@@ -86,7 +86,7 @@ const JoinButton: React.FC<JoinButtonProps> = ({
         {currentStatus === "past" && (
           <button
             disabled
-            className="w-full bg-gray-300 text-gray-600 cursor-not-allowed font-bold text-[18px] py-[8px] rounded-[10px]"
+            className="w-full bg-support2 text-support3 cursor-not-allowed font-bold text-[18px] py-[8px] rounded-[10px]"
           >
             Event Has Ended
           </button>

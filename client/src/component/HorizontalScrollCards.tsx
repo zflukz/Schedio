@@ -70,6 +70,7 @@ const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({ events, o
                 organizer="Tech Community"
                 currentParticipants={c.currentParticipants}
                 totalseats={c.totalseats}
+                imageUrl={c.imageUrl}
                 onJoin={() => onJoin && onJoin(c)}
               />
             </div>

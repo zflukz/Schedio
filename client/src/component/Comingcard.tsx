@@ -10,6 +10,7 @@ interface EventDetailProps {
   organizer: string;
   currentParticipants: number;
   totalseats: number;
+  imageUrl?: string;
   user?: { name: string; role: string } | null;
   onJoin?: () => void;
   onCancel?: () => void;
@@ -22,16 +23,30 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
   place,
   currentParticipants,
   totalseats,
+  imageUrl,
   onJoin,
 }) => {
-  const isUnlimited = totalseats === 2147483647;
+  const isUnlimited = totalseats === 2147483647 || totalseats === 0;
   const percentage = isUnlimited ? 100 : Math.round((currentParticipants / totalseats) * 100);
 
   return (
     <div className="font-sans p-[30px] bg-white rounded-[20px] shadow-md w-full max-w-sm md:max-w-sm min-w-[380px] mx-auto">
+      
       <div className="inline-block bg-[#4F4F4F] text-white font-bold text-[18px] px-[15px] py-[3px] mb-[15px] rounded-full">
         🔥 Happening Soon!
       </div>
+      
+      {/* Image */}
+      <div className="rounded-[12px] overflow-hidden mb-3">
+        {imageUrl ? (
+          <img src={imageUrl} alt={title} className="w-full h-[200px] object-cover" />
+        ) : (
+          <div className="w-full h-[200px] px-2 py-2 text-support3 italic flex text-center items-center justify-center border border-support4 rounded-lg bg-gray-50">
+            No poster available
+          </div>
+        )}
+      </div>
+      
       <div className="mb-[15px]">
         <h1 className="text-[20px] font-bold mb-[10px] text-primary">{title}</h1>
         <div className="flex items-center text-text-black font-semibold mb-[10px]">
@@ -67,7 +82,7 @@ const Upcomingcard: React.FC<EventDetailProps> = ({
               </svg>
               <span>{currentParticipants} Joined</span>
             </div>
-            <span className="text-support3">{totalseats === 2147483647 ? 'Unlimited seats' : `${totalseats} seats`}</span>
+            <span className="text-support3">{totalseats === 2147483647 || totalseats === 0 ? 'Unlimited seats' : `${totalseats} seats`}</span>
           </div>
           {!isUnlimited && (
             <>

@@ -223,7 +223,7 @@ public class EventService {
     }
 
     // =============== FILTER EVENTS (PUBLIC) ===============
-    public List<Events> getFilteredEvents(String search, List<E_EventCategory> category, Instant startDate, Instant endDate) {
+    public List<EventResponseDto> getFilteredEvents(String search, List<E_EventCategory> category, Instant startDate, Instant endDate) {
         // Get approved event IDs
         Set<String> approvedEventIds = approvalRepository.findAll().stream()
                 .filter(a -> a.getDecision() == E_EventStatus.APPROVED)
@@ -252,6 +252,7 @@ public class EventService {
                     long diff2 = Math.abs(e2.getStartsAt().toEpochMilli() - now.toEpochMilli());
                     return Long.compare(diff1, diff2);
                 })
+                .map(this::mapToResponseDto)
                 .toList();
     }
 
@@ -320,15 +321,7 @@ public class EventService {
                 .filter(e -> approvedEventIds.contains(e.getEventId()))
                 .filter(e -> !e.getIsDeleted() && !e.getIsCancelled())
                 .filter(e -> e.getStartsAt().isAfter(now))
-                .sorted((e1, e2) -> {
-                    long count1 = eventRegisterRepository.findAll().stream()
-                            .filter(r -> r.getEvent().getEventId().equals(e1.getEventId()))
-                            .count();
-                    long count2 = eventRegisterRepository.findAll().stream()
-                            .filter(r -> r.getEvent().getEventId().equals(e2.getEventId()))
-                            .count();
-                    return Long.compare(count2, count1);
-                })
+                .sorted((e1, e2) -> e1.getStartsAt().compareTo(e2.getStartsAt()))
                 .map(this::mapToResponseDto)
                 .toList();
     }
