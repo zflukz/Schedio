@@ -59,9 +59,11 @@ const [lastName, setLastName] = useState((user as any)?.lastname || '');
 
 // Update local state when user changes
 useEffect(() => {
-  setFirstName((user as any)?.firstname || '');
-  setLastName((user as any)?.lastname || '');
-}, [(user as any)?.firstname, (user as any)?.lastname]);
+  const userFirstName = (user as any)?.firstname || '';
+  const userLastName = (user as any)?.lastname || '';
+  setFirstName(userFirstName);
+  setLastName(userLastName);
+}, [user]);
 const [originalPhone, setOriginalPhone] = useState('');
 const nameInputRef = useRef<HTMLInputElement>(null);
 const [showSavePopupName, setShowSavePopupName] = useState(false);
