@@ -12,7 +12,7 @@ function EventDetailedPage() {
   const { user } = useUser();
   const location = useLocation();
   const { eventId } = useParams<{ eventId: string }>();
-  const { events, fetchHomeEvents, fetchOrganizerEvents } = useEventContext();
+  const { events, upcoming, fetchHomeEvents, fetchOrganizerEvents, fetchUpcoming } = useEventContext();
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
   
   useEffect(() => {
@@ -37,9 +37,13 @@ function EventDetailedPage() {
       };
       
       checkIfMyEvent();
+      // Fetch upcoming events for the happening soon section
+      fetchUpcoming();
     } else if (location.state?.event) {
       // Fallback to location state if available
       setCurrentEvent(location.state.event);
+      // Still fetch upcoming events
+      fetchUpcoming();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId, user]);
@@ -104,7 +108,7 @@ function EventDetailedPage() {
       </div>
       <div className="pb-[80px]">
       <HorizontalScrollCards
-        events={events}
+        events={upcoming}
         onJoin={(event) => handleViewDetails(event)}
       />
       </div>      

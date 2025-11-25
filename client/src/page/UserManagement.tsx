@@ -192,8 +192,9 @@ const UserManagement: React.FC = () => {
                 </svg>
                 <input
                   type="text"
-                  placeholder="Search your events."
-                  className="outline-none w-full text-text-black placeholder:text-support3 text-[18px]"
+                  placeholder="Search users."
+                  style={{ outline: 'none', border: 'none', boxShadow: 'none' }}
+                  className="w-full text-text-black placeholder:text-support3 text-[18px]"
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
                 />

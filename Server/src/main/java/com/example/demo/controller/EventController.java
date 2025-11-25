@@ -188,8 +188,8 @@ public class EventController {
 
     // =============== FILTER EVENTS (PUBLIC) ===============
     @PostMapping("/filter")
-    public ResponseEntity<ApiResponse<List<Events>>> filterEvents(@RequestBody EventFilterDto filter) {
-        List<Events> events = eventService.getFilteredEvents(
+    public ResponseEntity<ApiResponse<List<EventResponseDto>>> filterEvents(@RequestBody EventFilterDto filter) {
+        List<EventResponseDto> events = eventService.getFilteredEvents(
                 filter.getSearch(),
                 filter.getCategory(),
                 filter.getStartDate(),
@@ -197,7 +197,7 @@ public class EventController {
         );
 
         return ResponseEntity.ok(
-                ApiResponse.<List<Events>>builder()
+                ApiResponse.<List<EventResponseDto>>builder()
                         .success(true)
                         .message("Filtered events retrieved successfully")
                         .data(events)

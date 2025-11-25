@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { apiEndpoints } from '../config/api';
 
@@ -16,6 +16,20 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
   const [firstname, setfirstName] = useState(""); // ใช้เฉพาะ Register
   const [lastname, setlastName] = useState(""); // ใช้เฉพาะ Register
   const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Load remembered credentials on component mount
+  useEffect(() => {
+    if (mode === "signin") {
+      const rememberedUsername = localStorage.getItem("rememberedUsername");
+      const rememberedPassword = localStorage.getItem("rememberedPassword");
+      if (rememberedUsername && rememberedPassword) {
+        setUsername(rememberedUsername);
+        setPassword(rememberedPassword);
+        setRememberMe(true);
+      }
+    }
+  }, [mode]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +41,18 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
     }
 
     setError("");
+    
+    // Handle remember me functionality
+    if (mode === "signin") {
+      if (rememberMe) {
+        localStorage.setItem("rememberedUsername", username);
+        localStorage.setItem("rememberedPassword", password);
+      } else {
+        localStorage.removeItem("rememberedUsername");
+        localStorage.removeItem("rememberedPassword");
+      }
+    }
+    
     onSubmit({ 
       username: username,
       email: email,
@@ -55,7 +81,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {/* Backend error from API */}
-        {backendError && <p className="text-red-500 mb-4">{backendError}</p>}
+        {backendError && (
+          <div className="text-red-500 mb-4">
+            {backendError.split('\n').map((line, index) => (
+              <p key={index} className="mb-1">{line}</p>
+            ))}
+          </div>
+        )}
 
         {/* Name (เฉพาะ Register) */}
         {mode === "register" && (
@@ -154,6 +186,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
             <label className="flex items-center gap-2 relative">
               <input
                 type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-4 h-4 border border-support4 rounded appearance-none checked:bg-primary checked:border-primary focus:ring-1 focus:ring-primary peer"
               />
               <span className="absolute left-0 top-[4px] w-4 h-4 pointer-events-none peer-checked:block">

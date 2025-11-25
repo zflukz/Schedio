@@ -1,0 +1,1 @@
+console.log('Debug: Check browser console for approval data logs');

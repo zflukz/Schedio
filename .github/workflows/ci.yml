@@ -54,11 +54,14 @@ jobs:
 
       - name: Maven verify
         env:
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          VERCEL_BLOB_TOKEN: ${{ secrets.VERCEL_BLOB_TOKEN }}
-          CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID || 'test-client-id' }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET || 'test-client-secret' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-secret-key-for-testing-purposes-only-minimum-256-bits-required' }}
+          VERCEL_BLOB_TOKEN: ${{ secrets.VERCEL_BLOB_TOKEN || 'test-blob-token' }}
+          CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS || '*' }}
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME || 'test@example.com' }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD || 'test-password' }}
+          FRONTEND_BASE_URL: ${{ secrets.FRONTEND_BASE_URL || 'http://localhost:3000' }}
         run: ./mvnw -B -ntp clean verify
 
       - name: Upload test reports

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -62,6 +63,12 @@ public class Users {
 
     @Column(name = "GoogleID")
     private String googleID;
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
 
 
 
