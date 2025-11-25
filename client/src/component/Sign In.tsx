@@ -81,7 +81,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, backendError }) => 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {/* Backend error from API */}
-        {backendError && <p className="text-red-500 mb-4">{backendError}</p>}
+        {backendError && (
+          <div className="text-red-500 mb-4">
+            {backendError.split('\n').map((line, index) => (
+              <p key={index} className="mb-1">{line}</p>
+            ))}
+          </div>
+        )}
 
         {/* Name (เฉพาะ Register) */}
         {mode === "register" && (

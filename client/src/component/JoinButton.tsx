@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PopupModal from "./PopupAlert";
 
 interface JoinButtonProps {
-  status?: "upcoming" | "joined" | "full"; // event status
+  status?: "upcoming" | "joined" | "full" | "past"; // event status
   user?: { name: string; role: string } | null;
   onJoin?: () => void;
   onCancel?: () => void;
@@ -25,7 +25,7 @@ const JoinButton: React.FC<JoinButtonProps> = ({
   }, [status]);
 
   const handleJoin = () => {
-    if (!isSignedIn || currentStatus === "full") return;
+    if (!isSignedIn || currentStatus === "full" || currentStatus === "past") return;
     setCurrentStatus("joined");
     onJoin?.();
   };
@@ -80,6 +80,15 @@ const JoinButton: React.FC<JoinButtonProps> = ({
             className="w-full bg-white text-text-black border-[1.5px] border-dashed border-text-black cursor-not-allowed font-bold text-[18px] py-[8px] rounded-[10px]"
           >
             No Seats Available
+          </button>
+        )}
+
+        {currentStatus === "past" && (
+          <button
+            disabled
+            className="w-full bg-gray-300 text-gray-600 cursor-not-allowed font-bold text-[18px] py-[8px] rounded-[10px]"
+          >
+            Event Has Ended
           </button>
         )}
       </div>

@@ -9,7 +9,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const { refreshUser } = useUser();
   const [backendError, setBackendError] = useState("");
 
-  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
+  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; firstname?: string; lastname?: string }) => {
     try {
       const endpoint = mode === "register" ? "/register" : "/login";
 
@@ -19,8 +19,8 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
               userName: data.username,
               userPassword: data.password,
               userEmail: data.email,
-              userFristname: data.name,
-              userLastname: data.name
+              firstName: data.firstname,
+              lastName: data.lastname
             }
           : {
               usernameOrEmail: data.username,
@@ -36,7 +36,18 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
       const result = await response.json();
 
       if (!response.ok) {
-        const message = result.message || JSON.stringify(result);
+        let message = "Registration failed";
+        
+        if (result.message) {
+          message = result.message;
+        } else if (typeof result === 'object' && result !== null) {
+          // Handle validation errors object
+          const errors = Object.values(result).filter(Boolean);
+          if (errors.length > 0) {
+            message = errors.join("\n");
+          }
+        }
+        
         setBackendError(message);
         return;
       }

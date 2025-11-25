@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import AuthPage from './page/Sign In';
 import { apiEndpoints } from './config/api';
 import Home from './page/Home';
+import ForgotPassword from './page/ForgotPassword';
+import ResetPassword from './page/ResetPassword';
 import ProtectedRoute from './component/ProtectedRoute';
 import OAuth2Callback from './component/OAuth2Callback';
 import HomeOrganizer from "./page/HomeOrganizer";
@@ -114,6 +116,14 @@ function App() {
               <Route
                 path="/register"
                 element={<AuthPage mode="register" />}
+              />
+              <Route
+                path="/forgot-password"
+                element={<ForgotPassword />}
+              />
+              <Route
+                path="/reset-password"
+                element={<ResetPassword />}
               />
               <Route
                 path="/admin/dashboard"
