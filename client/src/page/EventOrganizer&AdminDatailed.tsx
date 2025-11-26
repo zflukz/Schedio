@@ -5,15 +5,25 @@ import "../App.css";
 import EventOrganizerAdminDetailCard from "../component/EventOrganizer&AdminDetailcard";
 import { useUser } from "../App";
 import { useEventContext, Event } from "../context/EventContext";
-
+import RejectPopup from "../component/RejectreasonPopup";
 const EventOrganizerandAdminDatailed: React.FC = () => {
   const { events } = useEventContext();
   const { user } = useUser(); 
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
-
+  const [isRejectOpen, setRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
   const event = events.find((e) => e.id === eventId);
+  const submitReject = () => {
 
+      // ❗ เรียก API reject พร้อมเหตุผลตรงนี้
+
+      setRejectOpen(false);
+      setRejectReason("");
+    };
+    const handleReject = () => {
+  setRejectOpen(true);
+};
   const [viewSection, setViewSection] = useState<"detail" | "users">("detail");
 
   if (!user || (user.userRole !== "admin" && user.userRole !== "organizer")) {
@@ -103,6 +113,8 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
               statusDate: event.statusDate ?? new Date().toISOString().split("T")[0],
             }}
             role={user?.userRole}
+            onReject={handleReject}
+
           />
         )}
 
@@ -139,6 +151,14 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
   	<div className="flex items-center  justify-center py-[20px] text-[14px] font-normal bg-bg-light">
         © 2025 Schedio. All rights reserved.
       </div>
+      <RejectPopup
+        isOpen={isRejectOpen}
+        review={rejectReason}
+        onReviewChange={setRejectReason}
+        onSubmit={submitReject}
+        onClose={() => setRejectOpen(false)}
+      />
+
     </div>
   );
 };
