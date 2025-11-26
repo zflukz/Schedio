@@ -49,20 +49,70 @@ public class ApprovalService {
     }
 
     public List<Approval> getFilteredApprovals(String search, List<E_EventStatus> decisions, Instant startDate, Instant endDate) {
+        Instant now = Instant.now();
         return approvalRepository.findAll().stream()
                 .filter(a -> decisions == null || decisions.isEmpty() || decisions.contains(a.getDecision()))
                 .filter(a -> startDate == null || !a.getEvent().getStartsAt().isBefore(startDate))
                 .filter(a -> endDate == null || !a.getEvent().getStartsAt().isAfter(endDate))
                 .filter(a -> search == null || search.trim().isEmpty() || matchesSearch(a, search.toLowerCase()))
+                .sorted((a1, a2) -> {
+                    // 1. PENDING status first
+                    if (a1.getDecision() == E_EventStatus.PENDING && a2.getDecision() != E_EventStatus.PENDING) return -1;
+                    if (a1.getDecision() != E_EventStatus.PENDING && a2.getDecision() == E_EventStatus.PENDING) return 1;
+                    
+                    boolean a1Past = a1.getEvent().getStartsAt().isBefore(now);
+                    boolean a2Past = a2.getEvent().getStartsAt().isBefore(now);
+                    
+                    // 2. For PENDING: past events first
+                    if (a1.getDecision() == E_EventStatus.PENDING && a2.getDecision() == E_EventStatus.PENDING) {
+                        if (a1Past && !a2Past) return -1;
+                        if (!a1Past && a2Past) return 1;
+                    }
+                    // For non-PENDING: future events first
+                    else if (a1.getDecision() != E_EventStatus.PENDING && a2.getDecision() != E_EventStatus.PENDING) {
+                        if (!a1Past && a2Past) return -1;
+                        if (a1Past && !a2Past) return 1;
+                    }
+                    
+                    // 3. Closest to now
+                    long diff1 = Math.abs(a1.getEvent().getStartsAt().toEpochMilli() - now.toEpochMilli());
+                    long diff2 = Math.abs(a2.getEvent().getStartsAt().toEpochMilli() - now.toEpochMilli());
+                    return Long.compare(diff1, diff2);
+                })
                 .toList();
     }
 
     public List<Approval> getFilteredApprovalsByOrganizer(UUID organizerId, String search, List<E_EventStatus> decisions, Instant startDate, Instant endDate) {
+        Instant now = Instant.now();
         return approvalRepository.findByOrganizer(organizerId).stream()
                 .filter(a -> decisions == null || decisions.isEmpty() || decisions.contains(a.getDecision()))
                 .filter(a -> startDate == null || !a.getEvent().getStartsAt().isBefore(startDate))
                 .filter(a -> endDate == null || !a.getEvent().getStartsAt().isAfter(endDate))
                 .filter(a -> search == null || search.trim().isEmpty() || matchesOrganizerSearch(a, search.toLowerCase()))
+                .sorted((a1, a2) -> {
+                    // 1. PENDING status first
+                    if (a1.getDecision() == E_EventStatus.PENDING && a2.getDecision() != E_EventStatus.PENDING) return -1;
+                    if (a1.getDecision() != E_EventStatus.PENDING && a2.getDecision() == E_EventStatus.PENDING) return 1;
+                    
+                    boolean a1Past = a1.getEvent().getStartsAt().isBefore(now);
+                    boolean a2Past = a2.getEvent().getStartsAt().isBefore(now);
+                    
+                    // 2. For PENDING: past events first
+                    if (a1.getDecision() == E_EventStatus.PENDING && a2.getDecision() == E_EventStatus.PENDING) {
+                        if (a1Past && !a2Past) return -1;
+                        if (!a1Past && a2Past) return 1;
+                    }
+                    // For non-PENDING: future events first
+                    else if (a1.getDecision() != E_EventStatus.PENDING && a2.getDecision() != E_EventStatus.PENDING) {
+                        if (!a1Past && a2Past) return -1;
+                        if (a1Past && !a2Past) return 1;
+                    }
+                    
+                    // 3. Closest to now
+                    long diff1 = Math.abs(a1.getEvent().getStartsAt().toEpochMilli() - now.toEpochMilli());
+                    long diff2 = Math.abs(a2.getEvent().getStartsAt().toEpochMilli() - now.toEpochMilli());
+                    return Long.compare(diff1, diff2);
+                })
                 .toList();
     }
     

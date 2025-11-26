@@ -147,6 +147,12 @@ const MyEventCard: React.FC<EventCardProps> = ({ event, role = "user" }) => {
   ${role === "user" ? "justify-end" : "justify-between"}`}
 >
 
+  {/* Organizer Name (User view) */}
+  {role === "user" && event.organizer && (
+    <div className="flex-1 flex flex-col justify-center font-semibold text-text-black text-[14px] sm:text-[16px] leading-tight">
+      <span>Organized by: <span className="text-support3">{event.organizer}</span></span>
+    </div>
+  )}
   
   {/* Status Date (Organizer/Admin view) */}
   {(role === "organizer" || role === "admin") && (

@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import AuthPage from './page/Sign In';
 import { apiEndpoints } from './config/api';
 import Home from './page/Home';
+import ForgotPassword from './page/ForgotPassword';
+import ResetPassword from './page/ResetPassword';
 import ProtectedRoute from './component/ProtectedRoute';
 import OAuth2Callback from './component/OAuth2Callback';
 import HomeOrganizer from "./page/HomeOrganizer";
@@ -40,7 +42,10 @@ export const useUser = () => {
 };
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem("userData");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const refreshUser = async () => {
     const token = localStorage.getItem("token");
@@ -64,7 +69,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
           userRole: userData.userRole?.toLowerCase(),
         };
         setUser(normalizedUser); 
-        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("userData", JSON.stringify(normalizedUser));
       } else {
         const errorText = await response.text();
         console.log('Profile fetch failed:', errorText);
@@ -79,8 +84,11 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    refreshUser();
-  }, []);
+    const token = localStorage.getItem("token");
+    if (token && !user) {
+      refreshUser();
+    }
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser, refreshUser }}>
@@ -108,6 +116,14 @@ function App() {
               <Route
                 path="/register"
                 element={<AuthPage mode="register" />}
+              />
+              <Route
+                path="/forgot-password"
+                element={<ForgotPassword />}
+              />
+              <Route
+                path="/reset-password"
+                element={<ResetPassword />}
               />
               <Route
                 path="/admin/dashboard"

@@ -7,7 +7,9 @@ export interface Event {
   location: string;
   adminStatus?: "Pending" | "Approved" | "Rejected"; 
   approvedBy?: string;
+  approvedByName?: string;
   rejectedBy?: string;
+  rejectedByName?: string;
   rejectReason?: string;
   statusDate?: string;   
   phone?: number | string;
@@ -47,7 +49,7 @@ const EventOrganizerAdminDetailCard: React.FC<EventOrganizerAdminDetailCardProps
 		{event.adminStatus === "Rejected" && (
 			<>
 			<div className="bg-[#FEE2E2] text-[#EF4444] text-sm px-3 py-1 font-semibold mb-2 rounded">
-				Rejected by {event.rejectedBy ?? "—"} on {event.statusDate}
+				Rejected by {(event as any).rejectedBy ?? "—"} on {event.statusDate}
 			</div>
 			<div className="text-fail text-sm px-3 py-2 border border-dashed border-fail rounded-[8px] mb-4">
 				{event.rejectReason ?? "No reason provided"}
@@ -56,7 +58,8 @@ const EventOrganizerAdminDetailCard: React.FC<EventOrganizerAdminDetailCardProps
 		)}
 		{event.adminStatus === "Approved" && (
 			<div className="bg-[#DCFCE7] text-[#16A34A] text-sm font-semibold px-3 py-1 rounded mb-4">
-			Approved by {event.approvedBy ?? "—"} on {event.statusDate}
+			{console.log('Approved event display:', event.id, 'approvedBy:', (event as any).approvedBy)}
+			Approved by {(event as any).approvedBy ?? "—"} on {event.statusDate}
 			</div>
 		)}
 		{event.adminStatus === "Pending" && (
@@ -97,18 +100,7 @@ const EventOrganizerAdminDetailCard: React.FC<EventOrganizerAdminDetailCardProps
             {event.duration}
           </div>
 
-          {/* Status Badge */}
-          <span
-            className={`text-[16px] font-semibold px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0 ${
-              event.adminStatus === "Pending"
-                ? "bg-[#FEF9C3] text-[#CA8A04]"
-                : event.adminStatus === "Approved"
-                ? "bg-[#DCFCE7] text-[#16A34A]"
-                : "bg-[#FEE2E2] text-[#EF4444]"
-            }`}
-          >
-            {event.adminStatus ?? "Pending"}
-          </span>
+
 
 
 		

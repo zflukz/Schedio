@@ -47,8 +47,8 @@ public class Events {
 
 
 
-    @Column(name = "Poster", columnDefinition = "TEXT")
-    private String Poster;
+    @Column(name = "poster", columnDefinition = "TEXT")
+    private String poster;
 
      @Column(nullable = false)
      private String location;

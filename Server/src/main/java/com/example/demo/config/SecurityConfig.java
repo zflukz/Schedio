@@ -62,6 +62,7 @@ public class SecurityConfig {
                                 "/login",
                                 "/register"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/forgot-password", "/reset-password").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -83,6 +84,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/public/**","/error",
                                 "/oauth2/**","/login/**","/login","/register",
+                                "/forgot-password","/reset-password",
                                 "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html",
                                 "/swagger-ui/index.html","/swagger-resources/**","/webjars/**",
                                 "/favicon.ico","/assets/**","/static/**").permitAll()

@@ -9,7 +9,7 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
   const { refreshUser } = useUser();
   const [backendError, setBackendError] = useState("");
 
-  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; name?: string }) => {
+  const handleAuthSubmit = async (data: { username?: string; email?: string; password: string; firstname?: string; lastname?: string }) => {
     try {
       const endpoint = mode === "register" ? "/register" : "/login";
 
@@ -19,8 +19,8 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
               userName: data.username,
               userPassword: data.password,
               userEmail: data.email,
-              userFristname: data.name,
-              userLastname: data.name
+              firstName: data.firstname,
+              lastName: data.lastname
             }
           : {
               usernameOrEmail: data.username,
@@ -36,7 +36,18 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
       const result = await response.json();
 
       if (!response.ok) {
-        const message = result.message || JSON.stringify(result);
+        let message = "Registration failed";
+        
+        if (result.message) {
+          message = result.message;
+        } else if (typeof result === 'object' && result !== null) {
+          // Handle validation errors object
+          const errors = Object.values(result).filter(Boolean);
+          if (errors.length > 0) {
+            message = errors.join("\n");
+          }
+        }
+        
         setBackendError(message);
         return;
       }
@@ -75,7 +86,33 @@ const AuthPage: React.FC<{ mode: "signin" | "register" }> = ({ mode }) => {
     }
   };
 
-  return <AuthForm mode={mode} onSubmit={handleAuthSubmit} backendError={backendError} />;
+  return (
+    <div className="flex flex-col min-h-screen bg-bg-light">
+      <div className="w-full px-[15px] sm:px-[25px] lg:px-[60px] lg:top-[50px] pt-[25px] flex flex-col lg:flex-row lg:items-center relative">
+        {/* Back Button */}
+        <div className="flex justify-start mb-4 lg:mb-0">
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center bg-white text-black py-[8px] px-[20px] rounded-full font-semibold text-[16px] hover:shadow-md transition z-10"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6 mr-[10px]"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            Back
+          </button>
+        </div>
+      </div>
+      
+      <AuthForm mode={mode} onSubmit={handleAuthSubmit} backendError={backendError} />
+    </div>
+  );
 };
 
 export default AuthPage;
