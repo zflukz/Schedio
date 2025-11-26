@@ -6,29 +6,26 @@ import EventOrganizerAdminDetailCard from "../component/EventOrganizer&AdminDeta
 import { useUser } from "../App";
 import { useEventContext } from "../context/EventContext";
 import { API_BASE_URL } from '../config/api';
+import RejectPopup from "../component/RejectreasonPopup";
 const EventOrganizerandAdminDatailed: React.FC = () => {
-  const { events, myEvents, approveEvent, rejectEvent, fetchOrganizerEvents, fetchAdminEvents } = useEventContext();
+  const { events ,approveEvent,rejectEvent } = useEventContext();
   const { user } = useUser(); 
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
-
-  const event = myEvents.find((e) => e.id === eventId) || events.find((e) => e.id === eventId);
-  console.log('Found event:', event?.id, 'approvedBy:', (event as any)?.approvedBy);
-
+  const [isRejectOpen, setRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const event = events.find((e) => e.id === eventId);
+  const submitReject = (id:string) => {
+      setRejectOpen(false);
+      rejectEvent(id, user?.userName || "Admin", rejectReason)
+      setRejectReason("");
+    };
+    const handleReject = () => {
+  setRejectOpen(true);
+};
   const [viewSection, setViewSection] = useState<"detail" | "users">("detail");
   const [joinedUsers, setJoinedUsers] = useState<Array<{id: string, name: string, email: string, registeredAt: string}>>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
-
-  // Fetch events if not loaded
-  React.useEffect(() => {
-    if (user && events.length === 0) {
-      if (user.userRole === "admin") {
-        fetchAdminEvents();
-      } else if (user.userRole === "organizer") {
-        fetchOrganizerEvents();
-      }
-    }
-  }, [user, events.length, fetchAdminEvents, fetchOrganizerEvents]);
 
   // Fetch joined users when switching to users section
   React.useEffect(() => {
@@ -138,6 +135,7 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
 
 
 
+
         {/* Conditional Rendering */}
         {viewSection === "detail" && (
           <EventOrganizerAdminDetailCard
@@ -147,7 +145,7 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
             }}
             role={user?.userRole}
             onApprove={() => approveEvent(event.id, "APPROVED")}
-            onReject={() => rejectEvent(event.id, user?.userName || "Admin", "Rejected")}
+            onReject={handleReject}
           />
         )}
 
@@ -188,6 +186,15 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
   	<div className="flex items-center  justify-center py-[20px] text-[14px] font-normal bg-bg-light">
         © 2025 Schedio. All rights reserved.
       </div>
+      <RejectPopup
+        isOpen={isRejectOpen}
+        review={rejectReason}
+        onReviewChange={setRejectReason}
+        onSubmit={submitReject}
+        onClose={() => setRejectOpen(false)}
+        id = {event.id}
+      />
+
     </div>
   );
 };
