@@ -34,11 +34,13 @@ interface EventOrganizerAdminDetailCardProps {
 }
 
 const EventOrganizerAdminDetailCard: React.FC<EventOrganizerAdminDetailCardProps> = ({
+  
   event,
   role = "organizer",
   onApprove,
   onReject,
 }) => {
+  
   return (
     <div className="bg-white rounded-[20px] shadow-md p-[25px] max-w-3xl mx-auto mt-6 border border-gray-100">
       {/* Approval / Reject Info */}
