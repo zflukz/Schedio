@@ -30,7 +30,7 @@ export default function RejectPopup({
             <input
               type="text"
               className="w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="Scheduled time does not comply with system rules."
+              placeholder="Enter your Reason."
               value={review}
               onChange={(e) => onReviewChange(e.target.value)}
             />
