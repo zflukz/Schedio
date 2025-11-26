@@ -15,8 +15,9 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
   const [isRejectOpen, setRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const event = events.find((e) => e.id === eventId);
-  const submitReject = () => {
+  const submitReject = (id:string) => {
       setRejectOpen(false);
+      rejectEvent(id, user?.userName || "Admin", rejectReason)
       setRejectReason("");
     };
     const handleReject = () => {
@@ -134,6 +135,7 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
 
 
 
+
         {/* Conditional Rendering */}
         {viewSection === "detail" && (
           <EventOrganizerAdminDetailCard
@@ -143,8 +145,7 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
             }}
             role={user?.userRole}
             onApprove={() => approveEvent(event.id, "APPROVED")}
-            onReject={() => rejectEvent(event.id, user?.userName || "Admin", "Rejected")}
-
+            onReject={handleReject}
           />
         )}
 
@@ -191,6 +192,7 @@ const EventOrganizerandAdminDatailed: React.FC = () => {
         onReviewChange={setRejectReason}
         onSubmit={submitReject}
         onClose={() => setRejectOpen(false)}
+        id = {event.id}
       />
 
     </div>

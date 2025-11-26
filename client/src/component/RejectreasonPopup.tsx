@@ -1,11 +1,10 @@
-import React from "react";
-
 interface RejectPopupProps {
   isOpen: boolean;
   review: string;
   onReviewChange: (v: string) => void;
-  onSubmit: () => void;
+  onSubmit: (id:string) => void;
   onClose: () => void;
+  id: string;
 }
 
 export default function RejectPopup({
@@ -14,6 +13,7 @@ export default function RejectPopup({
   onReviewChange,
   onSubmit,
   onClose,
+  id,
 }: RejectPopupProps) {
   if (!isOpen) return null;
 
@@ -45,7 +45,7 @@ export default function RejectPopup({
             </button>
             <button
               className="flex-1 rounded-full py-2 bg-night-default text-white hover:bg-night-hover"
-              onClick={onSubmit}
+              onClick={() => onSubmit(id)}
             >
               Submit
             </button>
