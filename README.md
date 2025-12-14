@@ -161,6 +161,9 @@ Use the following credentials to test the system:
 - **Username:** `organizer`
 - **Password:** `1234`
 
+## 💥 Project Status & Known Issues
+- **Create Event API is currently broken.** The Create Event API still sends a status = "Pending" field to the Event table. However, the status column was removed from the Event table because status management is now handled in the Approval table instead. Since the API has not yet been updated to match the latest database schema, event creation fails when this API is called.
+
 ---
 
 ## Additional Information
