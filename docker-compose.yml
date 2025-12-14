@@ -1,7 +1,47 @@
 version: "3.8"
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: schedio-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_user:-postgres}
+      POSTGRES_PASSWORD: ${DB_password:-postgres}
+      POSTGRES_DB: schedio
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./Server
+    container_name: schedio-backend
+    volumes:
+      - ./Server:/app
+      - ~/.m2:/root/.m2
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      DB_url: jdbc:postgresql://db:5432/schedio
+      DB_user: ${DB_user:-postgres}
+      DB_password: ${DB_password:-postgres}
+    command: ["mvn", "spring-boot:run"]
+    depends_on:
+      db:
+        condition: service_healthy
+
   frontend:
     build: ./client
+    container_name: schedio-frontend
     ports:
       - "3000:3000"
     restart: always
@@ -18,18 +58,8 @@ services:
       - WDS_SOCKET_PORT=0           # WebSocket fix
       - WDS_SOCKET_HOST=localhost 
     command: npm start
-# for local dev
+    depends_on:
+      - backend
 
-  backend:
-    build: ./Server
-    volumes:
-      - ./Server:/app
-      - ~/.m2:/root/.m2
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env
-    environment:
-      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
-      DB_password : ${DB_password}
-    command: ["mvn", "spring-boot:run"]
+volumes:
+  postgres_data:
