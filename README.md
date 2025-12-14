@@ -26,6 +26,7 @@ mvn clean install
 ```
 
 Or on Windows:
+
 ```bash
 cd Server
 mvnw.cmd clean install
@@ -90,6 +91,7 @@ docker-compose up --build
 ```
 
 This will start:
+
 - Frontend on `http://localhost:3000`
 - Backend on `http://localhost:8080`
 
@@ -98,68 +100,83 @@ This will start:
 #### Backend
 
 1. Navigate to the Server directory:
+
    ```bash
    cd Server
    ```
 
 2. Run the Spring Boot application:
+
    ```bash
    ./mvnw spring-boot:run
    ```
-   
+
    Or on Windows:
+
    ```bash
    mvnw.cmd spring-boot:run
    ```
-   
+
    The backend will be available at `http://localhost:8080`
 
 #### Frontend
 
 1. Navigate to the client directory:
+
    ```bash
    cd client
    ```
 
 2. Start the development server:
+
    ```bash
    npm start
    ```
-   
+
    The frontend will be available at `http://localhost:3000`
 
 ## 📊 Database Import
 
 ### 🐘 For SQL (PostgreSQL)
 
-Import `init_db.sql` into your local PostgreSQL server before running the app:
+The project includes `database/schema.sql` and `database/seed_data.sql`.
+
+- **Docker Compose**: These files are automatically imported when the database container starts for the first time.
+- **Manual Setup**: If running PostgreSQL manually, please execute `database/seed_data.sql` to populate the database with test users.
 
 ```bash
-psql -U your_username -d schedio -f init_db.sql
+psql -U postgres -d schedio -f database/seed_data.sql
 ```
 
-Or using pgAdmin or any PostgreSQL client, execute the SQL file to create the necessary database schema and initial data.
-
-**Note:** If using Spring Boot with JPA (as configured in this project), the database schema will be automatically created on first run due to `spring.jpa.hibernate.ddl-auto=update` setting. However, you may still need to import initial data if an `init_db.sql` file is provided.
+**Note:** The database schema is automatically managed by Spring Boot (JPA), but `seed_data.sql` is required to create the initial test accounts.
 
 ## 🔎 Test Credentials
 
 Use the following credentials to test the system:
 
 ### Admin User
+
 - **Role:** Admin
 - **Username:** `admin`
 - **Password:** `1234`
 
 ### Attendee User
+
 - **Role:** Attendee
 - **Username:** `abc`
 - **Password:** `123456789`
 
 ### Organizer User
+
 - **Role:** Organizer
 - **Username:** `organizer`
 - **Password:** `1234`
+
+## ⚠️ Known Issues
+
+- **Google OAuth**: Requires valid `GOOGLE_ID` and `GOOGLE_SECRET` in `.env` to work.
+- **Email Service**: Requires valid SMTP credentials to send emails.
+- **First Run**: The backend might take a few moments to start up and connect to the database.
 
 ---
 
@@ -168,6 +185,7 @@ Use the following credentials to test the system:
 ### 🎯 Features
 
 #### For Attendees
+
 - Browse and search approved events
 - Filter events by category, date, and location
 - Register for events
@@ -175,6 +193,7 @@ Use the following credentials to test the system:
 - User profile management
 
 #### For Organizers
+
 - Create and manage events
 - Upload event posters and PDF documents
 - Track event registrations
@@ -182,6 +201,7 @@ Use the following credentials to test the system:
 - Cancel events when needed
 
 #### For Administrators
+
 - Approve or reject event submissions
 - Manage user roles (ATTENDEE, ORGANIZER, ADMIN)
 - User management and administration
@@ -190,6 +210,7 @@ Use the following credentials to test the system:
 ### 🛠️ Technology Stack
 
 #### Frontend
+
 - **React 18** with TypeScript
 - **React Router** for client-side routing
 - **Tailwind CSS** for styling
@@ -198,6 +219,7 @@ Use the following credentials to test the system:
 - **Create React App** as build tool
 
 #### Backend
+
 - **Spring Boot 3.5.6** with Java 21
 - **Spring Security** for authentication and authorization
 - **Spring Data JPA** for database operations
@@ -208,6 +230,7 @@ Use the following credentials to test the system:
 - **SpringDoc OpenAPI** for API documentation
 
 #### Infrastructure
+
 - **Docker** and **Docker Compose** for containerization
 - **Vercel Blob** for file storage (optional)
 
@@ -261,17 +284,20 @@ Schedio/
 ### 🧪 Testing
 
 #### Backend Tests
+
 ```bash
 cd Server
 ./mvnw test
 ```
 
 For integration tests:
+
 ```bash
 ./mvnw verify -P integration
 ```
 
 #### Frontend Tests
+
 ```bash
 cd client
 npm test
@@ -280,21 +306,25 @@ npm test
 ### 🐳 Docker Commands
 
 #### Build Images
+
 ```bash
 docker-compose build
 ```
 
 #### Run Containers
+
 ```bash
 docker-compose up
 ```
 
 #### Stop Containers
+
 ```bash
 docker-compose down
 ```
 
 #### View Logs
+
 ```bash
 docker-compose logs -f
 ```
@@ -302,6 +332,7 @@ docker-compose logs -f
 ### 📖 Architecture Decision Records
 
 Architecture decisions are documented in the `docs/adr/` directory:
+
 - [ADR-001: JWT Authentication](docs/adr/adr-001-jwt-authentication.md)
 - [ADR-002: Role-Based Access Control](docs/adr/adr-002-role-based-access-control.md)
 - [ADR-003: Frontend Route Protection](docs/adr/adr-003-frontend-route-protection.md)
