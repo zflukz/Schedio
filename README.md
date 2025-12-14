@@ -106,6 +106,8 @@ blob=your_vercel_blob_token
 
 ### Option 1: Using Docker Compose (Recommended)
 
+The `docker-compose.yml` file has been configured to include **PostgreSQL** as a service, which will automatically start along with the frontend and backend.
+
 1. Make sure Docker Desktop is running
 2. Navigate to the project root directory
 3. Run the following command:
@@ -114,10 +116,12 @@ blob=your_vercel_blob_token
 docker-compose up --build
 ```
 
-This will start:
-- **PostgreSQL Database** on `localhost:5432`
+This will start **three services**:
+- **PostgreSQL Database** on `localhost:5432` (with automatic database initialization)
 - **Backend (Spring Boot)** on `http://localhost:8080`
 - **Frontend (React)** on `http://localhost:3000`
+
+**Note:** The database files in the `database/` folder will be automatically imported on first run.
 
 **Wait for all services to start** (usually takes 2-3 minutes on first run).
 
