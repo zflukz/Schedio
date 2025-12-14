@@ -36,6 +36,7 @@ mvn clean install
 ```
 
 **On Windows:**
+
 ```bash
 cd Server
 mvnw.cmd clean install
@@ -96,7 +97,8 @@ EMAIL_PASSWORD=your_email_password
 blob=your_vercel_blob_token
 ```
 
-**Note:** 
+**Note:**
+
 - For **Docker Compose**, only `DB_user` and `DB_password` need to be set.
 - For **Manual Setup**, ensure PostgreSQL is running and update `DB_url`, `DB_user`, and `DB_password` accordingly.
 
@@ -117,6 +119,7 @@ docker-compose up --build
 ```
 
 This will start **three services**:
+
 - **PostgreSQL Database** on `localhost:5432` (with automatic database initialization)
 - **Backend (Spring Boot)** on `http://localhost:8080`
 - **Frontend (React)** on `http://localhost:3000`
@@ -168,6 +171,7 @@ cd Server
 ```
 
 **On Windows:**
+
 ```bash
 cd Server
 mvnw.cmd spring-boot:run
@@ -193,20 +197,23 @@ The frontend will be available at **http://localhost:3000**
 ### 🐘 For PostgreSQL
 
 The project includes database initialization files in the `database/` folder:
-- `database/schema.sql` - Database schema (for reference only)
-- `database/seed_data.sql` - Initial test user data
+
+- `database/schema.sql` - Complete database schema (users, events, event_registration, approval tables)
+- `database/seed_data.sql` - Sample users, events, and event registrations for testing
 
 #### Using Docker Compose (Automatic)
+
 When you run `docker-compose up` for the first time, the database files in the `database/` folder are **automatically imported** into PostgreSQL.
 
 #### Manual Import
+
 If running PostgreSQL manually, execute the seed data file:
 
 ```bash
 psql -U postgres -d schedio -f database/seed_data.sql
 ```
 
-**Important:** The database schema is automatically managed by Spring Boot (JPA) using the `spring.jpa.hibernate.ddl-auto=update` setting. However, you **must import** `seed_data.sql` to create the initial test accounts.
+**Important:** The database schema is automatically managed by Spring Boot (JPA) using the `spring.jpa.hibernate.ddl-auto=update` setting. However, you **must import** `seed_data.sql` to populate the database with sample users, events, and registrations for testing.
 
 ---
 
@@ -215,16 +222,19 @@ psql -U postgres -d schedio -f database/seed_data.sql
 Use the following credentials to test the system. **The TA can log in directly without registering.**
 
 ### Admin User
+
 - **Role:** Admin (Full access to manage users, approve/reject events)
 - **Username:** `admin`
 - **Password:** `1234`
 
 ### Attendee User
+
 - **Role:** Attendee (Can browse and register for events)
 - **Username:** `abc`
 - **Password:** `123456789`
 
 ### Organizer User
+
 - **Role:** Organizer (Can create and manage events)
 - **Username:** `organizer`
 - **Password:** `1234`
@@ -234,6 +244,7 @@ Use the following credentials to test the system. **The TA can log in directly w
 ## ⚠️ Project Status & Known Issues
 
 ### ✅ Working Features
+
 - User authentication (JWT-based)
 - Role-based access control (Admin, Organizer, Attendee)
 - Event creation, editing, and approval workflow
@@ -244,14 +255,17 @@ Use the following credentials to test the system. **The TA can log in directly w
 ### 🐛 Known Issues
 
 1. **Google OAuth Login**
+
    - **Issue:** Google login requires valid `GOOGLE_ID` and `GOOGLE_SECRET` in `.env`.
    - **Workaround:** Use the test credentials provided above for username/password login.
 
 2. **Email Service (Password Reset)**
+
    - **Issue:** Requires valid SMTP credentials (`EMAIL_USERNAME` and `EMAIL_PASSWORD`) to send password reset emails.
    - **Impact:** Password reset feature will not work without proper email configuration.
 
 3. **First Run Delay**
+
    - **Issue:** The backend might take 1-2 minutes to start up on first run due to dependency downloads and database schema creation.
    - **Workaround:** Wait for the message "Started DemoApplication in X seconds" in the backend logs.
 
@@ -264,6 +278,7 @@ Use the following credentials to test the system. **The TA can log in directly w
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - React 18 with TypeScript
 - React Router for navigation
 - Tailwind CSS for styling
@@ -271,6 +286,7 @@ Use the following credentials to test the system. **The TA can log in directly w
 - Embla Carousel for image carousels
 
 ### Backend
+
 - Spring Boot 3.5.6 with Java 21
 - Spring Security (JWT + OAuth2)
 - Spring Data JPA
@@ -279,6 +295,7 @@ Use the following credentials to test the system. **The TA can log in directly w
 - SpringDoc OpenAPI (Swagger documentation)
 
 ### Infrastructure
+
 - Docker & Docker Compose
 - PostgreSQL 15 Alpine
 
@@ -287,11 +304,14 @@ Use the following credentials to test the system. **The TA can log in directly w
 ## 📚 Additional Information
 
 ### API Documentation
+
 Once the backend is running, you can access the interactive API documentation at:
+
 - **Swagger UI:** http://localhost:8080/swagger-ui.html
 - **OpenAPI JSON:** http://localhost:8080/v3/api-docs
 
 ### Project Structure
+
 ```
 Schedio/
 ├── client/                 # React frontend
@@ -321,12 +341,14 @@ Schedio/
 ## 🧪 Testing
 
 ### Backend Tests
+
 ```bash
 cd Server
 ./mvnw test
 ```
 
 ### Frontend Tests
+
 ```bash
 cd client
 npm test
@@ -360,6 +382,7 @@ docker-compose logs -f db
 ## 📞 Support
 
 For any issues or questions regarding this project, please refer to:
+
 - **Backend API Documentation:** [Server/BACKEND_APIS.md](Server/BACKEND_APIS.md)
 - **Architecture Decision Records:** [docs/adr/](docs/adr/)
 
