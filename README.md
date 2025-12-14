@@ -4,31 +4,192 @@ web application designed for managing and promoting university activities. Its p
 
 Schedio supports multiple user roles, including students, staff, and administrators. Students and staff can create or participate in activities, while administrators are responsible for reviewing and approving activities to ensure compliance with university policies. The core features of the system include activity creation and approval, activity discovery through a centralized listing system, and online activity registration. These features enable systematic activity management and encourage greater user engagement within the university community.
 
-## 🎯 Features
+## 📋 Prerequisites
 
-### For Attendees
+Before you begin, ensure you have the following installed:
+
+- **Java 21** or higher
+- **Node.js v20** and npm
+- **Docker** and **Docker Compose** (for containerized deployment)
+- **PostgreSQL** (if running without Docker)
+- **Maven 3.6+** (if running backend without Docker)
+
+## 🚀 Installation
+
+### Backend Dependencies
+
+Navigate to the Server directory and install dependencies:
+
+```bash
+cd Server
+mvn clean install
+```
+
+Or on Windows:
+```bash
+cd Server
+mvnw.cmd clean install
+```
+
+### Frontend Dependencies
+
+Navigate to the client directory and install dependencies:
+
+```bash
+cd client
+npm install
+```
+
+## 📄 Configuration
+
+1. **Create environment file**
+   - Rename `.env.example` to `.env` (or create a new `.env` file in the root directory)
+   - Configure the following environment variables in your `.env` file:
+
+```env
+# Database Configuration
+DB_url=jdbc:postgresql://localhost:5432/schedio
+DB_user=your_db_username
+DB_password=your_db_password
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRATION=86400000
+
+# Google OAuth2 Configuration
+GOOGLE_ID=your_google_client_id
+GOOGLE_SECRET=your_google_client_secret
+OAUTH_REDIRECT_URI=http://localhost:8080/login/oauth2/code/google
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS=http://localhost:3000
+
+# Frontend URLs
+FRONTEND_BASE_URL=http://localhost:3000
+FRONTEND_HOME_URL=http://localhost:3000/home
+
+# Email Configuration
+EMAIL_USERNAME=your_email_username
+EMAIL_PASSWORD=your_email_password
+
+# Vercel Blob Storage (Optional)
+blob=your_vercel_blob_token
+```
+
+2. **Backend Configuration** (if not using Docker)
+   - Update `Server/src/main/resources/application.properties` with your database credentials and other settings.
+
+## 🤔❓ How to Run
+
+### Option 1: Using Docker Compose (Recommended)
+
+Start the application using Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+This will start:
+- Frontend on `http://localhost:3000`
+- Backend on `http://localhost:8080`
+
+### Option 2: Manual Setup
+
+#### Backend
+
+1. Navigate to the Server directory:
+   ```bash
+   cd Server
+   ```
+
+2. Run the Spring Boot application:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+   
+   Or on Windows:
+   ```bash
+   mvnw.cmd spring-boot:run
+   ```
+   
+   The backend will be available at `http://localhost:8080`
+
+#### Frontend
+
+1. Navigate to the client directory:
+   ```bash
+   cd client
+   ```
+
+2. Start the development server:
+   ```bash
+   npm start
+   ```
+   
+   The frontend will be available at `http://localhost:3000`
+
+## 📊 Database Import
+
+### 🐘 For SQL (PostgreSQL)
+
+Import `init_db.sql` into your local PostgreSQL server before running the app:
+
+```bash
+psql -U your_username -d schedio -f init_db.sql
+```
+
+Or using pgAdmin or any PostgreSQL client, execute the SQL file to create the necessary database schema and initial data.
+
+**Note:** If using Spring Boot with JPA (as configured in this project), the database schema will be automatically created on first run due to `spring.jpa.hibernate.ddl-auto=update` setting. However, you may still need to import initial data if an `init_db.sql` file is provided.
+
+## 🔎 Test Credentials
+
+Use the following credentials to test the system:
+
+### Admin User
+- **Role:** Admin
+- **Username:** `admin`
+- **Password:** `1234`
+
+### Attendee User
+- **Role:** Attendee
+- **Username:** `abc`
+- **Password:** `123456789`
+
+### Organizer User
+- **Role:** Organizer
+- **Username:** `organizer`
+- **Password:** `1234`
+
+---
+
+## Additional Information
+
+### 🎯 Features
+
+#### For Attendees
 - Browse and search approved events
-- Filter events by category and date
+- Filter events by category, date, and location
 - Register for events
 - View event details and manage registrations
 - User profile management
 
-### For Organizers
+#### For Organizers
 - Create and manage events
 - Upload event posters and PDF documents
 - Track event registrations
 - Request event edits after approval
 - Cancel events when needed
 
-### For Administrators
+#### For Administrators
 - Approve or reject event submissions
 - Manage user roles (ATTENDEE, ORGANIZER, ADMIN)
 - User management and administration
 - View all events and registrations
 
-## 🛠️ Technology Stack
+### 🛠️ Technology Stack
 
-### Frontend
+#### Frontend
 - **React 18** with TypeScript
 - **React Router** for client-side routing
 - **Tailwind CSS** for styling
@@ -36,7 +197,7 @@ Schedio supports multiple user roles, including students, staff, and administrat
 - **Embla Carousel** for carousel components
 - **Create React App** as build tool
 
-### Backend
+#### Backend
 - **Spring Boot 3.5.6** with Java 21
 - **Spring Security** for authentication and authorization
 - **Spring Data JPA** for database operations
@@ -46,93 +207,20 @@ Schedio supports multiple user roles, including students, staff, and administrat
 - **Maven** for dependency management
 - **SpringDoc OpenAPI** for API documentation
 
-### Infrastructure
+#### Infrastructure
 - **Docker** and **Docker Compose** for containerization
 - **Vercel Blob** for file storage (optional)
 
-## 📋 Prerequisites
+### 📚 API Documentation
 
-Before you begin, ensure you have the following installed:
+Once the backend is running, you can access the API documentation at:
 
-- **Java 21** or higher
-- **Node.js** 16+ and npm
-- **Docker** and **Docker Compose** (for containerized deployment)
-- **PostgreSQL** (if running without Docker)
-- **Maven** 3.6+ (if running backend without Docker)
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:8080/v3/api-docs`
 
-## 🚀 Getting Started
+For detailed API documentation, see [Server/BACKEND_APIS.md](Server/BACKEND_APIS.md)
 
-### Option 1: Using Docker Compose (Recommended)
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/zflukz/Schedio.git
-   cd Schedio
-   ```
-
-2. **Create environment file**
-   Create a `.env` file in the root directory with the following variables:
-   ```env
-   DB_URL=jdbc:postgresql://localhost:5432/schedio
-   DB_username=your_db_username
-   DB_password=your_db_password
-   JWT_SECRET=your_jwt_secret_key
-   JWT_EXPIRATION=86400000
-   # Add other required environment variables
-   ```
-
-3. **Start the application**
-   ```bash
-   docker-compose up --build
-   ```
-   
-   This will start:
-   - Frontend on `http://localhost:3000`
-   - Backend on `http://localhost:8080`
-
-### Option 2: Manual Setup
-
-#### Backend Setup
-
-1. **Navigate to the Server directory**
-   ```bash
-   cd Server
-   ```
-
-2. **Configure database**
-   Update `src/main/resources/application.properties` with your database credentials.
-
-3. **Run the application**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-   Or on Windows:
-   ```bash
-   mvnw.cmd spring-boot:run
-   ```
-   
-   The backend will be available at `http://localhost:8080`
-
-#### Frontend Setup
-
-1. **Navigate to the client directory**
-   ```bash
-   cd client
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm start
-   ```
-   
-   The frontend will be available at `http://localhost:3000`
-
-## 📁 Project Structure
+### 📁 Project Structure
 
 ```
 Schedio/
@@ -170,55 +258,9 @@ Schedio/
 └── README.md
 ```
 
-## 📚 API Documentation
+### 🧪 Testing
 
-Once the backend is running, you can access the API documentation at:
-
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-- **OpenAPI JSON**: `http://localhost:8080/v3/api-docs`
-
-For detailed API documentation, see [Server/BACKEND_APIS.md](Server/BACKEND_APIS.md)
-
-### Key API Endpoints
-
-#### Authentication
-- `POST /login` - User login
-- `POST /api/auth/register` - User registration
-- `GET /oauth2/authorization/google` - Google OAuth2 login
-
-#### Events
-- `GET /api/events/approved` - Get all approved events (Public)
-- `GET /api/events/{id}` - Get event by ID (Public)
-- `POST /api/events/filter` - Filter events (Public)
-- `POST /api/events/create` - Create event (Organizer/Admin)
-- `GET /api/events/my-events` - Get my events (Organizer/Admin)
-- `PUT /api/events/update/{id}` - Update event (Organizer/Admin)
-- `POST /api/events/cancel/{id}` - Cancel event (Organizer/Admin)
-
-#### Event Registration
-- `POST /api/registrations/register/{eventId}` - Register for event
-- `GET /api/registrations/my-registrations` - Get my registrations
-
-#### Admin
-- `GET /api/admin/users` - Get all users (Admin)
-- `POST /api/admin/users/role` - Change user role (Admin)
-- `POST /api/approval/approve/{eventId}` - Approve event (Admin)
-- `POST /api/approval/reject/{eventId}` - Reject event (Admin)
-
-## 🔐 Authentication & Authorization
-
-Schedio uses JWT (JSON Web Tokens) for authentication and implements role-based access control (RBAC) with three roles:
-
-- **ATTENDEE**: Can browse events and register
-- **ORGANIZER**: Can create and manage their own events
-- **ADMIN**: Full system access including user and event approval management
-
-### OAuth2 Integration
-The application supports Google OAuth2 login for seamless authentication.
-
-## 🧪 Testing
-
-### Backend Tests
+#### Backend Tests
 ```bash
 cd Server
 ./mvnw test
@@ -229,43 +271,35 @@ For integration tests:
 ./mvnw verify -P integration
 ```
 
-### Frontend Tests
+#### Frontend Tests
 ```bash
 cd client
 npm test
 ```
 
-## 🐳 Docker
+### 🐳 Docker Commands
 
-### Build Images
+#### Build Images
 ```bash
 docker-compose build
 ```
 
-### Run Containers
+#### Run Containers
 ```bash
 docker-compose up
 ```
 
-### Stop Containers
+#### Stop Containers
 ```bash
 docker-compose down
 ```
 
-### View Logs
+#### View Logs
 ```bash
 docker-compose logs -f
 ```
 
-## 📝 Development Guidelines
-
-- Follow the existing code style and conventions
-- Write tests for new features
-- Update API documentation when adding new endpoints
-- Follow the commit message guidelines in [Server/COMMIT_MESSAGE.md](Server/COMMIT_MESSAGE.md)
-- Review the checklist in [Server/CHECKLIST.md](Server/CHECKLIST.md) before submitting changes
-
-## 📖 Architecture Decision Records
+### 📖 Architecture Decision Records
 
 Architecture decisions are documented in the `docs/adr/` directory:
 - [ADR-001: JWT Authentication](docs/adr/adr-001-jwt-authentication.md)
@@ -274,7 +308,7 @@ Architecture decisions are documented in the `docs/adr/` directory:
 - [ADR-004: CORS Configuration](docs/adr/adr-004-cors-configuration.md)
 - [ADR-005: Technology Stack](docs/adr/adr-005-technology-stack.md)
 
-## 🤝 Contributing
+### 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
