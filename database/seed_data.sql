@@ -4,7 +4,7 @@
 
 -- Insert users (sanitized data with original password hashes)
 INSERT INTO users (user_id, username, password, firstname, lastname, email, role, phone, GoogleID) VALUES
-('d3550b7a-6dc0-40a7-ba46-14a390978930', 'Sa Muii', '', NULL, NULL, 'user1@example.com', 'ATTENDEE', NULL, NULL),
+('d3550b7a-6dc0-40a7-ba46-14a390978930', 'Sa Muii', '', NULL, NULL, 'user2@example.com', 'ATTENDEE', NULL, NULL),
 ('2f3af8b3-e4e3-4a64-88d9-85f09832c7cc', 'organizer2', '$2a$10$azHmMZAGeNBSaw0rBvozeOv5NX1mBBrQ8AaDk0s/FFon0B4fAZMJ6', NULL, NULL, 'organizer2@example.com', 'ORGANIZER', NULL, NULL),
 ('f4b606c8-fd60-40ee-8a6a-de35d919d402', 'org3', '$2a$10$gWkuMG7tpTmQPF/y9pa5mOiR51LPmsyeKsZcg4GpOLvuDNNOI6rmS', 'Tanaphat', 'Phomak', 'organizer3@example.com', 'ORGANIZER', NULL, NULL),
 ('f711a85b-833a-41ab-b373-57337ff0f246', 'organizer', '$2a$10$6prx2FcleOTRPOWHWJ9BduSu2p/5AA4pHLCzyW.8JJshHX/DEMKjW', 'jeab2', 'theOrganizer', 'organizer@example.com', 'ORGANIZER', '0910322258', NULL),

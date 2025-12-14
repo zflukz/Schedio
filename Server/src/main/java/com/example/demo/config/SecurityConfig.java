@@ -4,6 +4,8 @@ import com.example.demo.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,6 +27,8 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
+        private final Environment environment;
+
 
     private final AuthenticationEntryPoint apiEntryPoint;
     private final AccessDeniedHandler apiDeniedHandler;
@@ -32,11 +36,13 @@ public class SecurityConfig {
     private final AuthenticationFailureHandler oauth2FailureHandler;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter,
+                                                  Environment environment,
                           AuthenticationEntryPoint apiEntryPoint,
                           AccessDeniedHandler apiDeniedHandler,
                           AuthenticationSuccessHandler oauth2SuccessHandler,
                           AuthenticationFailureHandler oauth2FailureHandler) {
         this.jwtAuthFilter = jwtAuthFilter;
+                this.environment = environment;
         this.apiEntryPoint = apiEntryPoint;
         this.apiDeniedHandler = apiDeniedHandler;
         this.oauth2SuccessHandler = oauth2SuccessHandler;
@@ -90,11 +96,18 @@ public class SecurityConfig {
                                 "/favicon.ico","/assets/**","/static/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(o -> o
-                        .authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
-                        .successHandler(oauth2SuccessHandler)
-                        .failureHandler(oauth2FailureHandler)
-                );
+
+                                // Google OAuth2 is optional. Enable it only when the `oauth2` profile is active.
+                                // This avoids failing startup when GOOGLE_ID/GOOGLE_SECRET are not configured.
+                                .oauth2Login(o -> {
+                                        if (environment.acceptsProfiles(Profiles.of("oauth2"))) {
+                                                o.authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
+                                                                .successHandler(oauth2SuccessHandler)
+                                                                .failureHandler(oauth2FailureHandler);
+                                        } else {
+                                                o.disable();
+                                        }
+                                });
         return http.build();
     }
 }

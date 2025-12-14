@@ -1,0 +1,4 @@
+Submission branch repository link: (Self-Hosted Postgres)
+- https://github.com/zflukz/Schedio/tree/main-submission
+Main branch repository link: (Cloud Postgres)
+- https://github.com/zflukz/Schedio/tree/main

@@ -1,6 +1,9 @@
 -- Schedio Database Schema
 -- PostgreSQL Database Schema for Event Management System
 
+-- Needed for gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- Create database (run this separately if needed)
 -- CREATE DATABASE schedio;
 
