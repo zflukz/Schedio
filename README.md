@@ -20,13 +20,21 @@ Before you begin, ensure you have the following installed on your system:
 
 ## 🚀 Installation
 
-### Option 1: Using Docker Compose (Recommended)
+<details>
+<summary><b>Option 1: Using Docker Compose (Recommended)</b></summary>
+
+<br>
 
 If you have Docker installed, you can skip manual installation. Jump to the [How to Run](#-how-to-run) section.
 
-### Option 2: Manual Installation
+</details>
 
-#### Backend Dependencies
+<details>
+<summary><b>Option 2: Manual Installation</b></summary>
+
+<br>
+
+### Backend Dependencies
 
 Navigate to the Server directory and install dependencies:
 
@@ -42,7 +50,7 @@ cd Server
 mvnw.cmd clean install
 ```
 
-#### Frontend Dependencies
+### Frontend Dependencies
 
 Navigate to the client directory and install dependencies:
 
@@ -50,6 +58,8 @@ Navigate to the client directory and install dependencies:
 cd client
 npm install
 ```
+
+</details>
 
 ---
 
@@ -106,7 +116,10 @@ blob=your_vercel_blob_token
 
 ## 🚀 How to Run
 
-### Option 1: Using Docker Compose (Recommended)
+<details>
+<summary><b>Option 1: Using Docker Compose (Recommended)</b></summary>
+
+<br>
 
 The `docker-compose.yml` file has been configured to include **PostgreSQL** as a service, which will automatically start along with the frontend and backend.
 
@@ -130,9 +143,14 @@ This will start **three services**:
 
 Once ready, open your browser and go to: **http://localhost:3000**
 
-### Option 2: Manual Setup
+</details>
 
-#### Step 1: Start PostgreSQL Database
+<details>
+<summary><b>Option 2: Manual Setup</b></summary>
+
+<br>
+
+### Step 1: Start PostgreSQL Database
 
 Make sure PostgreSQL is running on your machine. If not, start it:
 
@@ -147,7 +165,7 @@ sudo systemctl start postgresql
 # Start PostgreSQL from Services or pgAdmin
 ```
 
-#### Step 2: Import Database Schema and Seed Data
+### Step 2: Import Database Schema and Seed Data
 
 ```bash
 psql -U postgres -d schedio -f database/seed_data.sql
@@ -161,7 +179,7 @@ psql -U postgres -c "CREATE DATABASE schedio;"
 
 **Note:** The schema will be auto-created by Spring Boot JPA on first run.
 
-#### Step 3: Start Backend Server
+### Step 3: Start Backend Server
 
 Navigate to the Server directory and run:
 
@@ -179,7 +197,7 @@ mvnw.cmd spring-boot:run
 
 The backend will be available at **http://localhost:8080**
 
-#### Step 4: Start Frontend Development Server
+### Step 4: Start Frontend Development Server
 
 Open a **new terminal**, navigate to the client directory, and run:
 
@@ -189,6 +207,8 @@ npm start
 ```
 
 The frontend will be available at **http://localhost:3000**
+
+</details>
 
 ---
 
