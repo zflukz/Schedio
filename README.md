@@ -82,14 +82,14 @@ JWT_EXPIRATION=86400000
 # Google OAuth2 Configuration (Optional - for Google Login)
 GOOGLE_ID=your_google_client_id
 GOOGLE_SECRET=your_google_client_secret
-OAUTH_REDIRECT_URI=http://localhost:8162/login/oauth2/code/google
+OAUTH_REDIRECT_URI=http://localhost:8080/login/oauth2/code/google
 
 # Enable Google OAuth2 (optional)
 SPRING_PROFILES_ACTIVE=oauth2
 
 # Frontend -> Backend API base URL (needed when frontend runs on a different host port)
-# Docker Compose default in this repo maps host 8162 -> container 8080
-REACT_APP_API_BASE_URL=http://localhost:8162
+# Docker Compose default in this repo maps host 8080 -> container 8080
+REACT_APP_API_BASE_URL=http://localhost:8080
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS=http://localhost:3000
@@ -131,7 +131,7 @@ docker-compose up --build
 This will start:
 
 - **PostgreSQL Database** on `localhost:5432` (container name `schedio-db`)
-- **Backend (Spring Boot)** on `http://localhost:8162`
+- **Backend (Spring Boot)** on `http://localhost:8080`
 - **Frontend (React)** on `http://localhost:3000`
 
 **Database initialization (Docker Compose):** the `database/` folder is mounted into Postgres at `/docker-entrypoint-initdb.d`, so on the **first** start (empty volume) Postgres will automatically run the `.sql` files there.
@@ -316,8 +316,8 @@ Once the backend is running, you can access the interactive API documentation at
 
 If you run via Docker Compose (default ports in this repo):
 
-- **Swagger UI:** http://localhost:8162/swagger-ui.html
-- **OpenAPI JSON:** http://localhost:8162/v3/api-docs
+- **Swagger UI:** http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON:** http://localhost:8080/v3/api-docs
 
 For detailed API documentation, see [Server/BACKEND_APIS.md](Server/BACKEND_APIS.md)
 
